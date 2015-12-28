@@ -14,6 +14,7 @@ namespace GLfunc {
 	void keyboard(unsigned char key, int x, int y);
 	void motion(int x, int y);
 	void passiveMotion(int x, int y);
+	void entry(int state);
 	void mouseClick(int button, int state, int x, int y);
 
 	//TODO  鼠标、点选、碰撞检测、光照处理等函数需要添加
@@ -38,10 +39,13 @@ private:
 public:
 	static int windowHandle;
 	static int windowHeight, windowWidth;
+	static int windowPos[2];
+	static int cursorPos[2];
+	static int focusState;
 
 	static Point eye, center;
 	static const Vec up;  //up向量不能被修改
-	static GLdouble elevation[2];
+	static double elevation[2];
 	static double moveSpeed;
 	static double rotateSpeed;
 
@@ -49,7 +53,7 @@ public:
 
 
 	/*  初始化函数  */
-	static void init(int *argc, char *argv[], int windowHeight=800, int windowWidth=800);
+	static void init(int *argc, char *argv[], int windowHeight=800, int windowWidth=800, int xPos=100, int yPos=100);
 
 
 	static void World::reCenter();

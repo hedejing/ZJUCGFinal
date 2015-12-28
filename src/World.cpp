@@ -1,4 +1,5 @@
 #include <cmath>
+#include <Windows.h>
 #include "World.h"
 #include "utility.h"
 
@@ -9,15 +10,20 @@ deque<unsigned int> World::trash = deque<unsigned int>();
 
 int World::windowHandle;
 int World::windowHeight, World::windowWidth;
+int World::windowPos[2];
+int World::cursorPos[2];
+int World::focusState;
 
 Point World::eye = Point(0,0,0);
 Point World::center = Point(1,0,0);
 const Vec World::up = Vec(0,1,0);
-GLdouble World::elevation[2] = {0.0, 0};
+double World::elevation[2] = {0.0, 0.0};
 double World::moveSpeed = 0.4;
-double World::rotateSpeed = 1;
+double World::rotateSpeed = 0.1;
 
 unsigned int World::chosenID = -1;
+
+
 
 
 
@@ -42,12 +48,11 @@ int World::erase(unsigned int id) {
 	trash.push_back(id);
 	return 0;
 }
-void World::init(int *argc, char *argv[], int windowHeight, int windowWidth) {
-	nextId = 0;
+void World::init(int *argc, char *argv[], int windowHeight, int windowWidth, int xPos, int yPos) {
 	{  //GLUT INIT
 		glutInit(argc, argv);
 		glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
-		glutInitWindowPosition(200, 200);
+		glutInitWindowPosition(World::windowPos[0]=xPos, World::windowPos[1]=yPos);
 		glutInitWindowSize(World::windowWidth=windowWidth, World::windowHeight=windowHeight);
 		windowHandle = glutCreateWindow("Simple GLUT App");
 		glutDisplayFunc(GLfunc::display);
@@ -56,7 +61,10 @@ void World::init(int *argc, char *argv[], int windowHeight, int windowWidth) {
 		glutMotionFunc(GLfunc::motion);
 		glutPassiveMotionFunc(GLfunc::passiveMotion);
 		glutMouseFunc(GLfunc::mouseClick);
+		glutEntryFunc(GLfunc::entry);
 		glutIdleFunc(GLfunc::idle);
+		
+		glutSetCursor(GLUT_CURSOR_CROSSHAIR);
 	}
 	{  //OPENGL INIT
 		glClearColor(0, 0, 0, 1);
@@ -70,8 +78,10 @@ void World::init(int *argc, char *argv[], int windowHeight, int windowWidth) {
 		glEnable(GL_LIGHT0);  //light0只是用做示例
 	}
 	{  //WORLD INIT
-		trash.clear();
-		objects.clear();
+		SetCursorPos(windowWidth/2 + windowPos[0], windowHeight/2 + windowPos[1]);  //TODO  这里的cursorPos并不准确
+		POINT pos;
+		GetCursorPos(&pos);
+		cursorPos[0] = pos.x;  cursorPos[1] = pos.y;
 	}
 	//...
 }
@@ -128,6 +138,9 @@ void GLfunc::idle() {
 }
 
 void GLfunc::display() {
+	if (World::focusState == GLUT_ENTERED)
+		SetCursorPos(World::windowWidth/2 + World::windowPos[0], World::windowHeight/2 + World::windowPos[1]);  //TODO  这里的cursorPos并不准确
+
 glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(45, (double)World::windowWidth/World::windowHeight, 0.1, 500);
@@ -150,7 +163,7 @@ glMatrixMode(GL_MODELVIEW);
 void GLfunc::keyboard(unsigned char key, int x, int y) {
 	double &moveSpeed = World::moveSpeed;
 	const double moveStep = 1;
-	const double rotateStep = 3;
+	const double rotateStep = 8;
 
 	switch (key) {
 	case 27: exit(0);
@@ -215,6 +228,22 @@ void mousedw(int x, int y, int but);
 void GLfunc::motion(int x, int y) {
 }
 void GLfunc::passiveMotion(int x, int y) {
+	if (World::focusState == GLUT_ENTERED) {
+		POINT pos; GetCursorPos(&pos);
+		x = pos.x;  y = pos.y;
+		World::elevation[0] += World::rotateSpeed * (x - World::cursorPos[0]);
+		World::elevation[1] += -World::rotateSpeed * (y - World::cursorPos[1]);
+		if (World::elevation[1] > 75) World::elevation[1] = 75;
+		if (World::elevation[1] < -75) World::elevation[1] = -75;
+	
+		World::reCenter();
+		glutPostRedisplay();
+	}
+}
+void GLfunc::entry(int state) {
+	World::focusState = state;
+	if (state == GLUT_ENTERED)
+		SetCursorPos(World::windowWidth/2 + World::windowPos[0], World::windowHeight/2 + World::windowPos[1]);
 }
 void GLfunc::mouseClick(int button, int state, int x, int y) {
 	if ((button == GLUT_LEFT_BUTTON) && (state == GLUT_DOWN)) {
@@ -270,10 +299,10 @@ void mousedw(int x, int y, int but) {
 }
 
 void gl_select(int x, int y) {
-	GLuint buff[128] = { 0 };
+	GLuint buff[4096] = { 0 };
 	GLint hits, view[4];
 
-	glSelectBuffer(128, buff);
+	glSelectBuffer(4096, buff);
 
 	//retrieve info about the viewport
 	glGetIntegerv(GL_VIEWPORT, view);
