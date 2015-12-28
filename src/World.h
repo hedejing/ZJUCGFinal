@@ -54,6 +54,7 @@ public:
 
 	/*  ³õÊ¼»¯º¯Êý  */
 	static void init(int *argc, char *argv[], int windowHeight=800, int windowWidth=800, int xPos=100, int yPos=100);
+	static void setCursorToCenter();
 
 
 	static void World::reCenter();

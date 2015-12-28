@@ -52,8 +52,8 @@ void World::init(int *argc, char *argv[], int windowHeight, int windowWidth, int
 	{  //GLUT INIT
 		glutInit(argc, argv);
 		glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
-		glutInitWindowPosition(World::windowPos[0]=xPos, World::windowPos[1]=yPos);
-		glutInitWindowSize(World::windowWidth=windowWidth, World::windowHeight=windowHeight);
+		glutInitWindowPosition(World::windowPos[0] = xPos, World::windowPos[1] = yPos);
+		glutInitWindowSize(World::windowWidth = windowWidth, World::windowHeight = windowHeight);
 		windowHandle = glutCreateWindow("Simple GLUT App");
 		glutDisplayFunc(GLfunc::display);
 		//glutReshapeFunc(reshape);
@@ -78,12 +78,14 @@ void World::init(int *argc, char *argv[], int windowHeight, int windowWidth, int
 		glEnable(GL_LIGHT0);  //light0只是用做示例
 	}
 	{  //WORLD INIT
-		SetCursorPos(windowWidth/2 + windowPos[0], windowHeight/2 + windowPos[1]);  //TODO  这里的cursorPos并不准确
-		POINT pos;
-		GetCursorPos(&pos);
+		setCursorToCenter();
+		POINT pos; GetCursorPos(&pos);
 		cursorPos[0] = pos.x;  cursorPos[1] = pos.y;
 	}
 	//...
+}
+void World::setCursorToCenter() {
+	SetCursorPos(windowWidth/2 + windowPos[0], windowHeight/2 + windowPos[1]);  //TODO  这里的cursorPos并不准确
 }
 
 void World::reCenter() {
@@ -139,7 +141,7 @@ void GLfunc::idle() {
 
 void GLfunc::display() {
 	if (World::focusState == GLUT_ENTERED)
-		SetCursorPos(World::windowWidth/2 + World::windowPos[0], World::windowHeight/2 + World::windowPos[1]);  //TODO  这里的cursorPos并不准确
+		World::setCursorToCenter();
 
 glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -243,7 +245,7 @@ void GLfunc::passiveMotion(int x, int y) {
 void GLfunc::entry(int state) {
 	World::focusState = state;
 	if (state == GLUT_ENTERED)
-		SetCursorPos(World::windowWidth/2 + World::windowPos[0], World::windowHeight/2 + World::windowPos[1]);
+		World::setCursorToCenter();
 }
 void GLfunc::mouseClick(int button, int state, int x, int y) {
 	if ((button == GLUT_LEFT_BUTTON) && (state == GLUT_DOWN)) {
@@ -344,9 +346,7 @@ void gl_select(int x, int y) {
 				depth = buff[i * 4 + 1];
 			}
 		}
-		//changecolor[choose] = !changecolor[choose];
 		World::chosenID = choose;
-		//dbg(choosenID);
 	}
 	else World::chosenID = -1;
 	cout<<hits<<" "<<World::chosenID<<endl;
