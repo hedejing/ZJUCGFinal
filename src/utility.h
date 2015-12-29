@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <cmath>
 #include <GL/glew.h>
 #include <GL/glut.h>
 using namespace std;
@@ -60,10 +61,16 @@ Vec operator/(Vec a, double t);
 
 namespace COLOR {
 	float white[];
+	float blue[];
 };
 
 
 string intToString(int a);
 int stringToInt(string s);  //只支持正数
+
+
+
+const double M_PI = 3.1415926535897932384;
+
 
 #endif

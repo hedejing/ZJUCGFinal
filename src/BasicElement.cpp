@@ -14,6 +14,17 @@ unsigned int BasicElement::getId() {
 	return id;
 }
 
+void BasicElement::draw() {
+	glPushMatrix();
+		glLoadName(id);
+		glTranslated(centroid[0], centroid[1], centroid[2]);
+		glScaled(scaleValue[0], scaleValue[1], scaleValue[2]);
+		drawNaive();  //父类函数调用子类的函数??可以！
+		glLoadName(0);
+	glPopMatrix();
+}
+void BasicElement::drawNaive() {}
+
 void BasicElement::rotate(double angle, double x, double y, double z) {
 }
 void BasicElement::move(double dx, double dy, double dz) {
@@ -29,17 +40,9 @@ void BasicElement::scale(Vec t) {
 	if (t[0] <= 0 || t[1] <= 0 || t[2] <= 0) return;
 	for (int i=0; i<3; i++) scaleValue[i] *= t[i];
 }
-void BasicElement::draw() {
-	glPushMatrix();
-		glLoadName(id);
-		glTranslated(centroid[0], centroid[1], centroid[2]);
-		glScaled(scaleValue[0], scaleValue[1], scaleValue[2]);
-		drawNaive();  //父类函数调用子类的函数??可以！
-		glLoadName(0);
-	glPopMatrix();
+void BasicElement::scale(double t) {
+	scale(Vec(t, t, t));
 }
-void BasicElement::drawNaive() {}
-
 
 
 
@@ -49,6 +52,70 @@ Cube::Cube(Point p) {
 }
 void Cube::drawNaive() {
 	glutSolidCube(1);
+}
+
+/*  Sphere  */
+Sphere::Sphere(Point p, double radius, int slices, int stacks) {
+	centroid = p;
+	this->radius = radius;
+	this->slices = slices;
+	this->stacks = stacks;
+}
+void Sphere::drawNaive() {
+	glutSolidSphere(radius, slices, stacks);
+}
+
+/*  Cone  */
+Cone::Cone(Point p, double radius, double height, int slices, int stacks) {
+	centroid = p;
+	this->radius = radius;
+	this->height = height;
+	this->slices = slices;
+	this->stacks = stacks;
+}
+void Cone::drawNaive() {
+	glutSolidCone(radius, height, slices, stacks);
+}
+
+/*  Circle  */
+Circle::Circle(Point p, double radius, int slices) {
+	centroid = p;
+	this->radius = radius;
+	this->slices = slices;
+}
+void Circle::circle() {  //TODO  circle函数的法向计算有问题
+	glBegin(GL_TRIANGLE_FAN);
+		glNormal3f(0, 1, 0), glVertex3f(0.0f, 0.0f, 0.0f);
+		double step = 2 * M_PI / slices;
+		for (double i=2*M_PI+0.1; i>=0; i-=step)
+			glNormal3f(0, 1, 0), glVertex3f(sin(i), 0.0f, cos(i));
+	glEnd();
+}
+void Circle::drawNaive() {
+	glPushMatrix();
+		glScaled(radius*2, radius*2, radius*2);
+		circle();
+	glPopMatrix();
+}
+
+/*  Cylinder  */
+Cylinder::Cylinder(Point p, double radius, double height, int slices, int stacks):Circle(p, radius, slices) {
+	this->height = height;
+	this->stacks = stacks;
+}
+void Cylinder::drawNaive() {
+	glPushMatrix();
+		glScaled(1, height, 1);
+		glBegin(GL_QUAD_STRIP);
+			double step = 2 * M_PI / stacks;
+			for (double i=2*M_PI+0.1; i>=0; i-=step) {
+				glNormal3f(sin(i),  0, cos(i)), glVertex3f(sin(i),  0.5f, cos(i));
+				glNormal3f(sin(i),  0, cos(i)), glVertex3f(sin(i), -0.5f, cos(i));
+			}
+		glEnd();
+		glTranslated(0, 0.5, 0); glPushMatrix(); glRotatef(180, 1, 0, 0); circle(); glPopMatrix();
+		glTranslated(0, -1, 0); circle();
+	glPopMatrix();
 }
 
 /*  Rect: 带纹理的矩形  */

@@ -17,13 +17,17 @@ using namespace std;
 
 
 void define() {
-	new Cube(Point(10, 0, 0));
+	new Cube(Point(10, 0, 0));  //正方体
+	new Sphere(Point(10, -2, -4));  //球
+	new Cone(Point(10, -2, -2));  //圆锥
+	new Circle(Point(10, -2, 2));  //圆
+	new Cylinder(Point(10, -2, 0));  //圆柱
 }
 int main(int argc, char *argv[]) {
 	World::init(&argc, argv);
 	//可以在这里使用glutIdleFunc();对idle进行重写
 	//若要对鼠标和键盘函数进行重写，建议在World.cpp里修改
-
+	
 
 	
 	define();
@@ -32,6 +36,12 @@ int main(int argc, char *argv[]) {
 
 
 
+	{  //LIGHTING
+		GLfloat lightPos0[] = {5,5,5,1};
+		glLightfv(GL_LIGHT0, GL_POSITION, lightPos0);
+		glLightfv(GL_LIGHT0, GL_AMBIENT, COLOR::white);
+		glEnable(GL_LIGHT0);  //light0只是用做示例
+	}
 
 
 	glutMainLoop();

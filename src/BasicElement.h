@@ -12,7 +12,7 @@ public:
 	Point centroid;  //体心
 	Vec scaleValue;
 	BasicElement();
-	~BasicElement();
+	virtual ~BasicElement();
 	unsigned int getId();
 
 
@@ -37,6 +37,7 @@ public:
 	/*  缩放函数  */
 	void scale(double tx, double ty, double tz);
 	void scale(Vec t);
+	void scale(double t);
 };
 
 class Cube : public BasicElement {
@@ -44,6 +45,40 @@ public:
 	Cube(Point p);
 	void drawNaive();
 };
+
+class Sphere : public BasicElement {
+public:
+	double radius;
+	int slices, stacks;
+	Sphere(Point p, double radius=0.5, int slices=50, int stacks=50);
+	void drawNaive();
+};
+
+class Cone : public BasicElement {
+public:
+	double radius, height;
+	int slices, stacks;
+	Cone(Point p, double radius=0.5, double height=1.0, int slices=50, int stacks=50);
+	void drawNaive();
+};
+
+class Circle : public BasicElement {
+public:
+	double radius;
+	int slices;
+	Circle(Point p, double radius=0.5, int slices=100);
+	void circle();
+	virtual void drawNaive();
+};
+class Cylinder : public Circle {
+public:
+	double height;
+	int stacks;
+	Cylinder(Point p, double radius=0.5, double height=0.5, int slices=100, int stacks=100);
+	void drawNaive();
+};
+
+//TODO  多面棱柱和多面棱台
 
 class Rect : public BasicElement {
 public:

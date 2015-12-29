@@ -75,14 +75,8 @@ void World::init(int *argc, char *argv[], int windowHeight, int windowWidth, int
 	}
 	{  //OPENGL INIT
 		glClearColor(0, 0, 0, 1);
-
 		glEnable(GL_DEPTH_TEST);
-
 		glEnable(GL_LIGHTING);
-		GLfloat lightPos0[] = {5,5,5,1};
-		glLightfv(GL_LIGHT0, GL_POSITION, lightPos0);
-		glLightfv(GL_LIGHT0, GL_AMBIENT, COLOR::white);
-		glEnable(GL_LIGHT0);  //light0只是用做示例
 	}
 	{  //WORLD INIT
 		setCursorToCenter();
@@ -313,7 +307,7 @@ void World::gl_select(int x, int y) {
 		chosenID = choose;
 	}
 	else chosenID = -1;
-	cout<<hits<<" "<<chosenID<<endl;
+	cout<<"hits: "<<hits<<"   ID: "<<chosenID<<endl;
 
 	glMatrixMode(GL_MODELVIEW);
 }
@@ -385,7 +379,7 @@ struct BitMapInfoHeader {
 //	if (i<0 || j<0 || i==j+1) return -1;
 //	return stringToInt(s.substr(j+1, i-j-1));
 //}
-void World::grabScreen(void) {
+void World::grabScreen(void) {  //TODO  截图时可以输出一个提示信息
 	//static int times = -1;
 	//if (times == -1) {
 	//	vector<string> files;

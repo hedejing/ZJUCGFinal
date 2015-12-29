@@ -72,6 +72,7 @@ ostream &operator<<(ostream &out, Vec a) { return out<<a[0]<<" "<<a[1]<<" "<<a[2
 
 /*  COLOR  */
 float COLOR::white[] = {1, 1, 1, 1};
+float COLOR::blue[] = {0, 0, 1, 1};
 
 
 
