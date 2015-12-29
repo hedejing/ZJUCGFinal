@@ -3,7 +3,6 @@
 
 #include <map>
 #include <deque>
-#include "GL/glut.h"
 #include "BasicElement.h"
 using namespace std;
 
@@ -68,6 +67,7 @@ public:
 	static void idle();  //加上static后就可以传入glutIdleFunc()里了
 	static void display();
 	static void keyboard(unsigned char key, int x, int y);
+	static void special(int key, int x, int y);
 	static void motion(int x, int y);
 	static void passiveMotion(int x, int y);
 	static void entry(int state);
@@ -77,8 +77,12 @@ public:
 		static void gl_select(int x, int y);
 		static void mousedw(int x, int y, int but);
 
-
 	//TODO  鼠标、碰撞检测、光照处理等函数需要添加
+
+
+	/*  截屏  */
+	static string scrennshotsDir;
+	static void grabScreen();
 };
 
 

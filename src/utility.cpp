@@ -1,5 +1,4 @@
 #include "utility.h"
-#include "World.h"
 
 
 Point::Point() {
@@ -74,3 +73,21 @@ ostream &operator<<(ostream &out, Vec a) { return out<<a[0]<<" "<<a[1]<<" "<<a[2
 /*  COLOR  */
 float COLOR::white[] = {1, 1, 1, 1};
 
+
+
+string intToString(int a) {
+	string s = "";
+	if (a == 0) return s = "0";
+	while (a) s += a%10+48, a /= 10;
+	reverse(s.begin(), s.end());
+	return s;
+}
+int stringToInt(string s) {  //只支持正数
+	int ret = 0;
+	for (int i=0; i<s.size(); i++) {
+		if (s[i]<'0'||s[i]>'9') return -1;
+		if (ret!=0 && 0x7fffffff/ret<(s[i]-48)) return -1;
+		ret = ret * 10 + s[i] - 48;
+	}
+	return ret;
+}

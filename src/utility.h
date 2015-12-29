@@ -2,7 +2,13 @@
 #define __UTILITY_H__
 
 #include <iostream>
+#include <string>
+#include <vector>
+#include <GL/glew.h>
+#include <GL/glut.h>
 using namespace std;
+
+#pragma comment (lib, "glew32.lib")
 
 
 struct Point {
@@ -50,9 +56,14 @@ Vec operator*(Vec a, double t);
 Vec operator*(double t, Vec a);
 Vec operator/(Vec a, double t);
 
+
+
 namespace COLOR {
 	float white[];
 };
 
+
+string intToString(int a);
+int stringToInt(string s);  //只支持正数
 
 #endif

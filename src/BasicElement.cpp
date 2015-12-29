@@ -1,7 +1,6 @@
 #include "BasicElement.h"
 #include "World.h"
 #include "utility.h"
-#include "GL/glut.h"
 
 /*  BasicElement  */
 BasicElement::BasicElement() {

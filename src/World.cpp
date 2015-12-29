@@ -1,5 +1,6 @@
 #include <cmath>
 #include <Windows.h>
+#include <io.h>
 #include "World.h"
 #include "utility.h"
 
@@ -58,6 +59,7 @@ void World::init(int *argc, char *argv[], int windowHeight, int windowWidth, int
 		glutDisplayFunc(display);
 		//glutReshapeFunc(reshape);
 		glutKeyboardFunc(keyboard);
+		glutSpecialFunc(special);
 		glutMotionFunc(motion);
 		glutPassiveMotionFunc(passiveMotion);
 		glutMouseFunc(mouseClick);
@@ -65,6 +67,11 @@ void World::init(int *argc, char *argv[], int windowHeight, int windowWidth, int
 		glutIdleFunc(idle);
 		
 		glutSetCursor(GLUT_CURSOR_CROSSHAIR);
+	}
+	{  //GLEW INIT
+		glewExperimental = TRUE;
+		if (GLenum err = glewInit())
+			fprintf(stderr, "Error is%s", glewGetErrorString(err));
 	}
 	{  //OPENGL INIT
 		glClearColor(0, 0, 0, 1);
@@ -214,7 +221,15 @@ void World::keyboard(unsigned char key, int x, int y) {
 	}
 	glutPostRedisplay();
 }
-
+void World::special(int key, int x, int y) {
+	switch (key) {
+	case GLUT_KEY_F1:
+		grabScreen();
+		break;
+	default:
+		break;
+	}
+}
 
 //  TODO
 void World::motion(int x, int y) {
@@ -301,4 +316,150 @@ void World::gl_select(int x, int y) {
 	cout<<hits<<" "<<chosenID<<endl;
 
 	glMatrixMode(GL_MODELVIEW);
+}
+
+
+
+
+/*  截图  */
+
+string World::scrennshotsDir = "screenshots";
+
+
+typedef unsigned char Byte;
+typedef unsigned short int Word;
+typedef unsigned long int DWord;
+struct BitMapFileHeader {  //位图文件头
+	Word bfType;  //不能放在里面一起读，因为short对齐成了32位??  //那要是对齐变成了64位的要怎么办??...(现在应该还不会出现这种情况...)
+	DWord bfSize;  //说明该位图文件的大小，用字节为单位
+	Word bfReserved1;
+	Word bfReserved2;
+	DWord bfOffBits;  //说明从 "the beginning of the file" 到 "the bitmap data" 的偏移量。  //对于一般的bmp来说是54
+};
+struct BitMapInfoHeader {
+	DWord biSize;  //说明BITMAPINFOHEADER结构所需要的字节数
+	DWord biWidth;
+	DWord biHeight;  //biHeight为正，则图像是从左上往右下的顺序输入
+	Word biPlanes;  //位平面数
+	Word biBitCount;  //每像素位数
+	DWord biCompression;  //压缩类型，0为不压缩
+	DWord biSizeImage;  //压缩图像大小（字节数）
+	DWord biXPelsPerMeter;  //水平分辨率
+	DWord biYPelsPerMeter;
+	DWord biClrUsed;  //使用的色彩数
+	DWord biClrImportant;  //重要色彩数
+};
+#define BMP_Header_Length 54
+//void getFiles(string path, vector<string>& files) {  
+//    //文件句柄  
+//    long   hFile   =   0;  
+//    //文件信息  
+//    struct _finddata_t fileinfo;
+//    string p;  
+//    if((hFile = _findfirst(p.assign(path).append("\\*").c_str(),&fileinfo)) !=  -1)  
+//    {  
+//        do  
+//        {  
+//            //如果是目录,迭代之  
+//            //如果不是,加入列表  
+//            if((fileinfo.attrib &  _A_SUBDIR))  
+//            {  
+//                if(strcmp(fileinfo.name,".") != 0  &&  strcmp(fileinfo.name,"..") != 0)  
+//                    getFiles( p.assign(path).append("\\").append(fileinfo.name), files );  
+//            }  
+//            else  
+//            {  
+//                files.push_back(p.assign(path).append("\\").append(fileinfo.name) );  
+//            }  
+//        }while(_findnext(hFile, &fileinfo)  == 0);  
+//        _findclose(hFile);  
+//    }  
+//}
+//int getMax(string s) {
+//	int i,j;
+//	for (i=s.size()-1; i>=0; i--)
+//		if (s[i] == '.') break;
+//		else if (s[i] == '\\') return -1;
+//	for (j=i-1; j>=0; j--)
+//		if (s[j] == '\\') break;
+//	if (i<0 || j<0 || i==j+1) return -1;
+//	return stringToInt(s.substr(j+1, i-j-1));
+//}
+void World::grabScreen(void) {
+	//static int times = -1;
+	//if (times == -1) {
+	//	vector<string> files;
+	//	getFiles(scrennshotsDir, files);
+	//	for (int i=0; i<files.size(); i++) times = max(times, getMax(files[i]));
+	//}
+	//times++;
+	SYSTEMTIME sys;
+	GetLocalTime(&sys); 
+
+    FILE*    pWritingFile;
+    GLubyte* pPixelData;
+    GLubyte  BMP_Header[BMP_Header_Length];
+    GLint    i, j;
+    GLint    PixelDataLength;
+
+    // 计算像素数据的实际长度
+    i = windowWidth * 3;   // 得到每一行的像素数据长度
+    while(i%4 != 0) ++i;
+
+    PixelDataLength = i * windowHeight;
+
+    // 分配内存和打开文件
+    pPixelData = (GLubyte*)malloc(PixelDataLength);
+    if(pPixelData == 0) exit(0);
+
+    //fopen_s(&pWritingFile, (scrennshotsDir + "\\\\" + intToString(times) + ".bmp").c_str(), "wb");
+	string s = intToString(sys.wYear) + "-" + intToString(sys.wMonth) + "-" + intToString(sys.wDay) + "-" + intToString(sys.wHour) + "-" + intToString(sys.wMinute) + "-" + intToString(sys.wSecond) + "-" + intToString(sys.wMilliseconds);
+	fopen_s(&pWritingFile, (scrennshotsDir + "\\\\" + s + ".bmp").c_str(), "wb");
+    if( pWritingFile == 0 ) exit(0);
+
+    // 读取像素
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 4);  //使得每行的像素以4的倍数对齐
+    glReadPixels(0, 0, windowWidth, windowHeight, GL_BGR_EXT, GL_UNSIGNED_BYTE, pPixelData);
+
+
+		BitMapFileHeader fileHeader;
+		fileHeader.bfType = 0x4D42;
+		fwrite(&fileHeader.bfType, sizeof(Word), 1, pWritingFile);
+
+		BitMapInfoHeader infoHeader;
+		int rowBytes = (24 >> 3) * windowWidth, offset = rowBytes % 4;
+		if (offset != 0) rowBytes += offset=4-offset;
+		fileHeader.bfSize = windowHeight * windowWidth * 3 + 54;
+		fileHeader.bfReserved1 = fileHeader.bfReserved2 = 0;
+		fileHeader.bfOffBits = 54;
+		fwrite(&fileHeader.bfSize, sizeof(DWord)*3, 1, pWritingFile);
+
+		infoHeader.biSize = 40;
+		infoHeader.biWidth = windowWidth;
+		infoHeader.biHeight = windowHeight;
+		infoHeader.biPlanes = 1;
+		infoHeader.biBitCount = 24;
+		infoHeader.biCompression = 0;
+		infoHeader.biSizeImage = windowHeight * rowBytes;  //原文件比这个大2，居然也可以..(应该是原图忘了字节数为4的倍数这一点...)
+		infoHeader.biXPelsPerMeter = infoHeader.biYPelsPerMeter = 0;  //??
+		infoHeader.biClrUsed = 0;
+		infoHeader.biClrImportant = 0;
+		fwrite(&infoHeader, sizeof(BitMapInfoHeader), 1, pWritingFile);
+
+		// 把dummy.bmp的文件头复制为新文件的文件头
+		//fread(BMP_Header, sizeof(BMP_Header), 1, pDummyFile);  //OpenGL连BMP_Header都有...
+		//fwrite(BMP_Header, sizeof(BMP_Header), 1, pWritingFile);
+    fseek(pWritingFile, 0x0012, SEEK_SET);
+    i = windowWidth;
+    j = windowHeight;
+    fwrite(&i, sizeof(i), 1, pWritingFile);
+    fwrite(&j, sizeof(j), 1, pWritingFile);
+
+    // 写入像素数据
+    fseek(pWritingFile, 0, SEEK_END);
+    fwrite(pPixelData, PixelDataLength, 1, pWritingFile);
+
+    // 释放内存和关闭文件
+    fclose(pWritingFile);
+    free(pPixelData);
 }
