@@ -8,20 +8,6 @@
 using namespace std;
 
 
-namespace GLfunc {
-	void idle();
-	void display();
-	void keyboard(unsigned char key, int x, int y);
-	void motion(int x, int y);
-	void passiveMotion(int x, int y);
-	void entry(int state);
-	void mouseClick(int button, int state, int x, int y);
-
-	//TODO  鼠标、点选、碰撞检测、光照处理等函数需要添加
-
-};
-
-
 class World {
 private:
 	static unsigned int nextId;
@@ -71,10 +57,28 @@ public:
 		相机仰角在[-75°,75°]之间                                                            */
 	static void rotate(int d, double step);
 
+
 	/*  一次性绘制所有物体  */
 	static void drawAll();
 
 	friend class BasicElement;
+
+
+	/*  GLUT FUNC  */
+	static void idle();  //加上static后就可以传入glutIdleFunc()里了
+	static void display();
+	static void keyboard(unsigned char key, int x, int y);
+	static void motion(int x, int y);
+	static void passiveMotion(int x, int y);
+	static void entry(int state);
+	static void mouseClick(int button, int state, int x, int y);
+
+		/*  点选辅助函数  */
+		static void gl_select(int x, int y);
+		static void mousedw(int x, int y, int but);
+
+
+	//TODO  鼠标、碰撞检测、光照处理等函数需要添加
 };
 
 

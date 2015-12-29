@@ -55,14 +55,14 @@ void World::init(int *argc, char *argv[], int windowHeight, int windowWidth, int
 		glutInitWindowPosition(World::windowPos[0] = xPos, World::windowPos[1] = yPos);
 		glutInitWindowSize(World::windowWidth = windowWidth, World::windowHeight = windowHeight);
 		windowHandle = glutCreateWindow("Simple GLUT App");
-		glutDisplayFunc(GLfunc::display);
+		glutDisplayFunc(display);
 		//glutReshapeFunc(reshape);
-		glutKeyboardFunc(GLfunc::keyboard);
-		glutMotionFunc(GLfunc::motion);
-		glutPassiveMotionFunc(GLfunc::passiveMotion);
-		glutMouseFunc(GLfunc::mouseClick);
-		glutEntryFunc(GLfunc::entry);
-		glutIdleFunc(GLfunc::idle);
+		glutKeyboardFunc(keyboard);
+		glutMotionFunc(motion);
+		glutPassiveMotionFunc(passiveMotion);
+		glutMouseFunc(mouseClick);
+		glutEntryFunc(entry);
+		glutIdleFunc(idle);
 		
 		glutSetCursor(GLUT_CURSOR_CROSSHAIR);
 	}
@@ -96,10 +96,6 @@ void World::reCenter() {
 void World::move(double dx, double dy, double dz) { move(Vec(dx, dy, dz)); }
 void World::move(const Vec &ds) { eye+=ds; center+=ds; }
 void World::move(int d, double step) {
-	Point &eye = World::eye, &center = World::center;
-	const Vec &up = World::up;
-	double &moveSpeed = World::moveSpeed;
-
 	if (d < 0  || d > 2) return;
 	if (d==0) {
 		Vec t = ((center-eye)*up).normalize();
@@ -135,57 +131,54 @@ void World::drawAll() {
 
 
 /*  GLUT FUNC  */
-void GLfunc::idle() {
+void World::idle() {
 	glutPostRedisplay();
 }
 
-void GLfunc::display() {
-	if (World::focusState == GLUT_ENTERED)
-		World::setCursorToCenter();
+void World::display() {
+	if (focusState == GLUT_ENTERED)
+		setCursorToCenter();
 
 glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(45, (double)World::windowWidth/World::windowHeight, 0.1, 500);
+	gluPerspective(45, (double)windowWidth/windowHeight, 0.1, 500);
 
 
 glMatrixMode(GL_MODELVIEW);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
-	Point eye = World::eye, center = World::center;
-	Vec up = World::up;
 	gluLookAt(eye[0], eye[1], eye[2],
 		center[0], center[1], center[2],
 		up[0], up[1], up[2]);
 
-	World::drawAll();
+	drawAll();
 
 	glutSwapBuffers();
 }
 
-void GLfunc::keyboard(unsigned char key, int x, int y) {
-	double &moveSpeed = World::moveSpeed;
+void World::keyboard(unsigned char key, int x, int y) {
 	const double moveStep = 1;
 	const double rotateStep = 8;
 
 	switch (key) {
 	case 27: exit(0);
 	case 'a': case 'A':  //出现图形变扁的原因可能是我的这种移动一个像素转某个角度的逻辑有问题
-		World::move(0, -moveStep);
+		move(0, -moveStep);
 		break;
 	case 'd': case 'D':
-		World::move(0,  moveStep);
+		move(0,  moveStep);
 		break;
 	case 'w': case 'W':
-		World::move(1,  moveStep);
+		move(1,  moveStep);
 		break;
 	case 's': case 'S':
-		World::move(1, -moveStep);
+		move(1, -moveStep);
 		break;
 	case 'z': case 'Z':
-		World::move(2, -moveStep);
+		move(2, -moveStep);
 		break;
 	case 'c': case 'C':
-		World::move(2, moveStep);
+		move(2, moveStep);
 		break;
 	case '-':  //速度的调整
 		moveSpeed -= 0.005;
@@ -195,16 +188,16 @@ void GLfunc::keyboard(unsigned char key, int x, int y) {
 		break;
 
 	case 'j': case 'J':  //出现图形变扁的原因可能是我的这种移动一个像素转某个角度的逻辑有问题
-		World::rotate(0, -rotateStep);
+		rotate(0, -rotateStep);
 		break;
 	case 'l': case 'L':
-		World::rotate(0,  rotateStep);
+		rotate(0,  rotateStep);
 		break;
 	case 'i': case 'I':
-		World::rotate(1,  rotateStep);
+		rotate(1,  rotateStep);
 		break;
 	case 'k': case 'K':
-		World::rotate(1, -rotateStep);
+		rotate(1, -rotateStep);
 		break;
 	//case 'f': case 'F':
 	//	autoForward = !autoForward;
@@ -223,84 +216,40 @@ void GLfunc::keyboard(unsigned char key, int x, int y) {
 }
 
 
-void gl_select(int x, int y);
-void mousedw(int x, int y, int but);
-
 //  TODO
-void GLfunc::motion(int x, int y) {
+void World::motion(int x, int y) {
 }
-void GLfunc::passiveMotion(int x, int y) {
-	if (World::focusState == GLUT_ENTERED) {
+void World::passiveMotion(int x, int y) {
+	if (focusState == GLUT_ENTERED) {
 		POINT pos; GetCursorPos(&pos);
 		x = pos.x;  y = pos.y;
-		World::elevation[0] += World::rotateSpeed * (x - World::cursorPos[0]);
-		World::elevation[1] += -World::rotateSpeed * (y - World::cursorPos[1]);
-		if (World::elevation[1] > 75) World::elevation[1] = 75;
-		if (World::elevation[1] < -75) World::elevation[1] = -75;
+		elevation[0] += rotateSpeed * (x - cursorPos[0]);
+		elevation[1] += -rotateSpeed * (y - cursorPos[1]);
+		if (elevation[1] > 75) elevation[1] = 75;
+		if (elevation[1] < -75) elevation[1] = -75;
 	
-		World::reCenter();
+		reCenter();
 		glutPostRedisplay();
 	}
 }
-void GLfunc::entry(int state) {
-	World::focusState = state;
+void World::entry(int state) {
+	focusState = state;
 	if (state == GLUT_ENTERED)
-		World::setCursorToCenter();
+		setCursorToCenter();
 }
-void GLfunc::mouseClick(int button, int state, int x, int y) {
+void World::mouseClick(int button, int state, int x, int y) {
 	if ((button == GLUT_LEFT_BUTTON) && (state == GLUT_DOWN)) {
 		mousedw(x, y, button);
 	}
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void mousedw(int x, int y, int but) {
+void World::mousedw(int x, int y, int but) {
 	//printf("Mouse button %d pressed at %d %d\n", but, x, y);
-	gl_select(x, World::windowHeight - y); //Important: gl (0,0) ist bottom left but window coords (0,0) are top left so we have to change this!
+	gl_select(x, windowHeight - y); //Important: gl (0,0) ist bottom left but window coords (0,0) are top left so we have to change this!
 }
 
-void gl_select(int x, int y) {
+void World::gl_select(int x, int y) {
 	GLuint buff[4096] = { 0 };
 	GLint hits, view[4];
 
@@ -327,7 +276,7 @@ void gl_select(int x, int y) {
 	//pretend to draw the objects onto the screen
 	glMatrixMode(GL_MODELVIEW);
 	glutSwapBuffers();
-	World::drawAll();
+	drawAll();
 
 	//restore the view
 	glMatrixMode(GL_PROJECTION);
@@ -346,10 +295,10 @@ void gl_select(int x, int y) {
 				depth = buff[i * 4 + 1];
 			}
 		}
-		World::chosenID = choose;
+		chosenID = choose;
 	}
-	else World::chosenID = -1;
-	cout<<hits<<" "<<World::chosenID<<endl;
+	else chosenID = -1;
+	cout<<hits<<" "<<chosenID<<endl;
 
 	glMatrixMode(GL_MODELVIEW);
 }
