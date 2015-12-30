@@ -5,7 +5,7 @@
 /*  BasicElement  */
 BasicElement::BasicElement() {
 	id = World::getNextId(this);
-	this->rotateMat = ::rotateMat(0, 0, 1, 0);
+	//this->rotateMat = ::rotateMat(0, 0, 1, 0);
 	scaleValue = Vec(1, 1, 1);
 }
 BasicElement::~BasicElement() {
@@ -19,7 +19,7 @@ void BasicElement::draw() {
 	glPushMatrix();
 		glLoadName(id);
 		glTranslated(centroid[0], centroid[1], centroid[2]);
-		glMultMatrixd(rotateMat);
+		glMultMatrixd((GLMat)rotateQuat);  //glMultMatrixd(rotateMat);
 		glScaled(scaleValue[0], scaleValue[1], scaleValue[2]);
 		drawNaive();  //父类函数调用子类的函数??可以！
 		glLoadName(0);
@@ -29,10 +29,12 @@ void BasicElement::drawNaive() {}
 
 
 void BasicElement::rotate(double angle, double x, double y, double z) {  //TODO  貌似会出现万向节死锁问题，还是尽量用下面那个函数吧
-	rotateMat = ::rotateMat(angle, x, y, z) * rotateMat;
+	//rotateMat = ::rotateMat(angle, x, y, z) * rotateMat;
+	rotateQuat = ::rotateQuat(angle, x, y, z) * rotateQuat;
 }
 void BasicElement::rotateTo(double angle, double x, double y, double z) {
-	rotateMat = ::rotateMat(angle, x, y, z);
+	//rotateMat = ::rotateMat(angle, x, y, z);
+	rotateQuat = ::rotateQuat(angle, x, y, z);
 }
 void BasicElement::move(double dx, double dy, double dz) {
 	centroid += Vec(dx, dy, dz);

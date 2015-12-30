@@ -22,7 +22,8 @@ void define() {
 	new Sphere(Point(10, -2, -4));  //球
 	new Cone(Point(10, -2, -2));  //圆锥
 	new Circle(Point(10, -2, 2));  //圆
-	(new Cylinder(Point(10, -2, 0)))->rotateTo(45, 0, 0, 1);  //圆柱
+	Cylinder *cc = new Cylinder(Point(10, -2, 0));  //圆柱
+	cc->rotateTo(45, 0, 0, 1);
 }
 int main(int argc, char *argv[]) {
 	World::init(&argc, argv);
@@ -43,6 +44,7 @@ int main(int argc, char *argv[]) {
 		glLightfv(GL_LIGHT0, GL_AMBIENT, COLOR::white);
 		glEnable(GL_LIGHT0);  //light0只是用做示例
 	}
+
 
 
 

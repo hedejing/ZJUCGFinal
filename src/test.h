@@ -14,5 +14,14 @@ void test1() {
 		glMultMatrixd(rotateMat(45, -5, 10, 0));
 		glGetDoublev(GL_MODELVIEW_MATRIX, mat);
 		for (int i=0; i<16; i++) cout<<mat[i]<<char(i%4==3?10:32);
+
+
+		cout<<endl;
+
+		glLoadIdentity();
+		GLMat matt = rotateQuat(45, -5, 10, 0);
+		glMultMatrixd(matt);
+		glGetDoublev(GL_MODELVIEW_MATRIX, mat);
+		for (int i=0; i<16; i++) cout<<mat[i]<<char(i%4==3?10:32);
 	glPopMatrix();
 }

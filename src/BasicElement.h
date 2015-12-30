@@ -10,7 +10,7 @@ private:
 
 public:
 	Point centroid;  //ÌוÐÄ
-	GLMat rotateMat;
+	Quat rotateQuat;  //GLMat rotateMat;
 	Vec scaleValue;
 	BasicElement();
 	virtual ~BasicElement();

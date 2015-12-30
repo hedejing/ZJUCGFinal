@@ -64,6 +64,7 @@ Point operator+(const Point &a, const Vec &b) { return Point(a[0]+b[0], a[1]+b[1
 Vec operator+(const Vec &a, const Vec &b) { return Vec(a[0]+b[0], a[1]+b[1], a[2]+b[2]); }
 Point &operator+=(Point &a, const Vec &b) { return a = a+b; }
 Vec operator*(const Vec &a, const Vec &b) { return Vec(a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]); }
+double operator%(const Vec &a, const Vec &b) { return a[0]*b[0] + a[1]*b[1] + a[2]*b[2]; }
 Vec operator*(Vec a, double t) { return Vec(a[0]*t, a[1]*t, a[2]*t); }
 Vec operator*(double t, Vec a) { return a*t; }
 Vec operator/(Vec a, double t) { return Vec(a[0]/t, a[1]/t, a[2]/t); }
@@ -124,6 +125,48 @@ GLMat rotateMat(double angle, double x, double y, double z) {
 		{0, 0, 0, 1}
 	};
 	return GLMat(mat);
+}
+
+
+
+
+/*  Quat(ËÄÔªÊý)  */
+Quat::Quat():w(0),x(0),y(0),z(0) {}
+Quat::Quat(GLdouble w,GLdouble x,GLdouble y,GLdouble z):w(w),x(x),y(y),z(z) {}
+Quat::Quat(GLdouble w, Vec v):w(w),x(v[0]),y(v[1]),z(v[2]) {}
+Vec Quat::vec() { return Vec(x,y,z); }
+GLdouble Quat::sqr() { return w*w+x*x+y*y+z*z; }
+GLdouble Quat::norm() { return sqrt(sqr()); }
+Quat Quat::normalize() { return *this/(*this).norm(); }
+Quat::operator GLMat() {
+	double mat[4][4] = {
+		{1-2*(y*y+z*z), 2*(x*y-z*w), 2*(x*z+y*w), 0},
+		{2*(x*y+z*w), 1-2*(x*x+z*z), 2*(y*z-x*w), 0},
+		{2*(x*z-y*w), 2*(y*z+x*w), 1-2*(x*x+y*y), 0},
+		{0, 0, 0, 1}
+	};
+	return GLMat(mat).transpose();
+}
+
+Quat operator+(Quat a, Quat b) {
+	return Quat(a.w+b.w, a.vec()+b.vec());
+}
+Quat operator*(Quat a, Quat b) {
+	return Quat(
+		a.w*b.w - a.vec()%b.vec(),
+		a.w*b.vec() + b.w*a.vec() + a.vec()*b.vec()
+	);
+}
+Quat operator/(Quat a,GLdouble d) {
+	return Quat(a.w/d, a.vec()/d);
+}
+Quat Quat::operator~() {  //Äæ
+	return Quat(w, -Vec(x,y,z))/sqr();
+}
+Quat rotateQuat(double angle, double x, double y, double z) {
+	angle = angle * M_PI / 180;
+	Vec n = Vec(x, y, z).normalize();
+	return Quat(cos(angle/2), n*sin(angle/2)).normalize();
 }
 
 

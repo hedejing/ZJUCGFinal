@@ -53,6 +53,7 @@ Vec operator-(const Point &a, const Point &b);  //此函数没有考虑w参数
 Vec operator-(const Vec &a, const Vec &b);  //此函数没有考虑w参数
 Vec operator+(const Vec &a, const Vec &b);
 Vec operator*(const Vec &a, const Vec &b);
+double operator%(const Vec &a, const Vec &b);
 Vec operator*(Vec a, double t);
 Vec operator*(double t, Vec a);
 Vec operator/(Vec a, double t);
@@ -76,8 +77,29 @@ struct GLMat {
 
 	friend ostream &operator<<(ostream &out, GLMat a);
 };
-GLMat rotateMat(GLdouble angle, GLdouble x, GLdouble y, GLdouble z);
+GLMat rotateMat(double angle, double x, double y, double z);
 
+
+
+
+/*  Quat  */
+
+struct Quat {
+	double w, x, y, z;
+	Quat();
+	Quat(double w,double x,double y,double z);
+	Quat(double w, Vec v);
+	Vec vec();
+	double sqr();
+	double norm();
+	Quat normalize();
+	operator GLMat();
+	friend Quat operator+(Quat a, Quat b);
+	friend Quat operator*(Quat a, Quat b);
+	friend Quat operator/(Quat a,double d) ;
+	Quat operator~();
+};
+Quat rotateQuat(double angle, double x, double y, double z);
 
 
 
