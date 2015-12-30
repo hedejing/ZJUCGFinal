@@ -11,7 +11,7 @@ using namespace std;
 
 #pragma comment (lib, "glew32.lib")
 
-
+/*  Point and Vec  */
 struct Point {
 	double t[4];
 	Point();
@@ -45,9 +45,9 @@ struct Vec {
 	
 	friend ostream &operator<<(ostream &out, Vec a);
 };
+
 Point &operator+=(Point &a, const Vec &b);
 Point operator+(const Point &a, const Vec &b);
-
 
 Vec operator-(const Point &a, const Point &b);  //此函数没有考虑w参数
 Vec operator-(const Vec &a, const Vec &b);  //此函数没有考虑w参数
@@ -59,6 +59,30 @@ Vec operator/(Vec a, double t);
 
 
 
+
+/*  GLMat  */
+struct GLMat {
+	double a[4][4];
+	GLMat();
+	GLMat(double d);
+	GLMat(double t[4][4]);
+	double *operator[](int d);
+	Vec operator()(int d);
+	operator double *();
+	GLMat transpose();
+
+	GLMat operator*(const GLMat &t) const;
+	GLMat &operator*=(GLMat t);
+
+	friend ostream &operator<<(ostream &out, GLMat a);
+};
+GLMat rotateMat(GLdouble angle, GLdouble x, GLdouble y, GLdouble z);
+
+
+
+
+
+/*  COLOR  */
 namespace COLOR {
 	float white[];
 	float blue[];
@@ -71,6 +95,7 @@ int stringToInt(string s);  //只支持正数
 
 
 const double M_PI = 3.1415926535897932384;
+
 
 
 #endif

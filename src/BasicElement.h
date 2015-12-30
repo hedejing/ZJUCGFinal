@@ -10,6 +10,7 @@ private:
 
 public:
 	Point centroid;  //体心
+	GLMat rotateMat;
 	Vec scaleValue;
 	BasicElement();
 	virtual ~BasicElement();
@@ -26,7 +27,10 @@ public:
 	/*  此函数的使用类似glRotate函数的使用，只不过它可以多次叠加使用。
 		(就是rotate(90, 1, 1, 1)和rotate(100, 1, 0, 1)这两个旋转操作可以叠加)
 		另外，此函数的angle参数为角度制                                        */
-	void rotate(double angle, double x, double y, double z);
+	void rotate(double angle, double x, double y, double z);  //这个函数貌似会出现万向节死锁问题，还是尽量用下面那个函数吧
+
+	/*  此函数每次以初始状态为基准，使物体绕着某个向量旋转angle角度  */
+	void rotateTo(double angle, double x, double y, double z);
 
 	/*  相对位移函数  */
 	void move(double dx, double dy, double dz); 
