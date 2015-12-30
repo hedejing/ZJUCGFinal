@@ -29,7 +29,7 @@ void BasicElement::drawNaive() {}
 
 
 void BasicElement::rotate(double angle, double x, double y, double z) {  //TODO  貌似会出现万向节死锁问题，还是尽量用下面那个函数吧
-	rotateMat = rotateMat * ::rotateMat(angle, x, y, z);
+	rotateMat = ::rotateMat(angle, x, y, z) * rotateMat;
 }
 void BasicElement::rotateTo(double angle, double x, double y, double z) {
 	rotateMat = ::rotateMat(angle, x, y, z);
