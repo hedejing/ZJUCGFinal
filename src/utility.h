@@ -110,6 +110,13 @@ namespace COLOR {
 	float blue[];
 };
 
+struct Color {
+	float t[4];
+	Color(double r, double g, double b);
+	Color(double r, double g, double b, double w);
+	operator float *();
+};
+
 
 string intToString(int a);
 int stringToInt(string s);  //只支持正数

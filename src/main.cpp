@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
 	{  //LIGHTING
 		GLfloat lightPos0[] = {5,5,5,1};
 		glLightfv(GL_LIGHT0, GL_POSITION, lightPos0);
-		glLightfv(GL_LIGHT0, GL_AMBIENT, COLOR::white);
+		glLightfv(GL_LIGHT0, GL_AMBIENT, Color(1, 1, 1));//COLOR::white);
 		glEnable(GL_LIGHT0);  //light0只是用做示例
 	}
 

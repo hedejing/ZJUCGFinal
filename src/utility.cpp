@@ -178,6 +178,22 @@ float COLOR::white[] = {1, 1, 1, 1};
 float COLOR::blue[] = {0, 0, 1, 1};
 
 
+Color::Color(double r, double g, double b) {
+	t[0] = r;
+	t[1] = g;
+	t[2] = b;
+	t[3] = 1;
+}
+Color::Color(double r, double g, double b, double w) {
+	t[0] = r;
+	t[1] = g;
+	t[2] = b;
+	t[3] = w;
+}
+Color::operator float *() {
+	return t;
+}
+
 
 
 /*  EXTRA FUNCTIONS  */
