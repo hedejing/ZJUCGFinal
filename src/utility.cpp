@@ -41,6 +41,13 @@ Vec::Vec(double a, double b, double c, double w) {
 	t[2] = c;
 	t[3] = w;
 }
+//Vec::Vec(const Point & p)
+//{
+//	t[0] = p[0];
+//	t[1] = p[1];
+//	t[2] = p[2];
+//	t[3] = p[3];
+//}
 double Vec::getX() { return t[0]; }
 double Vec::getY() { return t[1]; }
 double Vec::getZ() { return t[2]; }

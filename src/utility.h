@@ -31,6 +31,8 @@ struct Vec {
 	Vec();
 	Vec(double a, double b, double c);
 	Vec(double a, double b, double c, double w);
+	// hedejin : add a implict conversion
+	//Vec(const Point& p);
 	double getX();
 	double getY();
 	double getZ();
@@ -118,6 +120,7 @@ namespace COLOR {
 
 struct Color {
 	float t[4];
+	Color() {}
 	Color(double r, double g, double b);
 	Color(double r, double g, double b, double w);
 	operator float *();
