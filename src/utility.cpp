@@ -77,6 +77,7 @@ ostream &operator<<(ostream &out, Vec a) { return out<<a[0]<<" "<<a[1]<<" "<<a[2
 
 
 /*  GLMat  */
+const double GLMat::EPS = 1e-15;
 GLMat::GLMat() { GLMat(1); }
 GLMat::GLMat(double d) { memset(a, 0, sizeof(a)); for (int i=0; i<4; i++) a[i][i]=d; }
 GLMat::GLMat(double t[4][4]) {
@@ -92,13 +93,36 @@ GLMat GLMat::transpose() {
 		for (int j=0; j<4; j++) ret[i][j] = t[j][i];
 	return ret;
 }
+GLMat GLMat::affineInverse() {  //要保证左上角3*3的矩阵是正交矩阵
+	//GLMat ret;
+	//for (int i=0; i<3; i++) for (int j=0; j<3; j++)
+	//	ret[i][j] = a[j][i];
+	//Vec tmp = -(1.0/a[3][3])*Vec(a[3][0],a[3][1],a[3][2]);
+	//ret[3][0] = tmp%Vec(ret[0][0],ret[1][0],ret[2][0]);
+	//ret[3][1] = tmp%Vec(ret[0][1],ret[1][1],ret[2][1]);
+	//ret[3][2] = tmp%Vec(ret[0][2],ret[1][2],ret[2][2]);
+	//ret[3][3] = 1;
+	//return ret;
+	GLMat t=(*this).transpose(), ret = GLMat(0.0);
+	for (int i=0; i<3; i++) for (int j=0; j<3; j++)
+		ret[i][j] = t[j][i];
+	Vec RT = Vec(t[0][3], t[1][3], t[2][3]);
+	ret[0][3] = - Vec(t[0][0], t[1][0], t[2][0]) % RT / t[3][3];
+	ret[1][3] = - Vec(t[0][1], t[1][1], t[2][1]) % RT / t[3][3];
+	ret[2][3] = - Vec(t[0][2], t[1][2], t[2][2]) % RT / t[3][3];
+	ret[3][3] = 1 / t[3][3];
+	//for (int i=0; i<4; i++) for (int j=0; j<4; j++) {
+	//	if (fabs(int(ret[i][j])-ret[i][j])<EPS) ret[i][j]=int(ret[i][j]);
+	//	if (fabs(int(ret[i][j]+1)-ret[i][j])<EPS) ret[i][j]=int(ret[i][j]);
+	//}
+	return ret.transpose();
+}
 GLMat GLMat::operator*(const GLMat &t) const {  //可能需要改一下(这个改了后面的也要改)
 	GLMat a=*this, b=t;
 	GLMat c = GLMat(0.0);
 	a=a.transpose(); b=b.transpose();
 	for (int i=0; i<4; i++) for (int j=0; j<4; j++)
 		for (int k=0; k<4; k++) c[i][j] += a[i][k]*b[k][j];
-	const double EPS = 1e-14;
 	for (int i=0; i<4; i++) for (int j=0; j<4; j++) {
 		if (fabs(int(c[i][j])-c[i][j])<EPS) c[i][j]=int(c[i][j]);
 		if (fabs(int(c[i][j]+1)-c[i][j])<EPS) c[i][j]=int(c[i][j]);

@@ -54,3 +54,11 @@ void test2() {
 		for (int i=0; i<16; i++) cout<<mat[i]<<char(i%4==3?10:32);
 	glPopMatrix();
 }
+
+void test3() {
+	GLMat mat = lookAtMat(1,100,1, 2,2,3, 20,1,0);
+	cout<<mat<<endl;
+	cout<<mat.affineInverse()<<endl;
+	cout<<mat.affineInverse()*mat<<endl;
+	cout<<mat*mat.affineInverse()<<endl;
+}

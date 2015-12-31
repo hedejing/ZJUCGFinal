@@ -65,6 +65,7 @@ Vec operator/(Vec a, double t);
 /*  GLMat  */
 struct GLMat {
 	double a[4][4];
+	static const double EPS;
 	GLMat();
 	GLMat(double d);
 	GLMat(double t[4][4]);
@@ -72,6 +73,7 @@ struct GLMat {
 	Vec operator()(int d);
 	operator double *();
 	GLMat transpose();
+	GLMat affineInverse();
 
 	GLMat operator*(const GLMat &t) const;
 	GLMat &operator*=(GLMat t);
