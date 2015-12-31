@@ -52,6 +52,7 @@ Point operator+(const Point &a, const Vec &b);
 Vec operator-(const Point &a, const Point &b);  //此函数没有考虑w参数
 Vec operator-(const Vec &a, const Vec &b);  //此函数没有考虑w参数
 Vec operator+(const Vec &a, const Vec &b);
+Vec operator-(const Vec &a, const Vec &b);
 Vec operator*(const Vec &a, const Vec &b);
 double operator%(const Vec &a, const Vec &b);
 Vec operator*(Vec a, double t);
@@ -78,7 +79,10 @@ struct GLMat {
 	friend ostream &operator<<(ostream &out, GLMat a);
 };
 GLMat rotateMat(double angle, double x, double y, double z);
-
+GLMat translateMat(double x, double y, double z);
+GLMat lookAtMat(Vec eye, Vec center, Vec up);
+GLMat lookAtMat(double eyex, double eyey, double eyez, double centerx, double centery, double centerz,  double upx, double upy, double upz);
+GLMat perspectiveMat(double fovy, double aspect, double zNear, double zFar);
 
 
 

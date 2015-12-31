@@ -62,6 +62,7 @@ Vec Vec::operator-() { return Vec(-t[0], -t[1], -t[2]); }
 Vec operator-(const Point &a, const Point &b) {	return Vec(a[0]-b[0], a[1]-b[1], a[2]-b[2]); }
 Point operator+(const Point &a, const Vec &b) { return Point(a[0]+b[0], a[1]+b[1], a[2]+b[2]); }
 Vec operator+(const Vec &a, const Vec &b) { return Vec(a[0]+b[0], a[1]+b[1], a[2]+b[2]); }
+Vec operator-(const Vec &a, const Vec &b) { return Vec(a[0]-b[0], a[1]-b[1], a[2]-b[2]); }
 Point &operator+=(Point &a, const Vec &b) { return a = a+b; }
 Vec operator*(const Vec &a, const Vec &b) { return Vec(a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]); }
 double operator%(const Vec &a, const Vec &b) { return a[0]*b[0] + a[1]*b[1] + a[2]*b[2]; }
@@ -126,7 +127,46 @@ GLMat rotateMat(double angle, double x, double y, double z) {
 	};
 	return GLMat(mat);
 }
-
+GLMat translateMat(GLdouble x, GLdouble y, GLdouble z) {  //以世界坐标系为参考坐标系
+	GLdouble mat[4][4] = {
+		{1, 0, 0, 0},
+		{0, 1, 0, 0},
+		{0, 0, 1, 0},
+		{x, y, z, 1}
+	};
+	return GLMat(mat);
+}
+GLMat lookAtMat(Vec eye, Vec center, Vec up) {
+	Vec n = (-(center-eye)).normalize();
+	Vec u = (up*n).normalize();
+	Vec v = n*u;
+	double mat[4][4] = {
+		{u[0], v[0], n[0], 0},
+		{u[1], v[1], n[1], 0},
+		{u[2], v[2], n[2], 0},
+		{-u%eye, -v%eye, -n%eye, 1}
+	};
+	return GLMat(mat);
+}
+GLMat lookAtMat(
+    double eyex, double eyey, double eyez,
+    double centerx, double centery, double centerz, 
+    double upx, double upy, double upz)
+{
+	Vec eye(eyex, eyey, eyez), center(centerx, centery, centerz), up(upx, upy, upz);
+	return lookAtMat(eye, center, up);
+}
+GLMat perspectiveMat(double fovy, double aspect, double zNear, double zFar) {
+	double top = zNear*tan(fovy/2/180*M_PI), bottom = -top;
+	double right = top*aspect, left = -right;
+	double mat[4][4] = {
+		{ 2*zNear/(right-left),                         0,                          0,                          0},
+		{                    0,  2*zNear / (top - bottom),                          0,                          0},
+		{                    0,                         0, -(zFar+zNear)/(zFar-zNear),                         -1},
+		{                    0,                         0, -2*zFar*zNear/(zFar-zNear),                          0}
+	};
+	return GLMat(mat);
+}
 
 
 
