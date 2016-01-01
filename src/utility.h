@@ -7,6 +7,7 @@
 #include <cmath>
 #include <GL/glew.h>
 #include <GL/glut.h>
+#include <Windows.h>
 using namespace std;
 
 #pragma comment (lib, "glew32.lib")
@@ -130,12 +131,13 @@ struct Color {
 };
 
 
+const double M_PI = 3.1415926535897932384;
 string intToString(int a);
 int stringToInt(string s);  //只支持正数
+SYSTEMTIME getCurrentTime();
+long long calTimeDis(SYSTEMTIME pret, SYSTEMTIME t);
 
 
-
-const double M_PI = 3.1415926535897932384;
 
 
 

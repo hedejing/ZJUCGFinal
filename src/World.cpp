@@ -26,6 +26,7 @@ double World::zoomFactor = 1, World::zoomSpeed = 0.005;
 
 unsigned int World::chosenID = -1;
 int World::gameMode = 0;
+int World::gameModeNum = 2;
 
 void (*World::_display)() = NULL;
 
@@ -176,7 +177,6 @@ void World::display() {
 	if (focusState == GLUT_ENTERED)
 		setCursorToCenter();
 
-	cout<<center<<endl;
 	//glMatrixMode(GL_PROJECTION);
 	//glLoadIdentity();
 	//perspective();  //gluPerspective(45, (double)windowWidth / windowHeight, 0.1, 500);
@@ -269,7 +269,7 @@ void World::special(int key, int x, int y) {
 		grabScreen();
 		break;
 	case GLUT_KEY_F12:
-		//..
+		(++gameMode) %= gameModeNum;
 		break;
 	default:
 		break;
@@ -282,7 +282,7 @@ void World::motion(int x, int y) {
 	Point pcenter;
 	if (focusState == GLUT_ENTERED) {
 		switch (mouseState[0]*4+mouseState[1]*2+mouseState[2]) {
-		/*  orbit  */    //??
+		/*  orbit  */
 		case 3:  //×ó¼ü
 			GetCursorPos(&pos);
 			x = pos.x;  y = pos.y;
@@ -295,7 +295,6 @@ void World::motion(int x, int y) {
 			reCenter();
 			eye = eye + (pcenter - center);
 			center = pcenter;
-			cout<<eye<<" "<<center<<endl;
 			break;
 
 		/*  zoom  */

@@ -286,3 +286,14 @@ int stringToInt(string s) {  //只支持正数
 	}
 	return ret;
 }
+SYSTEMTIME getCurrentTime() {
+	SYSTEMTIME time;
+	GetLocalTime(&time);
+	return time;
+}
+long long timeToLongLong(SYSTEMTIME t) {
+	return (((((t.wYear*12ll+t.wMonth)*31+t.wDay)*24+t.wHour)*60+t.wMinute)*60+t.wSecond)*1000+t.wMilliseconds;
+}
+long long calTimeDis(SYSTEMTIME pret, SYSTEMTIME t) {
+	return timeToLongLong(t) - timeToLongLong(pret);
+}

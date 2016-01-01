@@ -40,6 +40,7 @@ public:
 
 	/*  游戏模式：0，上帝模式；1，游戏模式  */
 	static int gameMode;
+	static int gameModeNum;
 
 
 	/*  初始化函数  */
