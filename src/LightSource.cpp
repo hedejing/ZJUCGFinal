@@ -171,7 +171,7 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	// hedjin : value of near must be 1.0 !!! 
-	gluPerspective(90, (double)windowWidth / windowHeight, 1.0f, 1.0e10f);
+	World::perspective();  //gluPerspective(90, (double)windowWidth / windowHeight, 1.0f, 1.0e10f);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	Point localeye = lights[0].position;
@@ -188,7 +188,7 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 		shadowMatV[i] = lookAtMat(LightManager::lights[i].position, Point(0, 0, 0), World::up);
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		gluPerspective(90, (double)World::windowWidth / World::windowHeight, 1.0f, 1.0e10f);// hedjin : value of near must be 1.0 !!! 
+		World::perspective();  //gluPerspective(90, (double)World::windowWidth / World::windowHeight, 1.0f, 1.0e10f);// hedjin : value of near must be 1.0 !!! 
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 		Point localeye = LightManager::lights[0].position;
@@ -256,9 +256,7 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(World::eye[0], World::eye[1], World::eye[2],
-		World::center[0], World::center[1], World::center[2],
-		World::up[0], World::up[1], World::up[2]);
+	World::lookAt();
 	draw_world();
 
 	//2 点光源
@@ -274,9 +272,10 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 #ifdef SINGEL_LIGHT
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(eye[0], eye[1], eye[2],
-		center[0], center[1], center[2],
-		up[0], up[1], up[2]);
+	World::lookAt();
+	//gluLookAt(eye[0], eye[1], eye[2],
+	//	center[0], center[1], center[2],
+	//	up[0], up[1], up[2]);
 	Point p = lights[0].position;
 	GLfloat lightpos[] = { p[0], p[1], p[2], p[3] };
 	glLightfv(GL_LIGHT0, GL_POSITION, lightpos); // 位置式光源
@@ -295,9 +294,7 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 		glBindTexture(GL_TEXTURE_2D, LightManager::shadowStuff.tex_shadow[i]);
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
-		gluLookAt(World::eye[0], World::eye[1], World::eye[2],
-			World::center[0], World::center[1], World::center[2],
-			World::up[0], World::up[1], World::up[2]);
+		World::lookAt();
 		double bias[4][4] = {
 			{ 0.5, 0.0, 0.0, 0.0 },
 			{ 0.0, 0.5, 0.0, 0.0 },
@@ -315,9 +312,7 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
-		gluLookAt(World::eye[0], World::eye[1], World::eye[2],
-			World::center[0], World::center[1], World::center[2],
-			World::up[0], World::up[1], World::up[2]);
+		World::lookAt();
 
 		//enable light
 		Point p = LightManager::lights[i].position;
@@ -328,9 +323,7 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 		glActiveTexture(GL_TEXTURE0); glEnable(GL_TEXTURE_2D);
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
-		gluLookAt(World::eye[0], World::eye[1], World::eye[2],
-			World::center[0], World::center[1], World::center[2],
-			World::up[0], World::up[1], World::up[2]);
+		World::lookAt();
 		draw_world();
 		glDisable(GL_TEXTURE_2D);
 		glDisable(GL_LIGHT0 + i);

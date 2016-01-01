@@ -10,6 +10,8 @@
 using namespace std;
 
 #pragma comment (lib, "glew32.lib")
+#define  GLUT_WHEEL_UP 3           //¶¨Òå¹öÂÖ²Ù×÷  
+#define  GLUT_WHEEL_DOWN 4  
 
 /*  Point and Vec  */
 struct Point {

@@ -56,6 +56,7 @@ void draw_world()
 }
 int main(int argc, char *argv[]) {
 	World::init(&argc, argv);
+	World::setCamera(Point(-10, 10, 10), Point(0, 0, 0));
 	//可以在这里使用glutIdleFunc();对idle进行重写
 	//若要对鼠标和键盘函数进行重写，建议在World.cpp里修改
 	
@@ -102,8 +103,6 @@ int main(int argc, char *argv[]) {
 		glEnable(GL_LIGHT2);
 	}
 
-	World::eye = Point(-10, 10, 10);
-	World::center = Point(0, 0, 0);
 	glutMainLoop();
 	return 0;
 }

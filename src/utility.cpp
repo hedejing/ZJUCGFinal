@@ -78,8 +78,8 @@ Vec operator*(Vec a, double t) { return Vec(a[0]*t, a[1]*t, a[2]*t); }
 Vec operator*(double t, Vec a) { return a*t; }
 Vec operator/(Vec a, double t) { return Vec(a[0]/t, a[1]/t, a[2]/t); }
 
-ostream &operator<<(ostream &out, Point a) { return out<<a[0]<<" "<<a[1]<<" "<<a[2]; }
-ostream &operator<<(ostream &out, Vec a) { return out<<a[0]<<" "<<a[1]<<" "<<a[2]; }
+ostream &operator<<(ostream &out, Point a) { return out<<"[ "<<a[0]<<" "<<a[1]<<" "<<a[2]<<" ]"; }
+ostream &operator<<(ostream &out, Vec a) { return out<<"[ "<<a[0]<<" "<<a[1]<<" "<<a[2]<<" ]"; }
 
 
 

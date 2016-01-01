@@ -22,11 +22,16 @@ const Vec World::up = Vec(0, 1, 0);
 double World::elevation[2] = { 0.0, 0.0 };
 double World::moveSpeed = 0.4;
 double World::rotateSpeed = 0.1;
-double World::zoomFactor = 1;
+double World::zoomFactor = 1, World::zoomSpeed = 0.005;
 
 unsigned int World::chosenID = -1;
+int World::gameMode = 0;
 
 void (*World::_display)() = NULL;
+
+int World::mouseState[3] = {GLUT_UP, GLUT_UP, GLUT_UP};
+
+
 
 
 unsigned int World::getNextId() {
@@ -97,7 +102,14 @@ void World::setCursorToCenter() {
 void World::reCenter() {
 	const double M_PI = 3.14159265358979323846;
 	double theta = elevation[0] * M_PI / 180, fi = elevation[1] * M_PI / 180;
-	center = eye + Vec(cos(fi)*cos(theta), sin(fi), cos(fi)*sin(theta));
+	Vec t = center - eye;
+	center = eye + Vec(cos(fi)*cos(theta), sin(fi), cos(fi)*sin(theta))*t.abs();
+}
+void World::setCamera(Point _eye, Point _center) {
+	eye = _eye;  center = _center;
+	Vec t = center - eye;
+	elevation[0] = atan2(t[2], t[0]) * 180 / M_PI;
+	elevation[1] = atan2(t[1], hypot(t[0], t[2])) * 180 / M_PI;
 }
 void World::move(double dx, double dy, double dz) { move(Vec(dx, dy, dz)); }
 void World::move(const Vec &ds) { eye += ds; center += ds; }
@@ -118,6 +130,13 @@ void World::move(int d, double step) {
 		center += step * moveSpeed * up;
 	}
 }
+void World::_move(double dx, double dy) {
+	Vec up = Vec(0,1,0);
+	Vec t = -(up*(center-eye)).normalize()*dx*0.1;
+	eye += moveSpeed*t; center += moveSpeed*t;
+	t = -up*dy*0.1;
+	eye += moveSpeed*t; center += moveSpeed*t;
+}
 void World::rotate(double angle, double x, double y, double z) {}
 void World::rotate(int d, double step) {
 	if (d < 0 || d > 1) return;
@@ -128,10 +147,25 @@ void World::rotate(int d, double step) {
 
 	reCenter();
 }
+void World::zoom(double d) {
+	zoomFactor += zoomSpeed * d;
+	if (zoomFactor > 3.5) zoomFactor = 3.5;
+	if (zoomFactor < 0.1) zoomFactor = 0.1;
+}
+
 void World::drawAll() {
 	for (auto o : objects) o.second->draw();
 	if (_display != NULL) _display();
 }
+
+/*  GLU FUNC  */
+void World::perspective() {
+	gluPerspective(45*zoomFactor, (double)windowWidth / windowHeight, 0.1, 1000);
+}
+void World::lookAt() {
+	gluLookAt(eye[0], eye[1], eye[2],  center[0], center[1], center[2],  up[0], up[1], up[2]);
+}
+
 
 /*  GLUT FUNC  */
 void World::idle() {
@@ -142,9 +176,10 @@ void World::display() {
 	if (focusState == GLUT_ENTERED)
 		setCursorToCenter();
 
+	cout<<center<<endl;
 	//glMatrixMode(GL_PROJECTION);
 	//glLoadIdentity();
-	//gluPerspective(45, (double)windowWidth / windowHeight, 0.1, 500);
+	//perspective();  //gluPerspective(45, (double)windowWidth / windowHeight, 0.1, 500);
 
 	//glMatrixMode(GL_MODELVIEW);
 	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -160,7 +195,7 @@ void World::display() {
 
 	{
 		int err = glGetError();
-		if (err != GL_NO_ERROR) printf("%d: %s\n", err, (char *)glewGetErrorString(err));
+		//if (err != GL_NO_ERROR) printf("%d: %s\n", err, (char *)glewGetErrorString(err));
 		//1281:  #define GL_INVALID_VALUE 0x0501
 	}
 }
@@ -169,7 +204,7 @@ void World::display() {
 
 
 
-
+//  下面函数修改后，请在README.md中注明
 void World::keyboard(unsigned char key, int x, int y) {
 	const double moveStep = 1;
 	const double rotateStep = 8;
@@ -233,6 +268,9 @@ void World::special(int key, int x, int y) {
 	case GLUT_KEY_F1:
 		grabScreen();
 		break;
+	case GLUT_KEY_F12:
+		//..
+		break;
 	default:
 		break;
 	}
@@ -240,17 +278,61 @@ void World::special(int key, int x, int y) {
 
 //  TODO
 void World::motion(int x, int y) {
+	POINT pos;
+	Point pcenter;
+	if (focusState == GLUT_ENTERED) {
+		switch (mouseState[0]*4+mouseState[1]*2+mouseState[2]) {
+		/*  orbit  */    //??
+		case 3:  //左键
+			GetCursorPos(&pos);
+			x = pos.x;  y = pos.y;
+			elevation[0] += rotateSpeed * (x - cursorPos[0]);
+			elevation[1] += -rotateSpeed * (y - cursorPos[1]);
+			if (elevation[1] > 75) elevation[1] = 75;
+			if (elevation[1] < -75) elevation[1] = -75;
+
+			pcenter = center;
+			reCenter();
+			eye = eye + (pcenter - center);
+			center = pcenter;
+			cout<<eye<<" "<<center<<endl;
+			break;
+
+		/*  zoom  */
+		case 5:  //中键
+			GetCursorPos(&pos);
+			zoom(pos.y - cursorPos[1]);
+			break;
+
+		/*  zoom to fit  */
+		case 1:  //左键+中键
+			zoomFactor = 1;
+			break;
+
+		/*  pan  */
+		case 6:
+			GetCursorPos(&pos);
+			x = pos.x;  y = pos.y;
+			_move(x - cursorPos[0], y - cursorPos[1]);
+			break;
+		default:
+			break;
+		}
+
+		glutPostRedisplay();
+	}
 }
 void World::passiveMotion(int x, int y) {
+	POINT pos;
 	if (focusState == GLUT_ENTERED) {
-		POINT pos; GetCursorPos(&pos);
+		GetCursorPos(&pos);
 		x = pos.x;  y = pos.y;
 		elevation[0] += rotateSpeed * (x - cursorPos[0]);
 		elevation[1] += -rotateSpeed * (y - cursorPos[1]);
 		if (elevation[1] > 75) elevation[1] = 75;
 		if (elevation[1] < -75) elevation[1] = -75;
-
 		reCenter();
+
 		glutPostRedisplay();
 	}
 }
@@ -263,6 +345,8 @@ void World::mouseClick(int button, int state, int x, int y) {
 	if ((button == GLUT_LEFT_BUTTON) && (state == GLUT_DOWN)) {
 		mousedw(x, y, button);
 	}
+	mouseState[button] = state;
+	
 }
 
 
@@ -293,7 +377,7 @@ void World::gl_select(int x, int y) {
 
 	//restrict the draw to an area around the cursor
 	gluPickMatrix(x, y, 0.1, 0.1, view);
-	gluPerspective(45, 1, 1, 500);
+	perspective();  //gluPerspective(45*zoomFactor, 1, 1, 500);
 
 	//pretend to draw the objects onto the screen
 	glMatrixMode(GL_MODELVIEW);
