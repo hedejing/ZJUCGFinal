@@ -57,6 +57,7 @@ Vec operator+(const Vec &a, const Vec &b);
 Vec operator-(const Vec &a, const Vec &b);
 Vec operator*(const Vec &a, const Vec &b);
 double operator%(const Vec &a, const Vec &b);
+double operator%(const Vec &a, const Point &b);
 Vec operator*(Vec a, double t);
 Vec operator*(double t, Vec a);
 Vec operator/(Vec a, double t);
@@ -84,7 +85,7 @@ struct GLMat {
 };
 GLMat rotateMat(double angle, double x, double y, double z);
 GLMat translateMat(double x, double y, double z);
-GLMat lookAtMat(Vec eye, Vec center, Vec up);
+GLMat lookAtMat(Point eye, Point center, Vec up);
 GLMat lookAtMat(double eyex, double eyey, double eyez, double centerx, double centery, double centerz,  double upx, double upy, double upz);
 GLMat perspectiveMat(double fovy, double aspect, double zNear, double zFar);
 

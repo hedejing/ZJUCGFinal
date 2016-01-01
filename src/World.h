@@ -3,6 +3,7 @@
 
 #include <map>
 #include <deque>
+#include "LightSource.h"
 #include "BasicElement.h"
 using namespace std;
 
@@ -20,8 +21,8 @@ private:
 	static unsigned int getNextId();
 	static unsigned int getNextId(BasicElement *be);
 	static int erase(unsigned int id);
-
 public:
+
 	static int windowHandle;
 	static int windowHeight, windowWidth;
 	static int windowPos[2];
@@ -33,6 +34,7 @@ public:
 	static double elevation[2];
 	static double moveSpeed;
 	static double rotateSpeed;
+	static double zoomFactor;
 
 	static unsigned int chosenID;
 
@@ -60,6 +62,9 @@ public:
 	/*  一次性绘制所有物体  */
 	static void drawAll();
 
+	/*  外部可传入绘制函数  */
+	static void (*_display)();
+
 	friend class BasicElement;
 
 
@@ -83,6 +88,8 @@ public:
 	/*  截屏  */
 	static string scrennshotsDir;
 	static void grabScreen();
+
+
 };
 
 

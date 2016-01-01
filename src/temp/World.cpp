@@ -3,7 +3,6 @@
 #include <io.h>
 #include "World.h"
 #include "utility.h"
-#include "texture.h"
 
 
 unsigned int World::nextId = 0;
@@ -16,17 +15,17 @@ int World::windowPos[2];
 int World::cursorPos[2];
 int World::focusState;
 
-Point World::eye = Point(0, 0, 0);
-Point World::center = Point(1, 0, 0);
-const Vec World::up = Vec(0, 1, 0);
-double World::elevation[2] = { 0.0, 0.0 };
+Point World::eye = Point(0,0,0);
+Point World::center = Point(1,0,0);
+const Vec World::up = Vec(0,1,0);
+double World::elevation[2] = {0.0, 0.0};
 double World::moveSpeed = 0.4;
 double World::rotateSpeed = 0.1;
-double World::zoomFactor = 1;
 
 unsigned int World::chosenID = -1;
 
-void (*World::_display)() = NULL;
+
+
 
 
 unsigned int World::getNextId() {
@@ -66,7 +65,7 @@ void World::init(int *argc, char *argv[], int windowHeight, int windowWidth, int
 		glutMouseFunc(mouseClick);
 		glutEntryFunc(entry);
 		glutIdleFunc(idle);
-
+		
 		glutSetCursor(GLUT_CURSOR_CROSSHAIR);
 	}
 	{  //GLEW INIT
@@ -84,32 +83,28 @@ void World::init(int *argc, char *argv[], int windowHeight, int windowWidth, int
 		POINT pos; GetCursorPos(&pos);
 		cursorPos[0] = pos.x;  cursorPos[1] = pos.y;
 	}
-	{	//SHADOW INIT
-		LightManager::shadow_init();
-		glEnable(GL_BLEND);
-	}
 	//...
 }
 void World::setCursorToCenter() {
-	SetCursorPos(windowWidth / 2 + windowPos[0], windowHeight / 2 + windowPos[1]);  //TODO  这里的cursorPos并不准确
+	SetCursorPos(windowWidth/2 + windowPos[0], windowHeight/2 + windowPos[1]);  //TODO  这里的cursorPos并不准确
 }
 
 void World::reCenter() {
 	const double M_PI = 3.14159265358979323846;
-	double theta = elevation[0] * M_PI / 180, fi = elevation[1] * M_PI / 180;
+	double theta = elevation[0]*M_PI/180, fi = elevation[1]*M_PI/180;
 	center = eye + Vec(cos(fi)*cos(theta), sin(fi), cos(fi)*sin(theta));
 }
 void World::move(double dx, double dy, double dz) { move(Vec(dx, dy, dz)); }
-void World::move(const Vec &ds) { eye += ds; center += ds; }
+void World::move(const Vec &ds) { eye+=ds; center+=ds; }
 void World::move(int d, double step) {
-	if (d < 0 || d > 2) return;
-	if (d == 0) {
-		Vec t = ((center - eye)*up).normalize();
+	if (d < 0  || d > 2) return;
+	if (d==0) {
+		Vec t = ((center-eye)*up).normalize();
 		t = step * moveSpeed * t;
 		eye += t; center += t;
 	}
 	else if (d == 1) {
-		Vec t = (center - eye).normalize();
+		Vec t = (center-eye).normalize();
 		t = step * moveSpeed *t;
 		eye += t;  center += t;
 	}
@@ -120,7 +115,7 @@ void World::move(int d, double step) {
 }
 void World::rotate(double angle, double x, double y, double z) {}
 void World::rotate(int d, double step) {
-	if (d < 0 || d > 1) return;
+	if (d < 0  || d > 1) return;
 	if (d == 0) elevation[0] += rotateSpeed * step;
 	else elevation[1] += rotateSpeed * step;
 	if (elevation[1] > 75) elevation[1] = 75;
@@ -129,9 +124,12 @@ void World::rotate(int d, double step) {
 	reCenter();
 }
 void World::drawAll() {
+	//视角的设置
 	for (auto o : objects) o.second->draw();
-	if (_display != NULL) _display();
 }
+
+
+
 
 /*  GLUT FUNC  */
 void World::idle() {
@@ -142,33 +140,22 @@ void World::display() {
 	if (focusState == GLUT_ENTERED)
 		setCursorToCenter();
 
-	//glMatrixMode(GL_PROJECTION);
-	//glLoadIdentity();
-	//gluPerspective(45, (double)windowWidth / windowHeight, 0.1, 500);
-
-	//glMatrixMode(GL_MODELVIEW);
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//glLoadIdentity();
-	//gluLookAt(eye[0], eye[1], eye[2],
-	//	center[0], center[1], center[2],
-	//	up[0], up[1], up[2]);
+glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(45, (double)windowWidth/windowHeight, 0.1, 500);
 
 
-	LightManager::displayWithShadow(drawAll);
-	//drawAll();
+glMatrixMode(GL_MODELVIEW);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glLoadIdentity();
+	gluLookAt(eye[0], eye[1], eye[2],
+		center[0], center[1], center[2],
+		up[0], up[1], up[2]);
+
+	drawAll();
+
 	glutSwapBuffers();
-
-	{
-		int err = glGetError();
-		if (err != GL_NO_ERROR) printf("%d: %s\n", err, (char *)glewGetErrorString(err));
-		//1281:  #define GL_INVALID_VALUE 0x0501
-	}
 }
-
-
-
-
-
 
 void World::keyboard(unsigned char key, int x, int y) {
 	const double moveStep = 1;
@@ -180,10 +167,10 @@ void World::keyboard(unsigned char key, int x, int y) {
 		move(0, -moveStep);
 		break;
 	case 'd': case 'D':
-		move(0, moveStep);
+		move(0,  moveStep);
 		break;
 	case 'w': case 'W':
-		move(1, moveStep);
+		move(1,  moveStep);
 		break;
 	case 's': case 'S':
 		move(1, -moveStep);
@@ -205,24 +192,24 @@ void World::keyboard(unsigned char key, int x, int y) {
 		rotate(0, -rotateStep);
 		break;
 	case 'l': case 'L':
-		rotate(0, rotateStep);
+		rotate(0,  rotateStep);
 		break;
 	case 'i': case 'I':
-		rotate(1, rotateStep);
+		rotate(1,  rotateStep);
 		break;
 	case 'k': case 'K':
 		rotate(1, -rotateStep);
 		break;
-		//case 'f': case 'F':
-		//	autoForward = !autoForward;
-		//	break;
+	//case 'f': case 'F':
+	//	autoForward = !autoForward;
+	//	break;
 
-		//case ',': case '<':
-		//	REP (i, 0, 2) lightColor[1][i] -= 0.1;
-		//	break;
-		//case '.': case '>':
-		//	REP (i, 0, 2) lightColor[1][i] += 0.1;
-		//	break;
+	//case ',': case '<':
+	//	REP (i, 0, 2) lightColor[1][i] -= 0.1;
+	//	break;
+	//case '.': case '>':
+	//	REP (i, 0, 2) lightColor[1][i] += 0.1;
+	//	break;
 	default:
 		break;
 	}
@@ -249,7 +236,7 @@ void World::passiveMotion(int x, int y) {
 		elevation[1] += -rotateSpeed * (y - cursorPos[1]);
 		if (elevation[1] > 75) elevation[1] = 75;
 		if (elevation[1] < -75) elevation[1] = -75;
-
+	
 		reCenter();
 		glutPostRedisplay();
 	}
@@ -320,7 +307,7 @@ void World::gl_select(int x, int y) {
 		chosenID = choose;
 	}
 	else chosenID = -1;
-	cout << "hits: " << hits << "   ID: " << chosenID << endl;
+	cout<<"hits: "<<hits<<"   ID: "<<chosenID<<endl;
 
 	glMatrixMode(GL_MODELVIEW);
 }
@@ -401,72 +388,72 @@ void World::grabScreen(void) {  //TODO  截图时可以输出一个提示信息
 	//}
 	//times++;
 	SYSTEMTIME sys;
-	GetLocalTime(&sys);
+	GetLocalTime(&sys); 
 
-	FILE*    pWritingFile;
-	GLubyte* pPixelData;
-	GLubyte  BMP_Header[BMP_Header_Length];
-	GLint    i, j;
-	GLint    PixelDataLength;
+    FILE*    pWritingFile;
+    GLubyte* pPixelData;
+    GLubyte  BMP_Header[BMP_Header_Length];
+    GLint    i, j;
+    GLint    PixelDataLength;
 
-	// 计算像素数据的实际长度
-	i = windowWidth * 3;   // 得到每一行的像素数据长度
-	while (i % 4 != 0) ++i;
+    // 计算像素数据的实际长度
+    i = windowWidth * 3;   // 得到每一行的像素数据长度
+    while(i%4 != 0) ++i;
 
-	PixelDataLength = i * windowHeight;
+    PixelDataLength = i * windowHeight;
 
-	// 分配内存和打开文件
-	pPixelData = (GLubyte*)malloc(PixelDataLength);
-	if (pPixelData == 0) exit(0);
+    // 分配内存和打开文件
+    pPixelData = (GLubyte*)malloc(PixelDataLength);
+    if(pPixelData == 0) exit(0);
 
-	//fopen_s(&pWritingFile, (scrennshotsDir + "\\\\" + intToString(times) + ".bmp").c_str(), "wb");
+    //fopen_s(&pWritingFile, (scrennshotsDir + "\\\\" + intToString(times) + ".bmp").c_str(), "wb");
 	string s = intToString(sys.wYear) + "-" + intToString(sys.wMonth) + "-" + intToString(sys.wDay) + "-" + intToString(sys.wHour) + "-" + intToString(sys.wMinute) + "-" + intToString(sys.wSecond) + "-" + intToString(sys.wMilliseconds);
 	fopen_s(&pWritingFile, (scrennshotsDir + "\\\\" + s + ".bmp").c_str(), "wb");
-	if (pWritingFile == 0) exit(0);
+    if( pWritingFile == 0 ) exit(0);
 
-	// 读取像素
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 4);  //使得每行的像素以4的倍数对齐
-	glReadPixels(0, 0, windowWidth, windowHeight, GL_BGR_EXT, GL_UNSIGNED_BYTE, pPixelData);
+    // 读取像素
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 4);  //使得每行的像素以4的倍数对齐
+    glReadPixels(0, 0, windowWidth, windowHeight, GL_BGR_EXT, GL_UNSIGNED_BYTE, pPixelData);
 
 
-	BitMapFileHeader fileHeader;
-	fileHeader.bfType = 0x4D42;
-	fwrite(&fileHeader.bfType, sizeof(Word), 1, pWritingFile);
+		BitMapFileHeader fileHeader;
+		fileHeader.bfType = 0x4D42;
+		fwrite(&fileHeader.bfType, sizeof(Word), 1, pWritingFile);
 
-	BitMapInfoHeader infoHeader;
-	int rowBytes = (24 >> 3) * windowWidth, offset = rowBytes % 4;
-	if (offset != 0) rowBytes += offset = 4 - offset;
-	fileHeader.bfSize = windowHeight * windowWidth * 3 + 54;
-	fileHeader.bfReserved1 = fileHeader.bfReserved2 = 0;
-	fileHeader.bfOffBits = 54;
-	fwrite(&fileHeader.bfSize, sizeof(DWord) * 3, 1, pWritingFile);
+		BitMapInfoHeader infoHeader;
+		int rowBytes = (24 >> 3) * windowWidth, offset = rowBytes % 4;
+		if (offset != 0) rowBytes += offset=4-offset;
+		fileHeader.bfSize = windowHeight * windowWidth * 3 + 54;
+		fileHeader.bfReserved1 = fileHeader.bfReserved2 = 0;
+		fileHeader.bfOffBits = 54;
+		fwrite(&fileHeader.bfSize, sizeof(DWord)*3, 1, pWritingFile);
 
-	infoHeader.biSize = 40;
-	infoHeader.biWidth = windowWidth;
-	infoHeader.biHeight = windowHeight;
-	infoHeader.biPlanes = 1;
-	infoHeader.biBitCount = 24;
-	infoHeader.biCompression = 0;
-	infoHeader.biSizeImage = windowHeight * rowBytes;
-	infoHeader.biXPelsPerMeter = infoHeader.biYPelsPerMeter = 0;
-	infoHeader.biClrUsed = 0;
-	infoHeader.biClrImportant = 0;
-	fwrite(&infoHeader, sizeof(BitMapInfoHeader), 1, pWritingFile);
+		infoHeader.biSize = 40;
+		infoHeader.biWidth = windowWidth;
+		infoHeader.biHeight = windowHeight;
+		infoHeader.biPlanes = 1;
+		infoHeader.biBitCount = 24;
+		infoHeader.biCompression = 0;
+		infoHeader.biSizeImage = windowHeight * rowBytes;  //原文件比这个大2，居然也可以..(应该是原图忘了字节数为4的倍数这一点...)
+		infoHeader.biXPelsPerMeter = infoHeader.biYPelsPerMeter = 0;  //??
+		infoHeader.biClrUsed = 0;
+		infoHeader.biClrImportant = 0;
+		fwrite(&infoHeader, sizeof(BitMapInfoHeader), 1, pWritingFile);
 
-	// 把dummy.bmp的文件头复制为新文件的文件头
-	//fread(BMP_Header, sizeof(BMP_Header), 1, pDummyFile);  //OpenGL连BMP_Header都有...
-	//fwrite(BMP_Header, sizeof(BMP_Header), 1, pWritingFile);
-	fseek(pWritingFile, 0x0012, SEEK_SET);
-	i = windowWidth;
-	j = windowHeight;
-	fwrite(&i, sizeof(i), 1, pWritingFile);
-	fwrite(&j, sizeof(j), 1, pWritingFile);
+		// 把dummy.bmp的文件头复制为新文件的文件头
+		//fread(BMP_Header, sizeof(BMP_Header), 1, pDummyFile);  //OpenGL连BMP_Header都有...
+		//fwrite(BMP_Header, sizeof(BMP_Header), 1, pWritingFile);
+    fseek(pWritingFile, 0x0012, SEEK_SET);
+    i = windowWidth;
+    j = windowHeight;
+    fwrite(&i, sizeof(i), 1, pWritingFile);
+    fwrite(&j, sizeof(j), 1, pWritingFile);
 
-	// 写入像素数据
-	fseek(pWritingFile, 0, SEEK_END);
-	fwrite(pPixelData, PixelDataLength, 1, pWritingFile);
+    // 写入像素数据
+    fseek(pWritingFile, 0, SEEK_END);
+    fwrite(pPixelData, PixelDataLength, 1, pWritingFile);
 
-	// 释放内存和关闭文件
-	fclose(pWritingFile);
-	free(pPixelData);
+    // 释放内存和关闭文件
+    fclose(pWritingFile);
+    free(pPixelData);
 }

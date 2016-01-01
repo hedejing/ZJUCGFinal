@@ -73,6 +73,7 @@ Vec operator-(const Vec &a, const Vec &b) { return Vec(a[0]-b[0], a[1]-b[1], a[2
 Point &operator+=(Point &a, const Vec &b) { return a = a+b; }
 Vec operator*(const Vec &a, const Vec &b) { return Vec(a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]); }
 double operator%(const Vec &a, const Vec &b) { return a[0]*b[0] + a[1]*b[1] + a[2]*b[2]; }
+double operator%(const Vec &a, const Point &b) { return a[0]*b[0] + a[1]*b[1] + a[2]*b[2]; }
 Vec operator*(Vec a, double t) { return Vec(a[0]*t, a[1]*t, a[2]*t); }
 Vec operator*(double t, Vec a) { return a*t; }
 Vec operator/(Vec a, double t) { return Vec(a[0]/t, a[1]/t, a[2]/t); }
@@ -167,7 +168,7 @@ GLMat translateMat(GLdouble x, GLdouble y, GLdouble z) {  //以世界坐标系为参考坐
 	};
 	return GLMat(mat);
 }
-GLMat lookAtMat(Vec eye, Vec center, Vec up) {
+GLMat lookAtMat(Point eye, Point center, Vec up) {
 	Vec n = (-(center-eye)).normalize();
 	Vec u = (up*n).normalize();
 	Vec v = n*u;
@@ -184,7 +185,8 @@ GLMat lookAtMat(
     double centerx, double centery, double centerz, 
     double upx, double upy, double upz)
 {
-	Vec eye(eyex, eyey, eyez), center(centerx, centery, centerz), up(upx, upy, upz);
+	Point eye(eyex, eyey, eyez), center(centerx, centery, centerz);
+	Vec up(upx, upy, upz);
 	return lookAtMat(eye, center, up);
 }
 GLMat perspectiveMat(double fovy, double aspect, double zNear, double zFar) {

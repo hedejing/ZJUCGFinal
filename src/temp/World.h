@@ -4,46 +4,10 @@
 #include <map>
 #include <deque>
 #include "BasicElement.h"
-//#include "shadowHelper.h"
 using namespace std;
 
-struct LightSource
-{
-	LightSource(const Point &p) 
-	:position(p){
-		enable = true;
-	}
-	bool enable;
-	Color ambient;
-	Color diffuse;
-	Color specular;
-
-	Point position;
-	
-	double spotExponent;
-	double spotCutoff;
-
-	struct Attenuation {
-		Attenuation() {}
-
-		double constant;
-		double linear;
-		double quadratic;
-	};
-
-	Attenuation attenuation;
-};
 
 class World {
-	struct ShadowStuff{
-		//GLuint tex_shadow; // 纹理名字
-		vector<GLuint> tex_shadow;
-		GLuint frame_buffer_s;
-		const int shadow_w = 4096, shadow_h = 4096;
-		ShadowStuff() {}
-	};
-
-
 private:
 	static unsigned int nextId;
 
@@ -56,11 +20,8 @@ private:
 	static unsigned int getNextId();
 	static unsigned int getNextId(BasicElement *be);
 	static int erase(unsigned int id);
-	static ShadowStuff shadowStuff;
-	static vector<LightSource> lights;
 
 public:
-
 	static int windowHandle;
 	static int windowHeight, windowWidth;
 	static int windowPos[2];
@@ -105,13 +66,6 @@ public:
 	/*  GLUT FUNC  */
 	static void idle();  //加上static后就可以传入glutIdleFunc()里了
 	static void display();
-	static void shadow_init();
-	static void AddLight(const LightSource & light);
-	static void EnableLight(unsigned id);
-	static void DisableLight(unsigned id);
-	static void draw_world();
-	static void draw_model();
-	static void displayWithShadow();
 	static void keyboard(unsigned char key, int x, int y);
 	static void special(int key, int x, int y);
 	static void motion(int x, int y);
