@@ -36,6 +36,8 @@
 
 #### 用于表示基本三维物体的结构：[BasicElement](src/BasicElement.h)
 
+#### 用于放各种功能的函数、全局变量的文件：[utility](src/utility.h)
+
 #### 用于表示用obj等格式读入的三维物体的结构：[Model](src/Model.h)
 
 
