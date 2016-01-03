@@ -164,7 +164,7 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 
 	// 将摄像机放置在光源位置，投影矩阵和视图矩阵
 	GLMat shadowMatP = perspectiveMat(90, (double)World::windowWidth / World::windowHeight, 1.0, 1.0e10f);
-	glEnable(GL_CULL_FACE); glCullFace(GL_FRONT);
+	//glEnable(GL_CULL_FACE); glCullFace(GL_FRONT);
 #ifdef SINGEL_LIGHT
 	GLMat shadowMatV = lookAtMat(Vec(lights[0].position[0], lights[0].position[1], lights[0].position[2]), Vec(0, 0, 0), up);
 	glEnable(GL_CULL_FACE); glCullFace(GL_FRONT);
@@ -197,7 +197,7 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 		draw_world();
 	}
 #endif
-	glDisable(GL_CULL_FACE); glCullFace(GL_BACK);
+	//glDisable(GL_CULL_FACE); glCullFace(GL_BACK);
 
 	//glActiveTexture(GL_TEXTURE1);
 	//glMatrixMode(GL_MODELVIEW);
