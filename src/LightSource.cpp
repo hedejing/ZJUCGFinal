@@ -149,10 +149,10 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 	//---------------------------------------第1次绘制，生成深度纹理--------
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, LightManager::shadowStuff.frame_buffer_s);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, shadowStuff.frame_buffer_s);
 	//glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowStuff.tex_shadow, 0);
 	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-	glViewport(0, 0, LightManager::shadowStuff.shadow_w, LightManager::shadowStuff.shadow_h);
+	glViewport(0, 0, shadowStuff.shadow_w, shadowStuff.shadow_h);
 	GLenum re = glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
 	glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -180,18 +180,19 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 	glDisable(GL_CULL_FACE); glCullFace(GL_BACK);
 #else
 	vector<GLMat> shadowMatV;
-	shadowMatV.resize(LightManager::lights.size());
-	for (int i = 0; i < LightManager::lights.size(); i++)
+	shadowMatV.resize(lights.size());
+	for (int i = 0; i < lights.size(); i++)
 	{
-		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, LightManager::shadowStuff.tex_shadow[i], 0);
+		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowStuff.tex_shadow[i], 0);
 		glClear(GL_DEPTH_BUFFER);
-		shadowMatV[i] = lookAtMat(LightManager::lights[i].position, Point(0, 0, 0), World::up);
+		shadowMatV[i] = lookAtMat(lights[i].position, Point(0, 0, 0), World::up);
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		World::perspective();  //gluPerspective(90, (double)World::windowWidth / World::windowHeight, 1.0f, 1.0e10f);// hedjin : value of near must be 1.0 !!! 
+		//World::perspective();
+		gluPerspective(90, (double)World::windowWidth / World::windowHeight, 1.0f, 1.0e10f);// hedjin : value of near must be 1.0 !!! 
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
-		Point localeye = LightManager::lights[0].position;
+		Point localeye = lights[0].position;
 		gluLookAt(localeye[0], localeye[1], localeye[2], 0, 0, 0, World::up[0], World::up[1], World::up[2]);
 		draw_world();
 	}
@@ -243,16 +244,16 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	// 1 环境光
-	for (int i = 0; i < LightManager::lights.size(); i++)
+	for (int i = 0; i < lights.size(); i++)
 	{
-		if (!LightManager::lights[i].enable)
+		if (!lights[i].enable)
 			continue;
 		glDisable(GL_LIGHT0 + i);
 	}
 	glActiveTexture(GL_TEXTURE1); glDisable(GL_TEXTURE_2D);
 	glActiveTexture(GL_TEXTURE0); glEnable(GL_TEXTURE_2D);
 
-	glBindTexture(GL_TEXTURE_2D, LightManager::tex_walls);
+	glBindTexture(GL_TEXTURE_2D, tex_walls);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -273,9 +274,6 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	World::lookAt();
-	//gluLookAt(eye[0], eye[1], eye[2],
-	//	center[0], center[1], center[2],
-	//	up[0], up[1], up[2]);
 	Point p = lights[0].position;
 	GLfloat lightpos[] = { p[0], p[1], p[2], p[3] };
 	glLightfv(GL_LIGHT0, GL_POSITION, lightpos); // 位置式光源
@@ -285,13 +283,13 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 	glActiveTexture(GL_TEXTURE1); glDisable(GL_TEXTURE_2D);
 	glActiveTexture(GL_TEXTURE0); glDisable(GL_TEXTURE_2D);
 #else
-	for (int i = 0; i < LightManager::lights.size(); i++)
+	for (int i = 0; i < lights.size(); i++)
 	{
-		if (!LightManager::lights[i].enable)
+		if (!lights[i].enable)
 			continue;
 		//active shadow texture
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, LightManager::shadowStuff.tex_shadow[i]);
+		glBindTexture(GL_TEXTURE_2D, shadowStuff.tex_shadow[i]);
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 		World::lookAt();
@@ -315,7 +313,7 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 		World::lookAt();
 
 		//enable light
-		Point p = LightManager::lights[i].position;
+		Point p = lights[i].position;
 		GLfloat lightpos[] = { p[0], p[1], p[2], p[3] };
 		glLightfv(GL_LIGHT0 + i, GL_POSITION, lightpos);
 		glEnable(GL_LIGHT0 + i);

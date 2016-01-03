@@ -124,7 +124,7 @@ namespace COLOR {
 
 struct Color {
 	float t[4];
-	Color() {}
+	Color();
 	Color(double r, double g, double b);
 	Color(double r, double g, double b, double w);
 	operator float *();
