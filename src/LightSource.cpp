@@ -18,7 +18,7 @@ LightSource::Attenuation::Attenuation() {}
 
 ShadowStuff::ShadowStuff() {}
 
-
+bool save_stencil = false;
 
 /*
 glActiveTexture(GL_TEXTURE0) 普通贴图
@@ -53,7 +53,6 @@ void LightManager::xoy_foor(float len, float tex_repeat, int subdivision)
 		}
 	glPopMatrix();
 }
-
 
 void LightManager::shadow_init()
 {
@@ -142,12 +141,16 @@ void LightManager::DisableLight(unsigned id)
 		lights[id].enable = false;
 }
 
+void saveImaeg()
+{
+
+}
 
 void LightManager::displayWithShadow(void (*_draw_world)())
 {
 	draw_world = _draw_world;
 	//---------------------------------------第1次绘制，生成深度纹理--------
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, shadowStuff.frame_buffer_s);
 	//glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowStuff.tex_shadow, 0);
@@ -165,6 +168,8 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 	// 将摄像机放置在光源位置，投影矩阵和视图矩阵
 	GLMat shadowMatP = perspectiveMat(90, (double)World::windowWidth / World::windowHeight, 1.0, 1.0e10f);
 	//glEnable(GL_CULL_FACE); glCullFace(GL_FRONT);
+	//glMatrixMode(GL_PROJECTION); glPushMatrix();
+	//glMatrixMode(GL_MODELVIEW); glPushMatrix();
 #ifdef SINGEL_LIGHT
 	GLMat shadowMatV = lookAtMat(Vec(lights[0].position[0], lights[0].position[1], lights[0].position[2]), Vec(0, 0, 0), up);
 	glEnable(GL_CULL_FACE); glCullFace(GL_FRONT);
@@ -181,22 +186,35 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 #else
 	vector<GLMat> shadowMatV;
 	shadowMatV.resize(lights.size());
+	Point shadowCenter(0, 0, 0);
+	//shadowCenter = World::center;
+	shadowCenter = Point(0, 1, 0);
+	glActiveTexture(GL_TEXTURE1);
+	glEnable(GL_TEXTURE_2D);
 	for (int i = 0; i < lights.size(); i++)
 	{
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowStuff.tex_shadow[i], 0);
-		glClear(GL_DEPTH_BUFFER);
-		shadowMatV[i] = lookAtMat(lights[i].position, Point(0, 0, 0), World::up);
+		//glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, tex_shadow[i], 0);
+//		glBindTexture(GL_TEXTURE_2D, shadowStuff.tex_shadow[i]);
+		//glBindTexture(GL_TEXTURE_2D, tex_shadow[i]);
+
+		glClear(GL_DEPTH_BUFFER_BIT);
+		shadowMatV[i] = lookAtMat(lights[i].position, shadowCenter, World::up);
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		//World::perspective();
-		gluPerspective(90, (double)World::windowWidth / World::windowHeight, 1.0f, 1.0e10f);// hedjin : value of near must be 1.0 !!! 
+		//gluPerspective(90, (double)World::windowWidth / World::windowHeight, 1.0f, 1.0e10f);// hedjin : value of near must be 1.0 !!! 
+		gluPerspective(90, 1, 1.0f, 1.0e10f);// hedjin : value of near must be 1.0 !!! 
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
-		Point localeye = lights[0].position;
-		gluLookAt(localeye[0], localeye[1], localeye[2], 0, 0, 0, World::up[0], World::up[1], World::up[2]);
+		Point localeye = lights[i].position;
+		gluLookAt(localeye[0], localeye[1], localeye[2], shadowCenter[0], shadowCenter[1], shadowCenter[2], World::up[0], World::up[1], World::up[2]);
 		draw_world();
 	}
+	//glDisable(GL_TEXTURE_2D);
 #endif
+	//glMatrixMode(GL_PROJECTION); glPopMatrix();
+	//glMatrixMode(GL_MODELVIEW); glPopMatrix();
 	//glDisable(GL_CULL_FACE); glCullFace(GL_BACK);
 
 	//glActiveTexture(GL_TEXTURE1);
@@ -234,6 +252,31 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 	//	}
 	//	delete[] data;
 	//}
+	
+	if (save_stencil) {
+		save_stencil = false;
+		puts("Save");
+		glActiveTexture(GL_TEXTURE1); glEnable(GL_TEXTURE_2D);
+		GLfloat* data = new GLfloat[shadowStuff.shadow_w*shadowStuff.shadow_h];
+		for (int i = 0; i < lights.size(); ++i) {
+			glBindTexture(GL_TEXTURE_2D, shadowStuff.tex_shadow[i]);
+
+			//glBindTexture(GL_TEXTURE_2D, tex_shadow[i]);
+			glGetTexImage(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, GL_FLOAT, data);//获取纹理数据
+			char ss[50]; sprintf(ss, "d%d.ppm", i);
+			int w = shadowStuff.shadow_w;
+			int h = shadowStuff.shadow_h;
+			FILE *f = fopen(ss, "w");
+			fprintf(f, "P3\n%d %d\n%d\n", w, h, 255);
+			for (int i = 0; i < w*h; i++)
+			{
+				int value = max(0.0f, min(1.0f, data[i])) * 255;
+				fprintf(f, "%d %d %d", value, value, value);
+			}
+			fclose(f);
+		}
+		//delete[] data;
+	}
 
 	// 恢复视口、颜色模板、光照
 	glViewport(0, 0, World::windowWidth, World::windowHeight);
@@ -289,7 +332,10 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 			continue;
 		//active shadow texture
 		glActiveTexture(GL_TEXTURE1);
+		//glBindTexture(GL_TEXTURE_2D, tex_shadow[i]);
+		//glEnable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, shadowStuff.tex_shadow[i]);
+
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 		World::lookAt();
@@ -301,7 +347,7 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 		};
 		GLMat mat_view = lookAtMat(World::eye, World::center, World::up);
 		GLMat biasMat(bias);
-		GLMat mat = biasMat * shadowMatP * shadowMatV[i];//* mat_view.affineInverse();
+		GLMat mat = biasMat * shadowMatP * shadowMatV[i];// *mat_view.affineInverse();
 		mat = mat.transpose();
 		glTexGendv(GL_S, GL_EYE_PLANE, mat[0]);
 		glTexGendv(GL_T, GL_EYE_PLANE, mat[1]);
@@ -323,13 +369,13 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 		glLoadIdentity();
 		World::lookAt();
 		draw_world();
-		glDisable(GL_TEXTURE_2D);
+		//glDisable(GL_TEXTURE_2D);
 		glDisable(GL_LIGHT0 + i);
 	}
 #endif
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, la); // 恢复环境光
 	glDepthFunc(GL_LESS); glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glDisable(GL_BLEND);
+	//glDisable(GL_BLEND);
 //	glActiveTexture(GL_TEXTURE1); glDisable(GL_TEXTURE_2D);
 //	glActiveTexture(GL_TEXTURE0); glDisable(GL_TEXTURE_2D);
 }
