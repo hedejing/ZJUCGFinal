@@ -1,3 +1,13 @@
+# 目前比较要紧但还没做好的：
+- 物理引擎
+- 场景文件txt
+- 打到物体之后的消失或爆炸或其他效果
+- 开场动画
+- 打枪动作
+
+
+
+
 # Computer Graphics
 ##### 2015 ZJU Computer Graphics Final Project
 <br/>
