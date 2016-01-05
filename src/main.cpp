@@ -2,13 +2,14 @@
 #include "BasicElement.h"
 #include "texture.h"
 #include "test.h"
+
 using namespace std;
 
 
 /*
 	两种定义物体的方法：
 	1. 在World::init()和glutMainLoop()之间定义。
-	   (可以把定义写在World::int()之前，不过纹理定义等需要用到OpenGL函数的东西，必须要写在World::int()之后)
+	   (可以把定义写在World::init()之前，不过纹理定义等需要用到OpenGL函数的东西，必须要写在World::int()之后)
 	2. 另开一个函数，然后用new来定义。当然，函数的引用位置也要在World::init()和glutMainLoop()之间。
 	   (用new出来的指针可以对物体进行操作)
 
@@ -23,8 +24,9 @@ void define() {
 	//new Sphere(Point(2, 1, 2));  //球
 	//new Cone(Point(2, 2, -3));  //圆锥
 	//new Circle(Point(-2, 2, 2));  //圆
-	//Cylinder *cc = new Cylinder(Point(2, -2, 4));  //圆柱
-	//cc->rotateTo(45, 0, 0, 1);
+	Cylinder *cc = new Cylinder(Point(2, -2, 4));  //圆柱
+	cc->rotateTo(45, 0, 0, 1);
+	AviBoard *avi = new AviBoard(Point(0,10,0),100,100,"test2.rgb");
 }
 void draw_world()
 {

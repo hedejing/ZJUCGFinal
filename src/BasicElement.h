@@ -92,5 +92,22 @@ public:
 	void drawNaive();
 };
 
+class AviBoard : public BasicElement {
+private:
+	int nowtime;//计时
+	int timebase;//计时，nowtime-timebase是否大于一帧的时间
+	int pixel_w;//长
+	int pixel_h;//宽
+	int framenum;//总帧数
+	int count;
+	double height;
+	double weight;
+	unsigned char *buffer;//avi
+	unsigned char *tmpbuff;
+public:
+	AviBoard(Point p,double height,double weight,string videoname);
+	~AviBoard(void);
+	void drawNaive();
+};
 
 #endif

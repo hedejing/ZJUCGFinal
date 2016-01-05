@@ -148,3 +148,52 @@ void Rect::drawNaive() {
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glDisable(GL_TEXTURE_2D);
 }
+
+AviBoard::AviBoard(Point p, double height, double weight, string videoname)
+{
+	centroid = p;
+	FILE *fp = fopen(videoname.c_str(), "rb");
+	if (fp == NULL){		//打开失败
+		printf("Cannot open this file.\n");
+		return ;	//需要统一？
+	}
+	fread(&pixel_w, sizeof(int), 1, fp);//获取长款
+	fread(&pixel_h, sizeof(int), 1, fp);
+	fread(&framenum, sizeof(int), 1, fp);//获取总帧数
+	buffer = new unsigned char[pixel_w*pixel_h *framenum * 3];
+	fread(buffer,  pixel_w*pixel_h *framenum * 3, 1,fp);//获取数据
+	tmpbuff = buffer;
+	fclose(fp);
+	nowtime = 0;
+	timebase = 0;
+	count = 0;
+	this->height = height;
+	this->weight = weight;
+}
+
+AviBoard::~AviBoard()
+{
+	delete[] buffer;
+}
+
+void AviBoard::drawNaive() {
+	nowtime = glutGet(GLUT_ELAPSED_TIME);//获取时间
+	if (nowtime - timebase > 40) {
+		if (count == framenum-1)
+		{
+			tmpbuff = buffer;
+			count = 0;
+		}
+		else
+		{
+			tmpbuff = tmpbuff + pixel_w*pixel_h * 3;
+			count++;
+		}
+		timebase = nowtime;
+	}
+	glPushMatrix();
+		glRasterPos3f(-1.0f, 1.0f, 0);
+		glPixelZoom((float)weight / (float)pixel_w, -(float)height / (float)pixel_h);
+		glDrawPixels(pixel_w, pixel_h, GL_RGB, GL_UNSIGNED_BYTE, tmpbuff);
+	glPopMatrix();
+}
