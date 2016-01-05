@@ -71,6 +71,13 @@ int main(int argc, char *argv[]) {
 	//World::setCamera(Point(-10, 10, 10), Point(0, 0, 0));
 	World::setCamera(Point(12, 12, 12), Point(0, 1, 0));
 	try {
+		/*
+		
+		!!!注意 可能需要调整scene.json的位置 或者 这里输入的路径
+		否则可能找不到文件
+
+		*/
+		//载入场景配置文件
 		SceneManager sm("scene.json");
 		sm.LoadScenes(0);// Load scene no.0
 	}
