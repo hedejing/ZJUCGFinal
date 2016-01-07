@@ -157,9 +157,11 @@ AviBoard::AviBoard(Point p, double height, double weight, string videoname)
 		printf("Cannot open this file.\n");
 		return ;	//需要统一？
 	}
+	int nummabi;
 	fread(&pixel_w, sizeof(int), 1, fp);//获取长款
 	fread(&pixel_h, sizeof(int), 1, fp);
 	fread(&framenum, sizeof(int), 1, fp);//获取总帧数
+	fread(&nummabi, sizeof(int), 1, fp);//补充一下长度
 	buffer = new unsigned char[pixel_w*pixel_h *framenum * 3];
 	fread(buffer,  pixel_w*pixel_h *framenum * 3, 1,fp);//获取数据
 	tmpbuff = buffer;
@@ -196,4 +198,20 @@ void AviBoard::drawNaive() {
 		glPixelZoom((float)weight / (float)pixel_w, -(float)height / (float)pixel_h);
 		glDrawPixels(pixel_w, pixel_h, GL_RGB, GL_UNSIGNED_BYTE, tmpbuff);
 	glPopMatrix();
+}
+
+objectmodel::objectmodel(Point p, string name)
+{
+	centroid = p;
+	mymo = new  Model();
+	mymo->Readobj(name.c_str());
+	this->scale(0.1);
+}
+void objectmodel::drawNaive()
+{
+	mymo->draw();
+}
+
+objectmodel::~objectmodel(void)
+{
 }
