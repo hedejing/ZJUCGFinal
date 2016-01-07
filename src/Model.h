@@ -1,5 +1,6 @@
 #ifndef _Model_H_
 #define _Model_H_
+#include "glew.h"
 #include "GLUT.H"
 #include <vector>
 #include <iostream>
@@ -52,13 +53,14 @@ protected:
 		  int begin_index, end_index;
 		  std::string name;
 	  };
-	  GLuint DrawListID;
 	  std::vector<v> vertices;
 	  std::vector<v> vert_nor;
       std::vector<f> faces,face_tex;
 	  std::vector<vt> texture_ord;
 	  std::vector<f> normals;
 	  std::vector<group> g, mtl_group;
+	  std::vector<GLuint> DrawListID;
+	  std::vector<std::string> ID_NAMES;
 	  Mtl_info *obj_mtl=NULL;
 public:
 	//在绘制obj之前记得读取一个obj文件，在opengl初始化之后再读取

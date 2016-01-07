@@ -109,13 +109,54 @@ Mtl_info::~Mtl_info()
 }
 void Model::draw()
 {
-	glCallList(DrawListID);
+	/*int i = 0;
+	for (auto ID : DrawListID)
+	{
+		obj_mtl->change_MTL(ID_NAMES[i++]);
+		glCallList(ID);
+	}*/
+	int now_mtl = -1;
+	if (mtl_group.size() > 0)
+	{
+		now_mtl = 0;
+		obj_mtl->change_MTL(mtl_group[now_mtl].name);
+	}  
+	glEnable(GL_TEXTURE_2D);
+	
+	for (int i = 0; i<faces.size(); i++)
+	{
+		v v1 = vertices[faces[i].v1 - 1];
+		v v2 = vertices[faces[i].v2 - 1];
+		v v3 = vertices[faces[i].v3 - 1];
+		vt tex1 = texture_ord[face_tex[i].v1 - 1];
+		vt tex2 = texture_ord[face_tex[i].v2 - 1];
+		vt tex3 = texture_ord[face_tex[i].v3 - 1];
+		v nor1 = vert_nor[normals[i].v1 - 1];
+		v nor2 = vert_nor[normals[i].v2 - 1];
+		v nor3 = vert_nor[normals[i].v3 - 1];
+
+		if (now_mtl > -1 && i > mtl_group[now_mtl].end_index)
+		{
+			now_mtl++;
+			obj_mtl->change_MTL(mtl_group[now_mtl].name);
+		}
+		glBegin(GL_TRIANGLES);
+		glNormal3f(nor1.x, nor1.y, nor1.z);//第一个顶点
+		glTexCoord2f(tex1.x, tex1.y);
+		glVertex3f(v1.x, v1.y, v1.z);
+		glNormal3f(nor2.x, nor2.y, nor2.z);//第二个顶点
+		glTexCoord2f(tex2.x, tex2.y);
+		glVertex3f(v2.x, v2.y, v2.z);
+		glNormal3f(nor3.x, nor3.y, nor3.z);//第三个顶点
+		glTexCoord2f(tex3.x, tex3.y);
+		glVertex3f(v3.x, v3.y, v3.z);
+		glEnd();
+	}
+	
 }
 Model::Model()
 {
-	DrawListID=glGenLists(1);
-	if (DrawListID==0) throw Model_ERROR1;
-
+	
 }
 GLuint Model::LoadTGA(const char *filename)
 {
@@ -265,6 +306,7 @@ ifstream fin;
 			 {
 				vt vertex;
 				fin>>vertex.x>>vertex.y;
+				vertex.y -= 1;
 				texture_ord.push_back(vertex);
 			 }
 			 else//顶点
@@ -305,9 +347,11 @@ ifstream fin;
 	{	
 		now_mtl = 0;
 		obj_mtl->change_MTL(mtl_group[now_mtl].name);
+		ID_NAMES.push_back(mtl_group[now_mtl].name);
 	}
-	glEnable(GL_TEXTURE_2D);
-	glNewList(DrawListID,GL_COMPILE);
+	GLuint tmpID = glGenLists(1);
+	glDisable(GL_TEXTURE_2D);
+	glNewList(tmpID,GL_COMPILE);
 	glBegin(GL_TRIANGLES);
 	for (int i=0;i<faces.size();i++)
 	{
@@ -323,8 +367,13 @@ ifstream fin;
 		
 		if (now_mtl > -1 && i > mtl_group[now_mtl].end_index)
 		{
+			DrawListID.push_back(tmpID);
+			glEndList();
+			tmpID = glGenLists(1);
 			now_mtl++;
 			obj_mtl->change_MTL(mtl_group[now_mtl].name);
+			ID_NAMES.push_back(mtl_group[now_mtl].name);
+			glNewList(tmpID, GL_COMPILE);
 		}
 		
 		glNormal3f(nor1.x,nor1.y,nor1.z);//第一个顶点
@@ -340,12 +389,13 @@ ifstream fin;
 	}
 	glEnd();
 	glEndList();
-	glDisable(GL_TEXTURE_2D);
-	vertices.clear();
+	DrawListID.push_back(tmpID);
+	
+	/*vertices.clear();
 	faces.clear();
 	face_tex.clear();
 	texture_ord.clear();
-	normals.clear();
+	normals.clear();*/
 }
 Model::~Model()
 {
