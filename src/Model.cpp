@@ -353,6 +353,7 @@ ifstream fin;
 		
 	}
 	glEnd();
+	glDisable(GL_TEXTURE_2D);
 	glEndList();
 	DrawListID.push_back(tmpID);
 	
