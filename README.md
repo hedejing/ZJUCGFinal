@@ -1,9 +1,9 @@
-# Ä¿Ç°±È½ÏÒª½ôµ«»¹Ã»×öºÃµÄ£º
-- ÎïÀíÒýÇæ
-- ³¡¾°ÎÄ¼þtxt
-- ´òµ½ÎïÌåÖ®ºóµÄÏûÊ§»ò±¬Õ¨»òÆäËûÐ§¹û
-- ¿ª³¡¶¯»­
-- ´òÇ¹¶¯×÷
+# ç›®å‰æ¯”è¾ƒè¦ç´§ä½†è¿˜æ²¡åšå¥½çš„ï¼š
+- ç‰©ç†å¼•æ“Ž
+- åœºæ™¯æ–‡ä»¶txt
+- æ‰“åˆ°ç‰©ä½“ä¹‹åŽçš„æ¶ˆå¤±æˆ–çˆ†ç‚¸æˆ–å…¶ä»–æ•ˆæžœ
+- å¼€åœºåŠ¨ç”»
+- æ‰“æžªåŠ¨ä½œ
 
 
 
@@ -11,59 +11,59 @@
 # Computer Graphics
 ##### 2015 ZJU Computer Graphics Final Project
 <br/>
-# Ä¿Ç°½ø¶È£º
-1. ¿ÉÒÔ·½±ãµØ»æÖÆÎïÌåÁË¡£(¾ßÌåµÄ»æÖÆ²½Öè¼û"APIÊ¹ÓÃ·½·¨"ºÍ¡°main.cpp¡±)
-2. ~~ÓÃ¼üÅÌ¿ÉÒÔ²Ù×÷Ïà»úÇ°ºó×óÓÒÉÏÏÂÒÆ¶¯ÁË¡£(·Ö±ð¶ÔÓ¦¼üÅÌµÄwsadcz)~~ <br/>
-   ÏÖÔÚ¿ÉÒÔÓÃÊó±ê²Ù¿ØÁË¡£
-   - °´×Å×ó¼üÍÏ¶¯Êó±ê¿ÉÒÔÊµÏÖorbit¹¦ÄÜ¡£
-   - ÓÃÖÐ¼üÍùÇ°ºóÍÏ¶¯¿ÉÒÔ·Å´ó¡¢ËõÐ¡
-   - ×ó¼ü¡¢ÖÐ¼üÒ»Æð°´£ºzoom to fit
-   - °´×ÅÓÒ¼ü²»·Å¿ÉÒÔÒÆ¶¯Ïà»úÎ»ÖÃ
-3. ÓÃ¼üÅÌ¿ÉÒÔÐý×ªÏà»úµÄ½Ç¶ÈÁË£¬²¢ÇÒ¿ÉÒÔ³¯×ÅÏà»úµÄ³¯ÏòÇ°½ø¡£(¼üÅÌÉÏµÄjlik·Ö±ð¶ÔÓ¦Íù×ó¡¢ÍùÓÒ¡¢ÍùÉÏ¡¢ÍùÏÂÐý×ª)
-4. Êó±ê×ó¼üµãÑ¡ÎïÌåÒÑÊµÏÖ£¬²»¹ý¾ßÌå²Ù×÷»¹Ã»¼ÓÉÏÈ¥£¬ÏÖÔÚÖ»ÄÜ¿´cmdÊä³ö¡£
-5. °´F1¿ÉÒÔ½ØÍ¼ÁË¡£½ØÍ¼ÎÄ¼þ»á·ÅÔÚscreenshotsÎÄ¼þ¼ÐÖÐ¡£
-6. ÒÑ¾­¿ÉÒÔ»æÖÆÒõÓ°ÁË¡£
+# ç›®å‰è¿›åº¦ï¼š
+1. å¯ä»¥æ–¹ä¾¿åœ°ç»˜åˆ¶ç‰©ä½“äº†ã€‚(å…·ä½“çš„ç»˜åˆ¶æ­¥éª¤è§"APIä½¿ç”¨æ–¹æ³•"å’Œâ€œmain.cppâ€)
+2. ~~ç”¨é”®ç›˜å¯ä»¥æ“ä½œç›¸æœºå‰åŽå·¦å³ä¸Šä¸‹ç§»åŠ¨äº†ã€‚(åˆ†åˆ«å¯¹åº”é”®ç›˜çš„wsadcz)~~ <br/>
+   çŽ°åœ¨å¯ä»¥ç”¨é¼ æ ‡æ“æŽ§äº†ã€‚
+   - æŒ‰ç€å·¦é”®æ‹–åŠ¨é¼ æ ‡å¯ä»¥å®žçŽ°orbitåŠŸèƒ½ã€‚
+   - ç”¨ä¸­é”®å¾€å‰åŽæ‹–åŠ¨å¯ä»¥æ”¾å¤§ã€ç¼©å°
+   - å·¦é”®ã€ä¸­é”®ä¸€èµ·æŒ‰ï¼šzoom to fit
+   - æŒ‰ç€å³é”®ä¸æ”¾å¯ä»¥ç§»åŠ¨ç›¸æœºä½ç½®
+3. ç”¨é”®ç›˜å¯ä»¥æ—‹è½¬ç›¸æœºçš„è§’åº¦äº†ï¼Œå¹¶ä¸”å¯ä»¥æœç€ç›¸æœºçš„æœå‘å‰è¿›ã€‚(é”®ç›˜ä¸Šçš„jlikåˆ†åˆ«å¯¹åº”å¾€å·¦ã€å¾€å³ã€å¾€ä¸Šã€å¾€ä¸‹æ—‹è½¬)
+4. é¼ æ ‡å·¦é”®ç‚¹é€‰ç‰©ä½“å·²å®žçŽ°ï¼Œä¸è¿‡å…·ä½“æ“ä½œè¿˜æ²¡åŠ ä¸ŠåŽ»ï¼ŒçŽ°åœ¨åªèƒ½çœ‹cmdè¾“å‡ºã€‚
+5. æŒ‰F1å¯ä»¥æˆªå›¾äº†ã€‚æˆªå›¾æ–‡ä»¶ä¼šæ”¾åœ¨screenshotsæ–‡ä»¶å¤¹ä¸­ã€‚
+6. å·²ç»å¯ä»¥ç»˜åˆ¶é˜´å½±äº†ã€‚
 
 <br/>
 
-## »ù±¾ÊÀ½ç¶¨Òå£º
-¶¨ÒåyÖáÕý·½ÏòÎªÊúÖ±ÏòÉÏµÄ·½Ïò¡£<br/>
-³õÊ¼Ê±¿´ÏòxÕý·½Ïò£¬´ËÊ±ÓÒ²àÎªzÖáÕý·½Ïò¡£
+## åŸºæœ¬ä¸–ç•Œå®šä¹‰ï¼š
+å®šä¹‰yè½´æ­£æ–¹å‘ä¸ºç«–ç›´å‘ä¸Šçš„æ–¹å‘ã€‚<br/>
+åˆå§‹æ—¶çœ‹å‘xæ­£æ–¹å‘ï¼Œæ­¤æ—¶å³ä¾§ä¸ºzè½´æ­£æ–¹å‘ã€‚
 <br/>
 
-## APIÊ¹ÓÃ·½·¨£º
-#### ÔÚÊÀ½çÖÐÌí¼ÓÎïÌå
-1. ÔÚBasicElement.hºÍBasicElement.cpp¶¨Òå¼Ì³Ð×ÔBasicElementµÄÀà£¬²¢ÖØÔØdrawNaiveº¯Êý¡£
-2. ÔÚmainº¯ÊýÖÐ£º
-	1. µ÷ÓÃinitWorldº¯Êý¶ÔÊÀ½ç½øÐÐ³õÊ¼»¯
-	2. ¶¨Òå×Ô¼º¶¨ÒåÀà(»òÒÑÓÐBasicElementµÄ×ÓÀà)µÄ¶ÔÏó£¬²¢ÉèÖÃ×ø±ê¡¢³¯Ïò(Ðý×ª½Ç)µÈ
-	3. È»ºóÔÙµ÷ÓÃglutMainLoop¾Í¿ÉÒÔ¿ªÊ¼ÏÔÊ¾¶¨ÒåµÄÎïÌåÁË
-(×¢£º¹âÕÕ¿ÉÄÜÐèÒª×Ô¼º¶¨Òå¡£ÁíÍâ£¬Èç¹ûÒªÓÃµ½²ÄÖÊ»òÎÆÀí×ø±ê£¬¿ÉÄÜÐèÒª×ÔÐÐ¶¨ÒåÒ»¸öÐÂµÄBasicElementÀà)
+## APIä½¿ç”¨æ–¹æ³•ï¼š
+#### åœ¨ä¸–ç•Œä¸­æ·»åŠ ç‰©ä½“
+1. åœ¨BasicElement.hå’ŒBasicElement.cppå®šä¹‰ç»§æ‰¿è‡ªBasicElementçš„ç±»ï¼Œå¹¶é‡è½½drawNaiveå‡½æ•°ã€‚
+2. åœ¨mainå‡½æ•°ä¸­ï¼š
+	1. è°ƒç”¨initWorldå‡½æ•°å¯¹ä¸–ç•Œè¿›è¡Œåˆå§‹åŒ–
+	2. å®šä¹‰è‡ªå·±å®šä¹‰ç±»(æˆ–å·²æœ‰BasicElementçš„å­ç±»)çš„å¯¹è±¡ï¼Œå¹¶è®¾ç½®åæ ‡ã€æœå‘(æ—‹è½¬è§’)ç­‰
+	3. ç„¶åŽå†è°ƒç”¨glutMainLoopå°±å¯ä»¥å¼€å§‹æ˜¾ç¤ºå®šä¹‰çš„ç‰©ä½“äº†
+(æ³¨ï¼šå…‰ç…§å¯èƒ½éœ€è¦è‡ªå·±å®šä¹‰ã€‚å¦å¤–ï¼Œå¦‚æžœè¦ç”¨åˆ°æè´¨æˆ–çº¹ç†åæ ‡ï¼Œå¯èƒ½éœ€è¦è‡ªè¡Œå®šä¹‰ä¸€ä¸ªæ–°çš„BasicElementç±»)
 
 
-## »ù±¾Àà¶¨Òå
-#### ÓÃÓÚ´´½¨ºÍ¹ÜÀíÈýÎ¬ÊÀ½çµÄÀà£º[World](src/World.h)
+## åŸºæœ¬ç±»å®šä¹‰
+#### ç”¨äºŽåˆ›å»ºå’Œç®¡ç†ä¸‰ç»´ä¸–ç•Œçš„ç±»ï¼š[World](src/World.h)
 
-#### ÓÃÓÚ±íÊ¾»ù±¾ÈýÎ¬ÎïÌåµÄ½á¹¹£º[BasicElement](src/BasicElement.h)
+#### ç”¨äºŽè¡¨ç¤ºåŸºæœ¬ä¸‰ç»´ç‰©ä½“çš„ç»“æž„ï¼š[BasicElement](src/BasicElement.h)
 
-#### ÓÃÓÚ·Å¸÷ÖÖ¹¦ÄÜµÄº¯Êý¡¢È«¾Ö±äÁ¿µÄÎÄ¼þ£º[utility](src/utility.h)
+#### ç”¨äºŽæ”¾å„ç§åŠŸèƒ½çš„å‡½æ•°ã€å…¨å±€å˜é‡çš„æ–‡ä»¶ï¼š[utility](src/utility.h)
 
-#### ÓÃÓÚ±íÊ¾ÓÃobjµÈ¸ñÊ½¶ÁÈëµÄÈýÎ¬ÎïÌåµÄ½á¹¹£º[Model](src/Model.h)
-
-
-
-
-## »¹ÐèÒªÍêÉÆµÄµØ·½£º
-1. ÏÖÓÐ´úÂë»¹Î´¾­¹ýÍêÕû²âÊÔ£¬ÈôÓöµ½bug»¹ÇëÔÚÈºÀïËµÒ»ÏÂ¡£
-2. ¹âÔ´¿ÉÄÜÐèÒªÁíÍâ¶¨ÒåÒ»¸öÀà£¬¶ø²»ÊÇÊ¹ÓÃBasicElement¡£
-3. »¹¿ÉÒÔÈÏÁìµÄÈÎÎñ£º
-   - ¶àÃæÀâÖù¡¢¶àÃæÀâÌ¨
-   - Êó±êµÄ¹Ì¶¨
-   - »ù±¾²ÄÖÊ¡¢ÎÆÀíµÄ±à¼­
-   - ¹âÔ´µÄ±à¼­
+#### ç”¨äºŽè¡¨ç¤ºç”¨objç­‰æ ¼å¼è¯»å…¥çš„ä¸‰ç»´ç‰©ä½“çš„ç»“æž„ï¼š[Model](src/Model.h)
 
 
 
-## Áí£ººÍ¶¡Ê«Â×ÌÖÂÛºóÓÐ¸Ä¶¯µÄµØ·½£º
-1.	idµÄÀàÐÍ´Ólong long¸ÄÎªÁËunsigned int£¬ÒòÎªglLoadNameº¯Êý±¾ÉíÖ»ÄÜ½ÓÊÜUnsigned intÀàÐÍµÄ²ÎÊý¡£
-2.	drawBodyº¯Êý¸Ä³ÉÁËdrawNaive
+
+## è¿˜éœ€è¦å®Œå–„çš„åœ°æ–¹ï¼š
+1. çŽ°æœ‰ä»£ç è¿˜æœªç»è¿‡å®Œæ•´æµ‹è¯•ï¼Œè‹¥é‡åˆ°bugè¿˜è¯·åœ¨ç¾¤é‡Œè¯´ä¸€ä¸‹ã€‚
+2. å…‰æºå¯èƒ½éœ€è¦å¦å¤–å®šä¹‰ä¸€ä¸ªç±»ï¼Œè€Œä¸æ˜¯ä½¿ç”¨BasicElementã€‚
+3. è¿˜å¯ä»¥è®¤é¢†çš„ä»»åŠ¡ï¼š
+   - å¤šé¢æ£±æŸ±ã€å¤šé¢æ£±å°
+   - é¼ æ ‡çš„å›ºå®š
+   - åŸºæœ¬æè´¨ã€çº¹ç†çš„ç¼–è¾‘
+   - å…‰æºçš„ç¼–è¾‘
+
+
+
+## å¦ï¼šå’Œä¸è¯—ä¼¦è®¨è®ºåŽæœ‰æ”¹åŠ¨çš„åœ°æ–¹ï¼š
+1.	idçš„ç±»åž‹ä»Žlong longæ”¹ä¸ºäº†unsigned intï¼Œå› ä¸ºglLoadNameå‡½æ•°æœ¬èº«åªèƒ½æŽ¥å—Unsigned intç±»åž‹çš„å‚æ•°ã€‚
+2.	drawBodyå‡½æ•°æ”¹æˆäº†drawNaive

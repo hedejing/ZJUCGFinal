@@ -29,6 +29,7 @@ int World::gameMode = 0;
 int World::gameModeNum = 2;
 
 void (*World::_display)() = NULL;
+void (*World::_free)() = NULL;
 
 int World::mouseState[3] = {GLUT_UP, GLUT_UP, GLUT_UP};
 
@@ -91,7 +92,9 @@ void World::init(int *argc, char *argv[], int windowHeight, int windowWidth, int
 		cursorPos[0] = pos.x;  cursorPos[1] = pos.y;
 	}
 	{	//SHADOW INIT
+#ifndef NO_SHADOW
 		LightManager::shadow_init();
+#endif
 		glEnable(GL_BLEND);
 	}
 	//...
@@ -161,12 +164,11 @@ void World::drawAll() {
 
 /*  GLU FUNC  */
 void World::perspective() {
-	gluPerspective(45*zoomFactor, (double)windowWidth / windowHeight, 0.1, 1000);
+	gluPerspective(45*zoomFactor, (double)windowWidth / windowHeight, 0.1, 100);
 }
 void World::lookAt() {
 	gluLookAt(eye[0], eye[1], eye[2],  center[0], center[1], center[2],  up[0], up[1], up[2]);
 }
-
 
 /*  GLUT FUNC  */
 void World::idle() {
@@ -177,20 +179,21 @@ void World::display() {
 	if (focusState == GLUT_ENTERED)
 		setCursorToCenter();
 
-	//glMatrixMode(GL_PROJECTION);
-	//glLoadIdentity();
-	//perspective();  //gluPerspective(45, (double)windowWidth / windowHeight, 0.1, 500);
-
-	//glMatrixMode(GL_MODELVIEW);
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//glLoadIdentity();
-	//gluLookAt(eye[0], eye[1], eye[2],
-	//	center[0], center[1], center[2],
-	//	up[0], up[1], up[2]);
-
-
+#ifndef NO_SHADOW
 	LightManager::displayWithShadow(drawAll);
-	//drawAll();
+#else
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	perspective();  //gluPerspective(45, (double)windowWidth / windowHeight, 0.1, 500);
+
+	glMatrixMode(GL_MODELVIEW);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glLoadIdentity();
+	gluLookAt(eye[0], eye[1], eye[2],
+		center[0], center[1], center[2],
+		up[0], up[1], up[2]);
+	drawAll();
+#endif
 	glutSwapBuffers();
 
 	{
@@ -201,8 +204,7 @@ void World::display() {
 }
 
 
-
-
+extern void shoot();
 
 //  下面函数修改后，请在README.md中注明
 void World::keyboard(unsigned char key, int x, int y) {
@@ -210,7 +212,11 @@ void World::keyboard(unsigned char key, int x, int y) {
 	const double rotateStep = 8;
 
 	switch (key) {
-	case 27: exit(0);
+	case 27: {
+		if(_free!=NULL)
+			_free();
+		exit(0);
+	}
 	case 'a': case 'A':  //出现图形变扁的原因可能是我的这种移动一个像素转某个角度的逻辑有问题
 		move(0, -moveStep);
 		break;
@@ -258,6 +264,9 @@ void World::keyboard(unsigned char key, int x, int y) {
 		//case '.': case '>':
 		//	REP (i, 0, 2) lightColor[1][i] += 0.1;
 		//	break;
+	case ' ':
+		shoot();
+		break;
 	default:
 		break;
 	}

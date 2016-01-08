@@ -7,6 +7,9 @@ BasicElement::BasicElement() {
 	id = World::getNextId(this);
 	//this->rotateMat = ::rotateMat(0, 0, 1, 0);
 	scaleValue = Vec(1, 1, 1);
+	//hdj : add an assignment for rotateQuat 1/8
+	rotateQuat = Quat(0, 0, 0, 1);
+
 }
 BasicElement::~BasicElement() {
 	World::erase(id);
@@ -196,4 +199,20 @@ void AviBoard::drawNaive() {
 		glPixelZoom((float)weight / (float)pixel_w, -(float)height / (float)pixel_h);
 		glDrawPixels(pixel_w, pixel_h, GL_RGB, GL_UNSIGNED_BYTE, tmpbuff);
 	glPopMatrix();
+}
+
+objectmodel::objectmodel(Point p, string name)
+{
+	centroid = p;
+	mymo = new  Model();
+	mymo->Readobj(name.c_str());
+	this->scale(0.1);
+}
+void objectmodel::drawNaive()
+{
+	mymo->draw();
+}
+
+objectmodel::~objectmodel(void)
+{
 }

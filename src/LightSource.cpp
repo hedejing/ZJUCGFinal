@@ -271,7 +271,7 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 			for (int i = 0; i < w*h; i++)
 			{
 				int value = max(0.0f, min(1.0f, data[i])) * 255;
-				fprintf(f, "%d %d %d", value, value, value);
+				fprintf(f, "%d %d %d ", value, value, value);
 			}
 			fclose(f);
 		}

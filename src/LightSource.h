@@ -7,7 +7,7 @@ struct ShadowStuff{
 	//GLuint tex_shadow; // ÎÆÀíÃû×Ö
 	vector<GLuint> tex_shadow;
 	GLuint frame_buffer_s;
-	const int shadow_w = 4096, shadow_h = 4096;
+	const int shadow_w = 1024, shadow_h = 1024;
 	ShadowStuff();
 };
 

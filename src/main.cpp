@@ -1,6 +1,6 @@
 #include "World.h"
-#include "BasicElement.h"
 #include "texture.h"
+#include "BasicElement.h"
 #include "test.h"
 
 using namespace std;
@@ -27,6 +27,7 @@ void define() {
 	Cylinder *cc = new Cylinder(Point(2, -2, 4));  //Ô²Öù
 	cc->rotateTo(45, 0, 0, 1);
 	AviBoard *avi = new AviBoard(Point(0,10,0),100,100,"test2.rgb");
+	objectmodel *sb = new objectmodel(Point(2, -2, 4), "my2.obj");
 }
 void draw_world()
 {

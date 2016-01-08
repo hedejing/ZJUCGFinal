@@ -6,6 +6,8 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <GL/glew.h>
+#include "GL/glut.h"
 #include "texture.h"
 #define IF_KA 1
 #define IF_KD 2
