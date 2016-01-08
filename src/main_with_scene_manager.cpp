@@ -31,7 +31,7 @@ void define() {
 	Cone *cone = new Cone(Point(2, 0, 2), 0.5, 2, 50, 50);
 	//cone->rotateTo(90, 1, 0, 0);
 	Sphere*s = new Sphere(Point(-2, 0, 2), 1, 50, 50);
-	sb_dsl_mode *sb = new sb_dsl_mode(Point(-2, 0, 2),"hii.obj");
+	objectmodel *sb = new objectmodel(Point(-2, 0, 2),"hii.obj");
 
 }
 void draw_world()
