@@ -1,6 +1,6 @@
 #ifndef _Model_H_
 #define _Model_H_
-#include "glew.h"
+#include <glew.h>
 #include "GLUT.H"
 #include <vector>
 #include <iostream>
