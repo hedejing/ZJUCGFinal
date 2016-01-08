@@ -7,6 +7,9 @@ BasicElement::BasicElement() {
 	id = World::getNextId(this);
 	//this->rotateMat = ::rotateMat(0, 0, 1, 0);
 	scaleValue = Vec(1, 1, 1);
+	//hdj : add an assignment for rotateQuat 1/8
+	rotateQuat = Quat(0, 0, 0, 1);
+
 }
 BasicElement::~BasicElement() {
 	World::erase(id);

@@ -73,6 +73,7 @@ public:
 
 	/*  外部可传入绘制函数  */
 	static void (*_display)();
+	static void(*_free)();
 
 	friend class BasicElement;
 
