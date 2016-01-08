@@ -197,3 +197,19 @@ void AviBoard::drawNaive() {
 		glDrawPixels(pixel_w, pixel_h, GL_RGB, GL_UNSIGNED_BYTE, tmpbuff);
 	glPopMatrix();
 }
+
+objectmodel::objectmodel(Point p, string name)
+{
+	centroid = p;
+	mymo = new  Model();
+	mymo->Readobj(name.c_str());
+	this->scale(0.1);
+}
+void objectmodel::drawNaive()
+{
+	mymo->draw();
+}
+
+objectmodel::~objectmodel(void)
+{
+}
