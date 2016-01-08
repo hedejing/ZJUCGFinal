@@ -161,7 +161,7 @@ void World::drawAll() {
 
 /*  GLU FUNC  */
 void World::perspective() {
-	gluPerspective(45*zoomFactor, (double)windowWidth / windowHeight, 0.1, 1000);
+	gluPerspective(45*zoomFactor, (double)windowWidth / windowHeight, 0.1, 100);
 }
 void World::lookAt() {
 	gluLookAt(eye[0], eye[1], eye[2],  center[0], center[1], center[2],  up[0], up[1], up[2]);
