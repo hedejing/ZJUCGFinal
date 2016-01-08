@@ -111,15 +111,4 @@ public:
 	void drawNaive();
 };
 
-class objectmodel : public BasicElement {
-private:
-	Model* mymo;
-public:
-	objectmodel(Point p,string name);
-	~objectmodel(void);
-	void drawNaive();
-};
-
-
-
 #endif

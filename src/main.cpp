@@ -24,10 +24,9 @@ void define() {
 	//new Sphere(Point(2, 1, 2));  //Çò
 	//new Cone(Point(2, 2, -3));  //Ô²×¶
 	//new Circle(Point(-2, 2, 2));  //Ô²
-	//Cylinder *cc = new Cylinder(Point(2, -2, 4));  //Ô²Öù
-	//cc->rotateTo(45, 0, 0, 1);
+	Cylinder *cc = new Cylinder(Point(2, -2, 4));  //Ô²Öù
+	cc->rotateTo(45, 0, 0, 1);
 	AviBoard *avi = new AviBoard(Point(0,10,0),100,100,"test2.rgb");
-	objectmodel *sb = new objectmodel(Point(2, -2, 4), "my2.obj");
 }
 void draw_world()
 {
@@ -108,12 +107,11 @@ int main(int argc, char *argv[]) {
 		glLightfv(GL_LIGHT2, GL_DIFFUSE, Color( 0.2, 1, 0.2, 0));//COLOR::white);
 		glLightfv(GL_LIGHT2, GL_SPECULAR, Color(0.2, 1, 0.2, 0));//COLOR::white);
 
-		//GLfloat dir[] = { 0, 0,-1};
-		//glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, dir);
+		/*GLfloat dir[] = { 0, 0,-1};
+		glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, dir);*/
 		//glEnable(GL_LIGHT0);  //light0Ö»ÊÇÓÃ×öÊ¾Àý
 		//glEnable(GL_LIGHT1);
 		//glEnable(GL_LIGHT2);
-
 	}
 
 	glutMainLoop();
