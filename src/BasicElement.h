@@ -1,6 +1,6 @@
 #ifndef __BasicElement_H__
 #define __BasicElement_H__
-#include "Model.h"
+
 #include "utility.h"
 
 /*  基本三维物体  */
@@ -86,7 +86,6 @@ public:
 
 class Rect : public BasicElement {
 public:
-	Model M;
 	unsigned int tex;
 	Rect(Point p, unsigned int texture=0);
 	Rect(unsigned int texture=0);
