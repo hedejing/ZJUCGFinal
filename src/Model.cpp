@@ -352,6 +352,7 @@ ifstream fin;
 		glVertex3f(v3.x,v3.y,v3.z);
 		
 	}
+	
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
 	glEndList();
