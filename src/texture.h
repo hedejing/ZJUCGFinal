@@ -1,5 +1,7 @@
+#ifndef __TEXTURE_H__
+#define __TEXTURE_H__
 #include <cstdlib>
-#include <GL/glut.h>
+#include <glut.h>
 #include <cstdio>
 
 const int BMP_Header_Length = 54;
@@ -29,3 +31,4 @@ struct BMPInfoHeader {
 };
 
 GLuint loadTexture(const char *fileName);  //返回值为0即为发生了错误
+#endif
