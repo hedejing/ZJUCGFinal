@@ -67,7 +67,7 @@ void define() {
 	//cylinder->rotateTo(45, 0, 0, 1);
 
 	AviBoard *avi = new AviBoard(Point(0, 20, 0), 100, 100, "test2.rgb");
-	objectmodel *sb = new objectmodel(Point(2, 0, 4), "f1.obj");
+	objectmodel *sb = new objectmodel(Point(2, 0, 4), "./obj/f2.obj");
 	DrawScene_Of_CS("");
 	//InitSkyBox(1999);
 

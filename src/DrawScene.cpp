@@ -111,14 +111,20 @@ bool PushSceneOfName(string name)
 		}
 	}
 
-	for (int i = -3; i < 5; i++)
+	for (int i = -3; i < 5; i++)//中间的长墙
 	{
 		a.size = Vec(5, 3, 1);
 		a.texutre = tex_board;
 		a.position = Point(i * 2 * 5, 0.5, 0);
 		Walls.push_back(a);
 	}
-
+	for (int i = -3; i < 8; i++)
+	{
+		a.size = Vec(5, 3, 1);
+		a.texutre = tex_board;
+		a.position = Point(i * 2 * 5, 0.5, 38);
+		Walls.push_back(a);
+	}
 	for (int i = 0; i < 2; i++)
 	{
 		a.size = Vec(1, 3, 5);
@@ -127,7 +133,7 @@ bool PushSceneOfName(string name)
 		Walls.push_back(a);
 	}
 
-	for (int i = 0; i < 4; i++)
+	for (int i = -4; i < 4; i++)
 	{
 		a.size = Vec(1, 3, 5);
 		a.texutre = tex_board;
@@ -135,6 +141,19 @@ bool PushSceneOfName(string name)
 		Walls.push_back(a);
 	}
 
+	for (int i = -3; i < 1; i++){
+		a.size = Vec(5, 3, 1);
+		a.texutre = tex_board;
+		a.position = Point(i * 2 * 5, 0.5, -20);
+		Walls.push_back(a);
+	}
+
+	for (int i = -3; i < 5; i++){
+		a.size = Vec(5, 3, 1);
+		a.texutre = tex_board;
+		a.position = Point(i * 2 * 5, 0.5, -40);
+		Walls.push_back(a);
+	}
 	for (int i = 0; i < 5; i++)
 	{
 		a.size = Vec(5, 3, 1);
