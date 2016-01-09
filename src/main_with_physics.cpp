@@ -19,7 +19,8 @@ using namespace std;
 
 void define() {
 	double size = 1;
-	Cube *c = new Cube(Point(2, 2, 0));
+	GLuint tt=loadTexture("389a18c0.bmp");
+	Cube *c = new Cube(Point(2, 2, 0),tt);
 	c->rotateTo(45, 0, 0, 1);
 	c->scaleValue = Vec(2, 2, 2);
 	// hdj : CREATE a rigidbody for elements...
