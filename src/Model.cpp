@@ -276,6 +276,22 @@ ifstream fin;
 			 {
 				v vertex;
 				fin>>vertex.x>>vertex.y>>vertex.z;
+				if (!getC)
+				{
+					getC = 1;
+					minx = maxx = vertex.x;
+					miny = maxy = vertex.y;
+					minz = maxz = vertex.z;
+				}
+				else
+				{
+					if (minx > vertex.x) minx = vertex.x;
+					if (maxx < vertex.x)maxx = vertex.x;
+					if (miny>vertex.y)miny = vertex.y;
+					if (maxy < vertex.y)maxy = vertex.y;
+					if (minz >vertex.z) minz = vertex.z;
+					if (maxz < vertex.z) maxz = vertex.z;
+				}
 				vertices.push_back(vertex);
 			 }
 			break;
