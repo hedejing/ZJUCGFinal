@@ -2,7 +2,7 @@
 #include <vector>
 #include "Physics.h"
 vector<Rect> skybox;
-GLuint tex[6]; 
+GLuint tex[6];
 void InitSkyBox()
 {
 	tex[0] = loadTexture("teide/negx.bmp");
@@ -86,14 +86,6 @@ using namespace std;
 #define rect_width 10
 vector<wall_info> Walls;
 GLuint board_info[board_w][board_h];
-bool iawall[board_w*rect_width][board_h*rect_width] = { false };
-bool IsWall(float x, float z){
-	x -= board_w*rect_width / 2;
-	z -= board_h*rect_width / 2;
-	return iawall[(int)x][(int)z];
-}
-
-
 bool PushSceneOfName(string name)
 {
 	//push all the objects into the vector
@@ -101,11 +93,6 @@ bool PushSceneOfName(string name)
 	wall_info a;
 	GLuint tex_board = loadTexture("board.bmp");
 	GLuint tex_nitu = loadTexture("nitu.bmp");
-	//unsigned char  filewall[board_h][board_w];
-	//FILE *fp = fopen(name.c_str(), "rb");
-	//fread(filewall, board_w*board_h *rect_width * rect_width, 1, fp);//��ȡ����
-	//fclose(fp);
-
 	for (int i = 0; i < board_h; i++)
 	{
 		for (int j = 0; j < board_w; j++)
@@ -117,29 +104,18 @@ bool PushSceneOfName(string name)
 		}
 	}
 
-	for (int i = -3; i < 5; i++)//ÖÐ¼äµÄ³¤Ç½
+	for (int i = -3; i < 5; i++)//中间的长墙
 	{
 		a.size = Vec(5, 3, 1);
 		a.texutre = tex_board;
 		a.position = Point(i * 2 * 5, 0.5, 0);
-		for (int j = a.position[0] - 5; j < a.position[0] + 5; j++)
-		{
-			iawall[j + board_w*rect_width / 2][0 + board_w*rect_width / 2] = true;
-			iawall[j + board_w*rect_width / 2][-1 + board_w*rect_width / 2] = true;
-		}
 		Walls.push_back(a);
-
 	}
 	for (int i = -3; i < 8; i++)
 	{
 		a.size = Vec(5, 3, 1);
 		a.texutre = tex_board;
 		a.position = Point(i * 2 * 5, 0.5, 38);
-		for (int j = a.position[0] - 5; j < a.position[0] + 5; j++)
-		{
-			iawall[j + board_w*rect_width / 2][38 + board_w*rect_width / 2] = true;
-			iawall[j + board_w*rect_width / 2][37 + board_w*rect_width / 2] = true;
-		}
 		Walls.push_back(a);
 	}
 	for (int i = 0; i < 2; i++)
@@ -147,11 +123,6 @@ bool PushSceneOfName(string name)
 		a.size = Vec(1, 3, 5);
 		a.texutre = tex_board;
 		a.position = Point(46, -1.5, 4 + i * 2 * 5);
-		for (int j = a.position[2] - 5; j < a.position[2] + 5; j++)
-		{
-			iawall[45 + board_w*rect_width / 2][j + board_w*rect_width / 2] = true;
-			iawall[46 + board_w*rect_width / 2][j + board_w*rect_width / 2] = true;
-		}
 		Walls.push_back(a);
 	}
 
@@ -160,11 +131,6 @@ bool PushSceneOfName(string name)
 		a.size = Vec(1, 3, 5);
 		a.texutre = tex_board;
 		a.position = Point(-36, -1.5, 4 + i * 2 * 5);
-		for (int j = a.position[2] - 5; j < a.position[2] + 5; j++)
-		{
-			iawall[-36 + board_w*rect_width / 2][j + board_w*rect_width / 2] = true;
-			iawall[-37 + board_w*rect_width / 2][j + board_w*rect_width / 2] = true;
-		}
 		Walls.push_back(a);
 	}
 
@@ -172,11 +138,6 @@ bool PushSceneOfName(string name)
 		a.size = Vec(5, 3, 1);
 		a.texutre = tex_board;
 		a.position = Point(i * 2 * 5, 0.5, -20);
-		for (int j = a.position[0] - 5; j < a.position[0] + 5; j++)
-		{
-			iawall[j + board_w*rect_width / 2][-20 + board_w*rect_width / 2] = true;
-			iawall[j + board_w*rect_width / 2][-21 + board_w*rect_width / 2] = true;
-		}
 		Walls.push_back(a);
 	}
 
@@ -184,11 +145,6 @@ bool PushSceneOfName(string name)
 		a.size = Vec(5, 3, 1);
 		a.texutre = tex_board;
 		a.position = Point(i * 2 * 5, 0.5, -40);
-		for (int j = a.position[0] - 5; j < a.position[0] + 5; j++)
-		{
-			iawall[j + board_w*rect_width / 2][-40 + board_w*rect_width / 2] = true;
-			iawall[j + board_w*rect_width / 2][-41 + board_w*rect_width / 2] = true;
-		}
 		Walls.push_back(a);
 	}
 	for (int i = 0; i < 5; i++)
@@ -196,11 +152,6 @@ bool PushSceneOfName(string name)
 		a.size = Vec(5, 3, 1);
 		a.texutre = tex_board;
 		a.position = Point(i * 2 * 5, 0.5, 18);
-		for (int j = a.position[0] - 5; j < a.position[0] + 5; j++)
-		{
-			iawall[j + board_w*rect_width / 2][18 + board_w*rect_width / 2] = true;
-			iawall[j + board_w*rect_width / 2][17 + board_w*rect_width / 2] = true;
-		}
 		Walls.push_back(a);
 	}
 	return 0;

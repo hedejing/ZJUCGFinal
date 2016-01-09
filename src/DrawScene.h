@@ -7,7 +7,6 @@ struct wall_info{
 	GLuint texutre;
 	Point position;
 };
-bool IsWall(float x, float z);
 void DrawScene_Of_CS(string name);
 //void DrawSkyBox();
 void InitSkyBox();
