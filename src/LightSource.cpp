@@ -290,6 +290,7 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	// 1 环境光
+
 	for (int i = 0; i < lights.size(); i++)
 	{
 		if (!lights[i].enable)
@@ -305,7 +306,20 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 	glLoadIdentity();
 	World::lookAt();
 	draw_world();
+
+	for (int i = 0; i < lights.size(); i++)
+	{
+		if (!lights[i].enable)
+			continue;
+		glEnable(GL_LIGHT0 + i);
+	}
 	drawSkyBox(1999);
+	for (int i = 0; i < lights.size(); i++)
+	{
+		if (!lights[i].enable)
+			continue;
+		glDisable(GL_LIGHT0 + i);
+	}
 	
 	//2 点光源
 	GLfloat la[4]; glGetFloatv(GL_LIGHT_MODEL_AMBIENT, la);
