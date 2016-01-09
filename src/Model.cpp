@@ -32,7 +32,7 @@ void Mtl_info::change_MTL(string mtl_name)
 		glBindTexture(GL_TEXTURE_2D, ma.Kd_Texture_ID);
 	}
 }
-Mtl_info::Mtl_info(const char *filename)//读取mtl文件信息
+Mtl_info::Mtl_info(const char *filename,string path)//读取mtl文件信息
 {
 	fstream fin;
 	fin.open(filename, ios::in);
@@ -87,6 +87,7 @@ Mtl_info::Mtl_info(const char *filename)//读取mtl文件信息
 			tmp->content += IF_KD_TE;
 			string t_file;
 			fin >> t_file;
+			t_file = path + t_file;
 			if (t_file.substr(t_file.length() - 3) == "tga")
 			{
 				tmp->Kd_Texture_ID = Model::LoadTGA(t_file.c_str());
@@ -226,7 +227,7 @@ ifstream fin;
 		{
 			string filename;
 			fin >> filename;
-			obj_mtl = new Mtl_info((path+filename).c_str());
+			obj_mtl = new Mtl_info((path+filename).c_str(),path);
 			continue;
 		}
 		if (s == "usemtl")
