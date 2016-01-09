@@ -45,8 +45,11 @@ public:
 };
 
 class Cube : public BasicElement {
+private:
+	GLuint tex=0;
 public:
 	Cube(Point p);
+	Cube(Point p, GLuint t);
 	void drawNaive();
 };
 
