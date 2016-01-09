@@ -4,7 +4,7 @@
 #include "World.h"
 #include "utility.h"
 #include "texture.h"
-#include "DrawScene.h"
+
 
 unsigned int World::nextId = 0;
 map<unsigned int, BasicElement *> World::objects = map<unsigned int, BasicElement *>();
@@ -16,6 +16,9 @@ int World::windowPos[2];
 int World::cursorPos[2];
 int World::focusState;
 
+CameraModel *World::cameraModel = NULL;
+int World::changing = 0;
+btRigidBody *World::cameraModelRigidBody = NULL;
 Point World::eye = Point(0, 0, 0);
 Point World::center = Point(1, 0, 0);
 const Vec World::up = Vec(0, 1, 0);
@@ -25,13 +28,19 @@ double World::rotateSpeed = 0.1;
 double World::zoomFactor = 1, World::zoomSpeed = 0.005;
 
 unsigned int World::chosenID = -1;
-int World::gameMode = 0;
-int World::gameModeNum = 2;
+int World::gameMode = 1;
+int World::gameModeTotalNum = 2;
 
-void (*World::_display)() = NULL;
-void (*World::_free)() = NULL;
+void(*World::_display)() = NULL;
+void(*World::_free)() = NULL;
 
-int World::mouseState[3] = {GLUT_UP, GLUT_UP, GLUT_UP};
+double World::worldBound[3][2] = {
+	{ -100, 100 },  //x
+	{ -100, 100 },  //y
+	{ -100, 100 },  //z
+};
+
+int World::mouseState[3] = { GLUT_UP, GLUT_UP, GLUT_UP };
 
 
 
@@ -74,13 +83,15 @@ void World::init(int *argc, char *argv[], int windowHeight, int windowWidth, int
 		glutEntryFunc(entry);
 		glutIdleFunc(idle);
 
-		glutSetCursor(GLUT_CURSOR_CROSSHAIR);
+		//glutFullScreen();
+		//glutSetCursor(GLUT_CURSOR_CROSSHAIR);
+		ShowCursor(0);
 	}
 	{  //GLEW INIT
-		glewExperimental = TRUE;
-		if (GLenum err = glewInit())
-			fprintf(stderr, "Error is%s", glewGetErrorString(err));
-	}
+	glewExperimental = TRUE;
+	if (GLenum err = glewInit())
+		fprintf(stderr, "Error is%s", glewGetErrorString(err));
+}
 	{  //OPENGL INIT
 		glClearColor(0, 0, 0, 1);
 		glEnable(GL_DEPTH_TEST);
@@ -100,7 +111,7 @@ void World::init(int *argc, char *argv[], int windowHeight, int windowWidth, int
 	//...
 }
 void World::setCursorToCenter() {
-	SetCursorPos(windowWidth / 2 + windowPos[0], windowHeight / 2 + windowPos[1]);  //TODO  这里的cursorPos并不准确
+	SetCursorPos(cursorPos[0] = windowWidth / 2 + windowPos[0], cursorPos[1] = windowHeight / 2 + windowPos[1]);  //TODO  这里的cursorPos并不准确
 }
 
 void World::reCenter() {
@@ -109,16 +120,37 @@ void World::reCenter() {
 	Vec t = center - eye;
 	center = eye + Vec(cos(fi)*cos(theta), sin(fi), cos(fi)*sin(theta))*t.abs();
 }
+void World::syncWithCameraModel() {
+	if (gameMode == GAME_MODE) {
+		eye[1] = 2.5;
+		if (cameraModelRigidBody != NULL && cameraModel != NULL) {
+			btTransform trans = cameraModelRigidBody->getWorldTransform();
+			trans.setOrigin(btVector3(eye[0], eye[1], eye[2]));
+			cameraModelRigidBody->setWorldTransform(trans);
+		}
+	}
+}
 void World::setCamera(Point _eye, Point _center) {
+	++changing;
 	eye = _eye;  center = _center;
 	Vec t = center - eye;
 	elevation[0] = atan2(t[2], t[0]) * 180 / M_PI;
 	elevation[1] = atan2(t[1], hypot(t[0], t[2])) * 180 / M_PI;
+
+	syncWithCameraModel();
+	--changing;
 }
 void World::move(double dx, double dy, double dz) { move(Vec(dx, dy, dz)); }
-void World::move(const Vec &ds) { eye += ds; center += ds; }
+void World::move(const Vec &ds) {
+	++changing;
+	eye += ds; center += ds;
+
+	syncWithCameraModel();
+	--changing;
+}
 void World::move(int d, double step) {
 	if (d < 0 || d > 2) return;
+	++changing;
 	if (d == 0) {
 		Vec t = ((center - eye)*up).normalize();
 		t = step * moveSpeed * t;
@@ -133,41 +165,101 @@ void World::move(int d, double step) {
 		eye += step * moveSpeed * up;
 		center += step * moveSpeed * up;
 	}
+
+	syncWithCameraModel();
+	--changing;
 }
 void World::_move(double dx, double dy) {
-	Vec up = Vec(0,1,0);
-	Vec t = -(up*(center-eye)).normalize()*dx*0.1;
+	++changing;
+
+	Vec up = Vec(0, 1, 0);
+	Vec t = -(up*(center - eye)).normalize()*dx*0.1;
 	eye += moveSpeed*t; center += moveSpeed*t;
 	t = -up*dy*0.1;
 	eye += moveSpeed*t; center += moveSpeed*t;
+
+	syncWithCameraModel();
+	--changing;
 }
 void World::rotate(double angle, double x, double y, double z) {}
 void World::rotate(int d, double step) {
 	if (d < 0 || d > 1) return;
 	if (d == 0) elevation[0] += rotateSpeed * step;
 	else elevation[1] += rotateSpeed * step;
-	if (elevation[1] > 75) elevation[1] = 75;
-	if (elevation[1] < -75) elevation[1] = -75;
+	if (elevation[1] > 45) elevation[1] = 45;
+	if (elevation[1] < -45) elevation[1] = -45;
 
 	reCenter();
 }
 void World::zoom(double d) {
 	zoomFactor += zoomSpeed * d;
-	if (zoomFactor > 3.5) zoomFactor = 3.5;
-	if (zoomFactor < 0.1) zoomFactor = 0.1;
+	if (zoomFactor > 1.5) zoomFactor = 1.5;
+	if (zoomFactor < 0.6) zoomFactor = 0.6;
 }
 
 void World::drawAll() {
-	for (auto o : objects) o.second->draw();
+	for (auto it = objects.begin(); it != objects.end();) {
+		if (it->second->classType == 1 && !isInside(it->second->centroid)) {
+			BasicElement *be = it->second;
+			it++;
+			delete be;
+		}
+		else {
+			it->second->draw();
+			it++;
+		}
+	}
+	//for (auto o : objects) {
+	//	if (!isInside(o.second->centroid)) {
+	//		objects.erase(o.first);
+	//		delete o.second;
+	//	}
+	//	else  o.second->draw();
+	//}
 	if (_display != NULL) _display();
+
+	/*  鼠标的绘制  */
+	glDisable(GL_LIGHTING);
+	double length = 0.02, perc = 0.1;
+	Vec right = (center - eye) * up; right = right.normalize()*length;
+	Vec _up = right * (center - eye); _up = _up.normalize()*length;
+	Vec east = right, west = -right;
+	Vec north = _up, south = -_up;
+	Point pos = eye + (center - eye).normalize()*1.1;
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glTranslatef(pos[0], pos[1], pos[2]);
+	glBegin(GL_LINES);
+	//glColor3f(0.2, 0.2, 0.4);
+	glColor3f(0, 0, 0);
+
+	glVertex3f(east[0], east[1], east[2]);
+	glVertex3f(east[0] * perc, east[1] * perc, east[2] * perc);
+	glVertex3f(west[0], west[1], west[2]);
+	glVertex3f(west[0] * perc, west[1] * perc, west[2] * perc);
+
+	glVertex3f(north[0], north[1], north[2]);
+	glVertex3f(north[0] * perc, north[1] * perc, north[2] * perc);
+	glVertex3f(south[0], south[1], south[2]);
+	glVertex3f(south[0] * perc, south[1] * perc, south[2] * perc);
+	glEnd();
+	glPopMatrix();
+	glEnable(GL_LIGHTING);
+}
+
+bool World::isInside(Point p) {
+	if (p[0] < eye[0] + worldBound[0][0] || p[0] > eye[0] + worldBound[0][1]) return 0;
+	if (p[1] < eye[1] + worldBound[1][0] || p[1] > eye[1] + worldBound[1][1]) return 0;
+	if (p[2] < eye[2] + worldBound[2][0] || p[2] > eye[2] + worldBound[2][1]) return 0;
+	return 1;
 }
 
 /*  GLU FUNC  */
 void World::perspective() {
-	gluPerspective(45*zoomFactor, (double)windowWidth / windowHeight, 0.1, 100);
+	gluPerspective(30 * zoomFactor, (double)windowWidth / windowHeight, 1, 100);  //听说fovy要设在45度以下才能获得比较好的效果
 }
 void World::lookAt() {
-	gluLookAt(eye[0], eye[1], eye[2],  center[0], center[1], center[2],  up[0], up[1], up[2]);
+	gluLookAt(eye[0], eye[1], eye[2], center[0], center[1], center[2], up[0], up[1], up[2]);
 }
 
 /*  GLUT FUNC  */
@@ -176,9 +268,20 @@ void World::idle() {
 }
 
 void World::display() {
-	if (focusState == GLUT_ENTERED)
-		setCursorToCenter();
-	
+	windowPos[0] = glutGet(GLUT_WINDOW_X);
+	windowPos[1] = glutGet(GLUT_WINDOW_Y);
+	windowHeight = glutGet(GLUT_WINDOW_HEIGHT);
+	windowWidth = glutGet(GLUT_WINDOW_WIDTH);
+	if (focusState == GLUT_ENTERED) setCursorToCenter();
+
+	if (cameraModel != NULL && changing <= 0) {
+		//puts("changing eye");
+		Vec tmp = center - eye;
+		//eye = cameraModel->centroid;
+		//center = eye + tmp;
+		syncWithCameraModel();
+	}
+
 #ifndef NO_SHADOW
 	LightManager::displayWithShadow(drawAll);
 #else
@@ -213,9 +316,9 @@ void World::keyboard(unsigned char key, int x, int y) {
 
 	switch (key) {
 	case 27: {
-		if(_free!=NULL)
-			_free();
-		exit(0);
+				 if (_free != NULL)
+					 _free();
+				 exit(0);
 	}
 	case 'a': case 'A':  //出现图形变扁的原因可能是我的这种移动一个像素转某个角度的逻辑有问题
 		move(0, -moveStep);
@@ -277,8 +380,8 @@ void World::special(int key, int x, int y) {
 	case GLUT_KEY_F1:
 		grabScreen();
 		break;
-	case GLUT_KEY_F12:
-		(++gameMode) %= gameModeNum;
+	case GLUT_KEY_F6:  //不能用F12
+		(++gameMode) %= gameModeTotalNum;
 		break;
 	default:
 		break;
@@ -289,39 +392,48 @@ void World::special(int key, int x, int y) {
 void World::motion(int x, int y) {
 	POINT pos;
 	Point pcenter;
+	btTransform trans;
 	if (focusState == GLUT_ENTERED) {
-		switch (mouseState[0]*4+mouseState[1]*2+mouseState[2]) {
-		/*  orbit  */
+		switch (mouseState[0] * 4 + mouseState[1] * 2 + mouseState[2]) {
+			/*  orbit  */
 		case 3:  //左键
-			GetCursorPos(&pos);
-			x = pos.x;  y = pos.y;
-			elevation[0] += rotateSpeed * (x - cursorPos[0]);
-			elevation[1] += -rotateSpeed * (y - cursorPos[1]);
-			if (elevation[1] > 75) elevation[1] = 75;
-			if (elevation[1] < -75) elevation[1] = -75;
+			if (gameMode == GAME_MODE) {
+			}
+			else {
+				GetCursorPos(&pos);
+				x = pos.x;  y = pos.y;
+				elevation[0] += rotateSpeed * (x - cursorPos[0]);
+				elevation[1] += -rotateSpeed * (y - cursorPos[1]);
+				if (elevation[1] > 45) elevation[1] = 45;
+				if (elevation[1] < -45) elevation[1] = -45;
 
-			pcenter = center;
-			reCenter();
-			eye = eye + (pcenter - center);
-			center = pcenter;
+				pcenter = center;
+				reCenter();
+				eye = eye + (pcenter - center);
+				center = pcenter;
+			}
 			break;
 
-		/*  zoom  */
+			/*  zoom  */
 		case 5:  //中键
 			GetCursorPos(&pos);
 			zoom(pos.y - cursorPos[1]);
 			break;
 
-		/*  zoom to fit  */
+			/*  zoom to fit  */
 		case 1:  //左键+中键
 			zoomFactor = 1;
 			break;
 
-		/*  pan  */
+			/*  pan  */
 		case 6:
-			GetCursorPos(&pos);
-			x = pos.x;  y = pos.y;
-			_move(x - cursorPos[0], y - cursorPos[1]);
+			if (gameMode == GAME_MODE) {
+			}
+			else {
+				GetCursorPos(&pos);
+				x = pos.x;  y = pos.y;
+				_move(x - cursorPos[0], y - cursorPos[1]);
+			}
 			break;
 		default:
 			break;
@@ -337,8 +449,8 @@ void World::passiveMotion(int x, int y) {
 		x = pos.x;  y = pos.y;
 		elevation[0] += rotateSpeed * (x - cursorPos[0]);
 		elevation[1] += -rotateSpeed * (y - cursorPos[1]);
-		if (elevation[1] > 75) elevation[1] = 75;
-		if (elevation[1] < -75) elevation[1] = -75;
+		if (elevation[1] > 45) elevation[1] = 45;
+		if (elevation[1] < -45) elevation[1] = -45;
 		reCenter();
 
 		glutPostRedisplay();
@@ -351,10 +463,12 @@ void World::entry(int state) {
 }
 void World::mouseClick(int button, int state, int x, int y) {
 	if ((button == GLUT_LEFT_BUTTON) && (state == GLUT_DOWN)) {
-		mousedw(x, y, button);
+		if (gameMode == GAME_MODE) shoot();
+		else mousedw(x, y, button);
+
 	}
 	mouseState[button] = state;
-	
+
 }
 
 
@@ -531,7 +645,7 @@ void World::grabScreen(void) {  //TODO  截图时可以输出一个提示信息
 	fileHeader.bfSize = windowHeight * windowWidth * 3 + 54;
 	fileHeader.bfReserved1 = fileHeader.bfReserved2 = 0;
 	fileHeader.bfOffBits = 54;
-	fwrite(&fileHeader.bfSize, sizeof(DWord) * 3, 1, pWritingFile);
+	fwrite(&fileHeader.bfSize, sizeof(DWord)* 3, 1, pWritingFile);
 
 	infoHeader.biSize = 40;
 	infoHeader.biWidth = windowWidth;
