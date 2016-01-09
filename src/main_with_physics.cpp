@@ -85,7 +85,8 @@ void draw_world()
 	//LightManager::xoy_foor(200, 3, 100);
 	glPopMatrix();
 	//glPushMatrix();
-
+	LifeBar a(100, 3, 0.5);
+	a.DrawBar(Point(5, 11, 4), 30);
 	//glTranslatef(0, height, 0);
 	//glutSolidCube(2);
 

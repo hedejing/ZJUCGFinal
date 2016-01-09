@@ -1,4 +1,4 @@
-#include "DrawScene.h"
+﻿#include "DrawScene.h"
 #include <vector>
 #include "Physics.h"
 vector<Rect> skybox;
@@ -67,7 +67,7 @@ void drawTexRect(Point centroid, double scaleValue, GLuint tex, int face)
 void drawSkyBox(double length)
 {
 	float zero[4] = { 0, 0, 0, 1 };
-	float white[4] = { 1, 1, 1, 1 };
+	float white[4] = { 0.5, 0.5, 0.5, 1 };
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, white);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, zero);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, zero);
