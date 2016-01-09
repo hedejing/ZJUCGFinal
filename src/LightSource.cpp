@@ -3,6 +3,8 @@
 #include "World.h"
 #include "utility.h"
 #include "DrawScene.h"
+
+
 ShadowStuff LightManager::shadowStuff;
 vector<LightSource> LightManager::lights;
 
@@ -22,7 +24,7 @@ bool save_stencil = false;
 
 /*
 glActiveTexture(GL_TEXTURE0) 普通贴图
-glActiveTexture(GL_TEXTURE1) 阴影纹理
+glActiveTexture(GL_TEXTURE2) 阴影纹理
 系统支持的最大纹理宽度和长度，查询 glGetIntegerv(GL_MAX_TEXTURE_SIZE, GLint*)
 在我的电脑上 最大纹理尺寸为 16382
 有的可能是8192
@@ -64,7 +66,7 @@ void LightManager::shadow_init()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-	glActiveTexture(GL_TEXTURE1); // 阴影纹理
+	glActiveTexture(GL_TEXTURE2); // 阴影纹理
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
 	// 自动生成纹理
@@ -100,7 +102,7 @@ void LightManager::shadow_init()
 void LightManager::addLight(const LightSource & light)
 {
 	lights.push_back(light);
-	glActiveTexture(GL_TEXTURE1); // 阴影纹理
+	glActiveTexture(GL_TEXTURE2); // 阴影纹理
 	GLuint newShadowTexID;
 	glGenTextures(1, &newShadowTexID);
 	glBindTexture(GL_TEXTURE_2D, newShadowTexID);
@@ -115,7 +117,7 @@ void LightManager::addLight(const LightSource & light)
 	glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_LUMINANCE);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, shadowStuff.shadow_w, shadowStuff.shadow_h, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
 	//glBindTexture(GL_TEXTURE_2D, 0);
-	//glDisable(GL_TEXTURE1);
+	//glDisable(GL_TEXTURE2);
 	shadowStuff.tex_shadow.push_back(newShadowTexID);
 }
 
@@ -146,6 +148,7 @@ void saveImaeg()
 
 }
 
+
 void LightManager::displayWithShadow(void (*_draw_world)())
 {
 	draw_world = _draw_world;
@@ -162,11 +165,11 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 	// 不需要光照和纹理
 	GLboolean li = glIsEnabled(GL_LIGHTING);
 	if (li) glDisable(GL_LIGHTING);
-	glActiveTexture(GL_TEXTURE1); glDisable(GL_TEXTURE_2D);
+	glActiveTexture(GL_TEXTURE2); glDisable(GL_TEXTURE_2D);
 	glActiveTexture(GL_TEXTURE0); glDisable(GL_TEXTURE_2D);
 
 	// 将摄像机放置在光源位置，投影矩阵和视图矩阵
-	GLMat shadowMatP = perspectiveMat(90, (double)World::windowWidth / World::windowHeight, 1.0, 1.0e3f);
+	GLMat shadowMatP = perspectiveMat(90, (double)World::windowWidth / World::windowHeight, 1.0, 1.0e10f);
 	//glEnable(GL_CULL_FACE); glCullFace(GL_FRONT);
 	//glMatrixMode(GL_PROJECTION); glPushMatrix();
 	//glMatrixMode(GL_MODELVIEW); glPushMatrix();
@@ -189,7 +192,7 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 	Point shadowCenter(0, 0, 0);
 	//shadowCenter = World::center;
 	shadowCenter = Point(0, 1, 0);
-	glActiveTexture(GL_TEXTURE1);
+	glActiveTexture(GL_TEXTURE2);
 	glEnable(GL_TEXTURE_2D);
 	for (int i = 0; i < lights.size(); i++)
 	{
@@ -202,8 +205,8 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 		shadowMatV[i] = lookAtMat(lights[i].position, shadowCenter, World::up);
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		//World::perspective();
-		gluPerspective(90, (double)World::windowWidth / World::windowHeight, 1.0f, 1.0e3f);// hedjin : value of near must be 1.0 !!! 
+		World::perspective();
+		//gluPerspective(90, (double)World::windowWidth / World::windowHeight, 1.0f, 1.0e10f);// hedjin : value of near must be 1.0 !!! 
 		//gluPerspective(90, 1, 1.0f, 1.0e10f);// hedjin : value of near must be 1.0 !!! 
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
@@ -217,7 +220,7 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 	//glMatrixMode(GL_MODELVIEW); glPopMatrix();
 	//glDisable(GL_CULL_FACE); glCullFace(GL_BACK);
 
-	//glActiveTexture(GL_TEXTURE1);
+	//glActiveTexture(GL_TEXTURE2);
 	//glMatrixMode(GL_MODELVIEW);
 	//glLoadIdentity();
 	//gluLookAt(eye[0], eye[1], eye[2],
@@ -240,7 +243,7 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 	//glEnable(GL_TEXTURE_2D);
 	//if (save_stencil) {
 	//	save_stencil = false;
-	//	glActiveTexture(GL_TEXTURE1);
+	//	glActiveTexture(GL_TEXTURE2);
 	//	GLfloat* data = new GLfloat[shadowStuff.shadow_w, shadowStuff.shadow_h];
 	//	for (int i = 0; i<lights.size(); ++i) {
 	//		glBindTexture(GL_TEXTURE_2D, shadowStuff.tex_shadow);
@@ -256,7 +259,7 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 	if (save_stencil) {
 		save_stencil = false;
 		puts("Save");
-		glActiveTexture(GL_TEXTURE1); glEnable(GL_TEXTURE_2D);
+		glActiveTexture(GL_TEXTURE2); glEnable(GL_TEXTURE_2D);
 		GLfloat* data = new GLfloat[shadowStuff.shadow_w*shadowStuff.shadow_h];
 		for (int i = 0; i < lights.size(); ++i) {
 			glBindTexture(GL_TEXTURE_2D, shadowStuff.tex_shadow[i]);
@@ -287,13 +290,14 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	// 1 环境光
+
 	for (int i = 0; i < lights.size(); i++)
 	{
 		if (!lights[i].enable)
 			continue;
 		glDisable(GL_LIGHT0 + i);
 	}
-	glActiveTexture(GL_TEXTURE1); glDisable(GL_TEXTURE_2D);
+	glActiveTexture(GL_TEXTURE2); glDisable(GL_TEXTURE_2D);
 	glActiveTexture(GL_TEXTURE0); glEnable(GL_TEXTURE_2D);
 
 	glBindTexture(GL_TEXTURE_2D, tex_walls);
@@ -302,12 +306,26 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 	glLoadIdentity();
 	World::lookAt();
 	draw_world();
+
+	for (int i = 0; i < lights.size(); i++)
+	{
+		if (!lights[i].enable)
+			continue;
+		glEnable(GL_LIGHT0 + i);
+	}
+	drawSkyBox(1999);
+	for (int i = 0; i < lights.size(); i++)
+	{
+		if (!lights[i].enable)
+			continue;
+		glDisable(GL_LIGHT0 + i);
+	}
 	
 	//2 点光源
 	GLfloat la[4]; glGetFloatv(GL_LIGHT_MODEL_AMBIENT, la);
 	float gac[4] = { 0,0,0,1 }; glLightModelfv(GL_LIGHT_MODEL_AMBIENT, gac); // black
 	glEnable(GL_LIGHT0);
-	glActiveTexture(GL_TEXTURE1); glEnable(GL_TEXTURE_2D);
+	glActiveTexture(GL_TEXTURE2); glEnable(GL_TEXTURE_2D);
 	glActiveTexture(GL_TEXTURE0); glEnable(GL_TEXTURE_2D);
 
 	glBindTexture(GL_TEXTURE_2D, LightManager::tex_walls);
@@ -323,7 +341,7 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 	draw_world();
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, la); // 恢复环境光
 	glDepthFunc(GL_LESS); glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glActiveTexture(GL_TEXTURE1); glDisable(GL_TEXTURE_2D);
+	glActiveTexture(GL_TEXTURE2); glDisable(GL_TEXTURE_2D);
 	glActiveTexture(GL_TEXTURE0); glDisable(GL_TEXTURE_2D);
 #else
 	for (int i = 0; i < lights.size(); i++)
@@ -331,14 +349,9 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 		if (!lights[i].enable)
 			continue;
 		//active shadow texture
-		glActiveTexture(GL_TEXTURE1);
-		//glBindTexture(GL_TEXTURE_2D, tex_shadow[i]);
-		//glEnable(GL_TEXTURE_2D);
+		glActiveTexture(GL_TEXTURE2);
 		glBindTexture(GL_TEXTURE_2D, shadowStuff.tex_shadow[i]);
 
-		glMatrixMode(GL_PROJECTION);
-			//glLoadIdentity();
-			//World::perspective();
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 		World::lookAt();
@@ -371,7 +384,6 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 		glLoadIdentity();
 		World::lookAt();
 		draw_world();
-		//glDisable(GL_TEXTURE_2D);
 		glDisable(GL_LIGHT0 + i);
 	}
 #endif
@@ -380,6 +392,6 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 	
 	glDepthFunc(GL_LESS); glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	//glDisable(GL_BLEND);
-//	glActiveTexture(GL_TEXTURE1); glDisable(GL_TEXTURE_2D);
+//	glActiveTexture(GL_TEXTURE2); glDisable(GL_TEXTURE_2D);
 //	glActiveTexture(GL_TEXTURE0); glDisable(GL_TEXTURE_2D);
 }

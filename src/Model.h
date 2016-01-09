@@ -6,7 +6,7 @@
 #include <string>
 #include <map>
 #include <GL/glew.h>
-#include "GL/glut.h"
+#include <GL/glut.h>
 #include "texture.h"
 #include "utility.h"
 #define IF_KA 1
