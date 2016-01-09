@@ -119,6 +119,8 @@ public:
 	static void grabScreen();
 
 
+	/*  ¼õÑªº¯Êý  */
+	static void subtractBlood();
 };
 
 

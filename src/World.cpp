@@ -4,6 +4,7 @@
 #include "World.h"
 #include "utility.h"
 #include "texture.h"
+#include "DrawScene.h"
 
 
 unsigned int World::nextId = 0;
@@ -42,6 +43,16 @@ double World::worldBound[3][2] = {
 
 int World::mouseState[3] = { GLUT_UP, GLUT_UP, GLUT_UP };
 
+
+
+
+extern vector<wall_info> Walls;
+bool couldMoveTo(Point p) {
+	for (auto wall : Walls) {
+
+	}
+	return 1;
+}
 
 
 
@@ -304,6 +315,7 @@ void World::idle() {
 	glutPostRedisplay();
 }
 
+
 void World::display() {
 	windowPos[0] = glutGet(GLUT_WINDOW_X);
 	windowPos[1] = glutGet(GLUT_WINDOW_Y);
@@ -318,6 +330,8 @@ void World::display() {
 		//center = eye + tmp;
 		syncWithCameraModel();
 	}
+
+	subtractBlood();
 
 #ifndef NO_SHADOW
 	LightManager::displayWithShadow(drawAll);
@@ -712,4 +726,68 @@ void World::grabScreen(void) {  //TODO  截图时可以输出一个提示信息
 	// 释放内存和关闭文件
 	fclose(pWritingFile);
 	free(pPixelData);
+}
+
+void World::subtractBlood() {
+	/*btCollisionConfiguration* bt_collision_configuration;
+	btCollisionDispatcher* bt_dispatcher;
+	btBroadphaseInterface* bt_broadphase;
+	btCollisionWorld* bt_collision_world;
+
+	double scene_size = 500;
+	unsigned int max_objects = 16000;
+
+	bt_collision_configuration = new btDefaultCollisionConfiguration();
+	bt_dispatcher = new btCollisionDispatcher(bt_collision_configuration);
+
+	btScalar sscene_size = (btScalar) scene_size;
+	btVector3 worldAabbMin(-sscene_size, -sscene_size, -sscene_size);
+	btVector3 worldAabbMax(sscene_size, sscene_size, sscene_size);
+	//This is one type of broadphase, bullet has others that might be faster depending on the application
+	bt_broadphase = new bt32BitAxisSweep3(worldAabbMin, worldAabbMax, max_objects, 0, true);  // true for disabling raycast accelerator
+
+	bt_collision_world = new btCollisionWorld(bt_dispatcher, bt_broadphase, bt_collision_configuration);
+	//Create two collision objects
+	btCollisionObject* sphere_A = new btCollisionObject();
+	btCollisionObject* sphere_B = new btCollisionObject();
+	//Move each to a specific location
+	sphere_A->getWorldTransform().setOrigin(btVector3((btScalar) 2, (btScalar) 1.5, (btScalar) 0));
+	sphere_B->getWorldTransform().setOrigin(btVector3((btScalar) 2, (btScalar) 0, (btScalar) 0));
+	//Create a sphere with a radius of 1
+	btSphereShape * sphere_shape = new btSphereShape(1);
+	//Set the shape of each collision object
+	sphere_A->setCollisionShape(sphere_shape);
+	sphere_B->setCollisionShape(sphere_shape);
+	//Add the collision objects to our collision world
+	bt_collision_world->addCollisionObject(sphere_A);
+	bt_collision_world->addCollisionObject(sphere_B);
+
+	//Perform collision detection
+	bt_collision_world->performDiscreteCollisionDetection();
+
+	int numManifolds = bt_collision_world->getDispatcher()->getNumManifolds();
+	//For each contact manifold
+	for (int i = 0; i < numManifolds; i++) {
+		btPersistentManifold* contactManifold = bt_collision_world->getDispatcher()->getManifoldByIndexInternal(i);
+		const btCollisionObject* obA = static_cast<const btCollisionObject*>(contactManifold->getBody0());
+		const btCollisionObject* obB = static_cast<const btCollisionObject*>(contactManifold->getBody1());
+		contactManifold->refreshContactPoints(obA->getWorldTransform(), obB->getWorldTransform());
+		int numContacts = contactManifold->getNumContacts();
+		//For each contact point in that manifold
+		for (int j = 0; j < numContacts; j++) {
+			//Get the contact information
+			btManifoldPoint& pt = contactManifold->getContactPoint(j);
+			btVector3 ptA = pt.getPositionWorldOnA();
+			btVector3 ptB = pt.getPositionWorldOnB();
+			double ptdist = pt.getDistance();
+		}
+	}
+
+	delete bt_collision_configuration;
+	delete bt_dispatcher;
+	delete bt_broadphase;
+	//delete bt_collision_world;
+	delete sphere_A;
+	delete sphere_B;
+	delete sphere_shape;*/
 }
