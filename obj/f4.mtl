@@ -1,0 +1,130 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# 创建的文件:09.01.2016 21:17:09
+
+newmtl Material__30855
+	Ns 10.00
+	Ni 1.50
+	d 1.00
+	Tr 0.00
+	Tf 1.00 1.00 1.00 
+	illum 2
+	Ka 0.59 0.59 0.59
+	Kd 0.59 0.59 0.59
+	Ks 0.00 0.00 0.00
+	Ke 0.00 0.00 0.00
+	map_Ka 30a97d80.bmp
+	map_Kd 30a97d80.bmp
+	map_d 30a97d80.bmp
+	map_bump -bm 0.30 30a9af40.bmp
+
+newmtl Material__30854
+	Ns 10.00
+	Ni 1.50
+	d 1.00
+	Tr 0.00
+	Tf 1.00 1.00 1.00 
+	illum 2
+	Ka 0.59 0.59 0.59
+	Kd 0.59 0.59 0.59
+	Ks 0.00 0.00 0.00
+	Ke 0.00 0.00 0.00
+	map_Ka 30a97d80.bmp
+	map_Kd 30a97d80.bmp
+	map_d 30a97d80.bmp
+	map_bump -bm 0.30 30a9af40.bmp
+
+newmtl Material__30873
+	Ns 10.00
+	Ni 1.50
+	d 1.00
+	Tr 0.00
+	Tf 1.00 1.00 1.00 
+	illum 2
+	Ka 0.59 0.59 0.59
+	Kd 0.59 0.59 0.59
+	Ks 0.00 0.00 0.00
+	Ke 0.00 0.00 0.00
+	map_Ka 30a9b880.bmp
+	map_Kd 30a9b880.bmp
+	map_d 30a9b880.bmp
+	map_bump -bm 0.30 30a9a040.bmp
+
+newmtl Material__30856
+	Ns 10.00
+	Ni 1.50
+	d 1.00
+	Tr 0.00
+	Tf 1.00 1.00 1.00 
+	illum 2
+	Ka 0.59 0.59 0.59
+	Kd 0.59 0.59 0.59
+	Ks 0.00 0.00 0.00
+	Ke 0.00 0.00 0.00
+	map_Ka 30a97d80.bmp
+	map_Kd 30a97d80.bmp
+	map_d 30a97d80.bmp
+	map_bump -bm 0.30 30a9af40.bmp
+
+newmtl Material__30874
+	Ns 10.00
+	Ni 1.50
+	d 1.00
+	Tr 0.00
+	Tf 1.00 1.00 1.00 
+	illum 2
+	Ka 0.59 0.59 0.59
+	Kd 0.59 0.59 0.59
+	Ks 0.00 0.00 0.00
+	Ke 0.00 0.00 0.00
+	map_Ka 30a9b880.bmp
+	map_Kd 30a9b880.bmp
+	map_d 30a9b880.bmp
+	map_bump -bm 0.30 30a9a040.bmp
+
+newmtl Material__30858
+	Ns 10.00
+	Ni 1.50
+	d 1.00
+	Tr 0.00
+	Tf 1.00 1.00 1.00 
+	illum 2
+	Ka 0.59 0.59 0.59
+	Kd 0.59 0.59 0.59
+	Ks 0.00 0.00 0.00
+	Ke 0.00 0.00 0.00
+	map_Ka 30a97d80.bmp
+	map_Kd 30a97d80.bmp
+	map_d 30a97d80.bmp
+	map_bump -bm 0.30 30a9af40.bmp
+
+newmtl Material__30857
+	Ns 10.00
+	Ni 1.50
+	d 1.00
+	Tr 0.00
+	Tf 1.00 1.00 1.00 
+	illum 2
+	Ka 0.59 0.59 0.59
+	Kd 0.59 0.59 0.59
+	Ks 0.00 0.00 0.00
+	Ke 0.00 0.00 0.00
+	map_Ka 30a97d80.bmp
+	map_Kd 30a97d80.bmp
+	map_d 30a97d80.bmp
+	map_bump -bm 0.30 30a9af40.bmp
+
+newmtl Material__30859
+	Ns 10.00
+	Ni 1.50
+	d 1.00
+	Tr 0.00
+	Tf 1.00 1.00 1.00 
+	illum 2
+	Ka 0.59 0.59 0.59
+	Kd 0.59 0.59 0.59
+	Ks 0.00 0.00 0.00
+	Ke 0.00 0.00 0.00
+	map_Ka 30a9a280.bmp
+	map_Kd 30a9a280.bmp
+	map_d 30a9a280.bmp
+	map_bump -bm 0.30 30a9ace0.bmp

@@ -1,0 +1,162 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# 创建的文件:09.01.2016 12:00:44
+
+newmtl Material__28051
+	Ns 10.00
+	Ni 1.50
+	d 1.00
+	Tr 0.00
+	Tf 1.00 1.00 1.00 
+	illum 2
+	Ka 0.59 0.59 0.59
+	Kd 0.59 0.59 0.59
+	Ks 0.00 0.00 0.00
+	Ke 0.00 0.00 0.00
+	map_Ka 389a2ec0.bmp
+	map_Kd 389a2ec0.bmp
+	map_d 389a2ec0.bmp
+	map_bump -bm 0.30 389a18c0.bmp
+
+newmtl Material__28007
+	Ns 10.00
+	Ni 1.50
+	d 1.00
+	Tr 0.00
+	Tf 1.00 1.00 1.00 
+	illum 2
+	Ka 0.59 0.59 0.59
+	Kd 0.59 0.59 0.59
+	Ks 0.00 0.00 0.00
+	Ke 0.00 0.00 0.00
+	map_Ka 389a11c0.bmp
+	map_Kd 389a11c0.bmp
+	map_d 389a11c0.bmp
+	map_bump -bm 0.30 389a6d20.bmp
+
+newmtl Material__27998
+	Ns 10.00
+	Ni 1.50
+	d 1.00
+	Tr 0.00
+	Tf 1.00 1.00 1.00 
+	illum 2
+	Ka 0.59 0.59 0.59
+	Kd 0.59 0.59 0.59
+	Ks 0.00 0.00 0.00
+	Ke 0.00 0.00 0.00
+	map_Ka 389a11c0.bmp
+	map_Kd 389a11c0.bmp
+	map_d 389a11c0.bmp
+	map_bump -bm 0.30 389a6d20.bmp
+
+newmtl Material__28010
+	Ns 10.00
+	Ni 1.50
+	d 1.00
+	Tr 0.00
+	Tf 1.00 1.00 1.00 
+	illum 2
+	Ka 0.59 0.59 0.59
+	Kd 0.59 0.59 0.59
+	Ks 0.00 0.00 0.00
+	Ke 0.00 0.00 0.00
+	map_Ka 389a11c0.bmp
+	map_Kd 389a11c0.bmp
+	map_d 389a11c0.bmp
+	map_bump -bm 0.30 389a6d20.bmp
+
+newmtl Material__28003
+	Ns 10.00
+	Ni 1.50
+	d 1.00
+	Tr 0.00
+	Tf 1.00 1.00 1.00 
+	illum 2
+	Ka 0.59 0.59 0.59
+	Kd 0.59 0.59 0.59
+	Ks 0.00 0.00 0.00
+	Ke 0.00 0.00 0.00
+	map_Ka 389a11c0.bmp
+	map_Kd 389a11c0.bmp
+	map_d 389a11c0.bmp
+	map_bump -bm 0.30 389a6d20.bmp
+
+newmtl Material__28006
+	Ns 10.00
+	Ni 1.50
+	d 1.00
+	Tr 0.00
+	Tf 1.00 1.00 1.00 
+	illum 2
+	Ka 0.59 0.59 0.59
+	Kd 0.59 0.59 0.59
+	Ks 0.00 0.00 0.00
+	Ke 0.00 0.00 0.00
+	map_Ka 389a11c0.bmp
+	map_Kd 389a11c0.bmp
+	map_d 389a11c0.bmp
+	map_bump -bm 0.30 389a6d20.bmp
+
+newmtl Material__28005
+	Ns 10.00
+	Ni 1.50
+	d 1.00
+	Tr 0.00
+	Tf 1.00 1.00 1.00 
+	illum 2
+	Ka 0.59 0.59 0.59
+	Kd 0.59 0.59 0.59
+	Ks 0.00 0.00 0.00
+	Ke 0.00 0.00 0.00
+	map_Ka 389a11c0.bmp
+	map_Kd 389a11c0.bmp
+	map_d 389a11c0.bmp
+	map_bump -bm 0.30 389a6d20.bmp
+
+newmtl Material__28004
+	Ns 10.00
+	Ni 1.50
+	d 1.00
+	Tr 0.00
+	Tf 1.00 1.00 1.00 
+	illum 2
+	Ka 0.59 0.59 0.59
+	Kd 0.59 0.59 0.59
+	Ks 0.00 0.00 0.00
+	Ke 0.00 0.00 0.00
+	map_Ka 389a11c0.bmp
+	map_Kd 389a11c0.bmp
+	map_d 389a11c0.bmp
+	map_bump -bm 0.30 389a6d20.bmp
+
+newmtl Material__28052
+	Ns 10.00
+	Ni 1.50
+	d 1.00
+	Tr 0.00
+	Tf 1.00 1.00 1.00 
+	illum 2
+	Ka 0.59 0.59 0.59
+	Kd 0.59 0.59 0.59
+	Ks 0.00 0.00 0.00
+	Ke 0.00 0.00 0.00
+	map_Ka 389a2ec0.bmp
+	map_Kd 389a2ec0.bmp
+	map_d 389a2ec0.bmp
+	map_bump -bm 0.30 389a18c0.bmp
+
+newmtl Material__27997
+	Ns 10.00
+	Ni 1.50
+	d 1.00
+	Tr 0.00
+	Tf 1.00 1.00 1.00 
+	illum 2
+	Ka 0.59 0.59 0.59
+	Kd 0.59 0.59 0.59
+	Ks 0.00 0.00 0.00
+	Ke 0.00 0.00 0.00
+	map_Ka 389a11c0.bmp
+	map_Kd 389a11c0.bmp
+	map_d 389a11c0.bmp
+	map_bump -bm 0.30 389a6d20.bmp
