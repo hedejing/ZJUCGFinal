@@ -3,7 +3,7 @@
 #include "texture.h"
 #include "test.h"
 #include "Physics.h"
-
+#include "DrawScene.h"
 using namespace std;
 
 /*
@@ -67,17 +67,19 @@ void define() {
 	//cylinder->rotateTo(45, 0, 0, 1);
 	AviBoard *avi = new AviBoard(Point(0, 10, 0), 100, 100, "test2.rgb");
 	objectmodel *sb = new objectmodel(Point(2, 0, 4), "f1.obj");
+	//InitSkyBox(20000);
+	
 }
 
 void draw_world()
 {
 	glMatrixMode(GL_MODELVIEW);
+	//DrawSkyBox();
 	glPushMatrix();
 	glRotatef(90, -1, 0, 0);
 	glTranslatef(-10, -10, 0);
-	LightManager::xoy_foor(20, 3, 100);
+	LightManager::xoy_foor(200, 3, 100);
 	glPopMatrix();
-
 	//glPushMatrix();
 
 	//glTranslatef(0, height, 0);
@@ -170,7 +172,8 @@ int main(int argc, char *argv[]) {
 	////rect2.rotateTo(90, 1, 0, 0);
 	//rect2.rotate(90, 0, 1, 0);
 	{  //LIGHTING
-		LightSource ls(Point(5, 6, -2, 1));
+		auto c = new Cube(Point(10, 10, 10));
+		LightSource ls(Point(10, 10, 10, 1));
 		LightManager::addLight(ls);
 		//LightSource ls2(Point(-2, 6, 5, 1));
 		//LightManager::addLight(ls2);

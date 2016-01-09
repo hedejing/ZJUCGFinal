@@ -31,16 +31,16 @@ unsigned int World::chosenID = -1;
 int World::gameMode = 1;
 int World::gameModeTotalNum = 2;
 
-void (*World::_display)() = NULL;
-void (*World::_free)() = NULL;
+void(*World::_display)() = NULL;
+void(*World::_free)() = NULL;
 
 double World::worldBound[3][2] = {
-	{-100, 100},  //x
-	{-100, 100},  //y
-	{-100, 100},  //z
+	{ -100, 100 },  //x
+	{ -100, 100 },  //y
+	{ -100, 100 },  //z
 };
 
-int World::mouseState[3] = {GLUT_UP, GLUT_UP, GLUT_UP};
+int World::mouseState[3] = { GLUT_UP, GLUT_UP, GLUT_UP };
 
 
 
@@ -88,10 +88,10 @@ void World::init(int *argc, char *argv[], int windowHeight, int windowWidth, int
 		ShowCursor(0);
 	}
 	{  //GLEW INIT
-		glewExperimental = TRUE;
-		if (GLenum err = glewInit())
-			fprintf(stderr, "Error is%s", glewGetErrorString(err));
-	}
+	glewExperimental = TRUE;
+	if (GLenum err = glewInit())
+		fprintf(stderr, "Error is%s", glewGetErrorString(err));
+}
 	{  //OPENGL INIT
 		glClearColor(0, 0, 0, 1);
 		glEnable(GL_DEPTH_TEST);
@@ -123,7 +123,7 @@ void World::reCenter() {
 void World::syncWithCameraModel() {
 	if (gameMode == GAME_MODE) {
 		eye[1] = 2.5;
-		if (cameraModelRigidBody!=NULL && cameraModel!=NULL) {
+		if (cameraModelRigidBody != NULL && cameraModel != NULL) {
 			btTransform trans = cameraModelRigidBody->getWorldTransform();
 			trans.setOrigin(btVector3(eye[0], eye[1], eye[2]));
 			cameraModelRigidBody->setWorldTransform(trans);
@@ -200,7 +200,7 @@ void World::move(int d, double step) {
 			center += step * moveSpeed * up;
 		}
 	}
-	
+
 	syncWithCameraModel();
 	--changing;
 }
@@ -235,7 +235,7 @@ void World::zoom(double d) {
 }
 
 void World::drawAll() {
-	for (auto it = objects.begin(); it != objects.end(); ) {
+	for (auto it = objects.begin(); it != objects.end();) {
 		if (it->second->classType == 1 && !isInside(it->second->centroid)) {
 			BasicElement *be = it->second;
 			it++;
@@ -254,7 +254,7 @@ void World::drawAll() {
 	//	else  o.second->draw();
 	//}
 	if (_display != NULL) _display();
-	
+
 	/*  鼠标的绘制  */
 	glDisable(GL_LIGHTING);
 	double length = 0.02, perc = 0.1;
@@ -265,29 +265,29 @@ void World::drawAll() {
 	Point pos = eye + (center - eye).normalize()*1.1;
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
-		glTranslatef(pos[0], pos[1], pos[2]);
-		glBegin(GL_LINES);
-			//glColor3f(0.2, 0.2, 0.4);
-			glColor3f(0, 0, 0);
+	glTranslatef(pos[0], pos[1], pos[2]);
+	glBegin(GL_LINES);
+	//glColor3f(0.2, 0.2, 0.4);
+	glColor3f(0, 0, 0);
 
-			glVertex3f(east[0], east[1], east[2]);
-			glVertex3f(east[0]*perc, east[1]*perc, east[2]*perc);
-			glVertex3f(west[0], west[1], west[2]);
-			glVertex3f(west[0]*perc, west[1]*perc, west[2]*perc);
+	glVertex3f(east[0], east[1], east[2]);
+	glVertex3f(east[0] * perc, east[1] * perc, east[2] * perc);
+	glVertex3f(west[0], west[1], west[2]);
+	glVertex3f(west[0] * perc, west[1] * perc, west[2] * perc);
 
-			glVertex3f(north[0], north[1], north[2]);
-			glVertex3f(north[0]*perc, north[1]*perc, north[2]*perc);
-			glVertex3f(south[0], south[1], south[2]);
-			glVertex3f(south[0]*perc, south[1]*perc, south[2]*perc);
-		glEnd();
+	glVertex3f(north[0], north[1], north[2]);
+	glVertex3f(north[0] * perc, north[1] * perc, north[2] * perc);
+	glVertex3f(south[0], south[1], south[2]);
+	glVertex3f(south[0] * perc, south[1] * perc, south[2] * perc);
+	glEnd();
 	glPopMatrix();
 	glEnable(GL_LIGHTING);
 }
 
 bool World::isInside(Point p) {
-	if (p[0] < eye[0]+worldBound[0][0] || p[0] > eye[0]+worldBound[0][1]) return 0;
-	if (p[1] < eye[1]+worldBound[1][0] || p[1] > eye[1]+worldBound[1][1]) return 0;
-	if (p[2] < eye[2]+worldBound[2][0] || p[2] > eye[2]+worldBound[2][1]) return 0;
+	if (p[0] < eye[0] + worldBound[0][0] || p[0] > eye[0] + worldBound[0][1]) return 0;
+	if (p[1] < eye[1] + worldBound[1][0] || p[1] > eye[1] + worldBound[1][1]) return 0;
+	if (p[2] < eye[2] + worldBound[2][0] || p[2] > eye[2] + worldBound[2][1]) return 0;
 	return 1;
 }
 
@@ -296,7 +296,7 @@ void World::perspective() {
 	gluPerspective(30*zoomFactor, (double)windowWidth / windowHeight, 1, 1000);  //听说fovy要设在45度以下才能获得比较好的效果
 }
 void World::lookAt() {
-	gluLookAt(eye[0], eye[1], eye[2],  center[0], center[1], center[2],  up[0], up[1], up[2]);
+	gluLookAt(eye[0], eye[1], eye[2], center[0], center[1], center[2], up[0], up[1], up[2]);
 }
 
 /*  GLUT FUNC  */
@@ -353,9 +353,9 @@ void World::keyboard(unsigned char key, int x, int y) {
 
 	switch (key) {
 	case 27: {
-		if(_free!=NULL)
-			_free();
-		exit(0);
+				 if (_free != NULL)
+					 _free();
+				 exit(0);
 	}
 	case 'a': case 'A':  //出现图形变扁的原因可能是我的这种移动一个像素转某个角度的逻辑有问题
 		move(0, -moveStep);
@@ -431,8 +431,8 @@ void World::motion(int x, int y) {
 	Point pcenter;
 	btTransform trans;
 	if (focusState == GLUT_ENTERED) {
-		switch (mouseState[0]*4+mouseState[1]*2+mouseState[2]) {
-		/*  orbit  */
+		switch (mouseState[0] * 4 + mouseState[1] * 2 + mouseState[2]) {
+			/*  orbit  */
 		case 3:  //左键
 			if (gameMode == GAME_MODE) {
 			}
@@ -451,18 +451,18 @@ void World::motion(int x, int y) {
 			}
 			break;
 
-		/*  zoom  */
+			/*  zoom  */
 		case 5:  //中键
 			GetCursorPos(&pos);
 			zoom(pos.y - cursorPos[1]);
 			break;
 
-		/*  zoom to fit  */
+			/*  zoom to fit  */
 		case 1:  //左键+中键
 			zoomFactor = 1;
 			break;
 
-		/*  pan  */
+			/*  pan  */
 		case 6:
 			if (gameMode == GAME_MODE) {
 			}
@@ -502,10 +502,10 @@ void World::mouseClick(int button, int state, int x, int y) {
 	if ((button == GLUT_LEFT_BUTTON) && (state == GLUT_DOWN)) {
 		if (gameMode == GAME_MODE) shoot();
 		else mousedw(x, y, button);
-		
+
 	}
 	mouseState[button] = state;
-	
+
 }
 
 
@@ -682,7 +682,7 @@ void World::grabScreen(void) {  //TODO  截图时可以输出一个提示信息
 	fileHeader.bfSize = windowHeight * windowWidth * 3 + 54;
 	fileHeader.bfReserved1 = fileHeader.bfReserved2 = 0;
 	fileHeader.bfOffBits = 54;
-	fwrite(&fileHeader.bfSize, sizeof(DWord) * 3, 1, pWritingFile);
+	fwrite(&fileHeader.bfSize, sizeof(DWord)* 3, 1, pWritingFile);
 
 	infoHeader.biSize = 40;
 	infoHeader.biWidth = windowWidth;
