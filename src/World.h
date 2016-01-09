@@ -119,8 +119,16 @@ public:
 	static void grabScreen();
 
 
-	/*  减血函数  */
+	/*  减血函数(没实现)  */
 	static void subtractBlood();
+
+	static bool couldMoveTo(Point p);
+
+	static bool jumping;
+	static double jumpHeight, jumpA, jumpV, jumpDt;
+	static double getCameraHeight();
+	static void jump();
+	static void solveJump();
 };
 
 

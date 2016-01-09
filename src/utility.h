@@ -5,8 +5,8 @@
 #include <string>
 #include <vector>
 #include <cmath>
-#include <glew.h>
-#include <glut.h>
+#include <GL/glew.h>
+#include <GL/glut.h>
 #include <Windows.h>
 using namespace std;
 

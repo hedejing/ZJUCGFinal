@@ -5,7 +5,7 @@
 #include <iostream>
 #include <string>
 #include <map>
-#include <glew.h>
+#include <GL/glew.h>
 #include "GL/glut.h"
 #include "texture.h"
 #include "utility.h"

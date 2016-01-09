@@ -45,12 +45,21 @@ int World::mouseState[3] = { GLUT_UP, GLUT_UP, GLUT_UP };
 
 
 
+bool World::jumping = 0;
+double World::jumpHeight = 0, World::jumpA = 0, World::jumpV = 0, World::jumpDt = 0.025;
+
+
 
 extern vector<wall_info> Walls;
-bool couldMoveTo(Point p) {
-	for (auto wall : Walls) {
-
-	}
+bool World::couldMoveTo(Point p) {
+	//for (auto &wall : Walls) {
+	//	auto t = eye - wall.position;
+	//	bool flag = 1;
+	//	for (int i=0; i<3; i++)
+	//		flag &= (fabs(t[i]) < fabs(wall.size[i]));
+	//	cout<<eye<<" "<<wall.position<<" "<<wall.size<<" | "<<flag<<endl;
+	//	if (flag) return 0;
+	//}
 	return 1;
 }
 
@@ -134,9 +143,12 @@ void World::reCenter() {
 	Vec t = center - eye;
 	center = eye + Vec(cos(fi)*cos(theta), sin(fi), cos(fi)*sin(theta))*t.abs();
 }
+double World::getCameraHeight() {
+	return 2.5 + jumpHeight;
+}
 void World::syncWithCameraModel() {
 	if (gameMode == GAME_MODE) {
-		eye[1] = 2.5;
+		eye[1] = getCameraHeight();
 		if (cameraModelRigidBody != NULL && cameraModel != NULL) {
 			btTransform trans = cameraModelRigidBody->getWorldTransform();
 			trans.setOrigin(btVector3(eye[0], eye[1], eye[2]));
@@ -157,14 +169,26 @@ void World::setCamera(Point _eye, Point _center) {
 void World::move(double dx, double dy, double dz) { move(Vec(dx, dy, dz)); }
 void World::move(const Vec &ds) {
 	++changing;
+	Point _eye = eye;
 	if (gameMode == GAME_MODE) {
-		eye[0] += ds[0];
-		eye[2] += ds[2];
-		center[0] += ds[0];
-		center[2] += ds[2];
+		_eye[0] += ds[0];
+		_eye[2] += ds[2];
+		if (!couldMoveTo(_eye)) {
+		}
+		else {
+			eye[0] += ds[0];
+			eye[2] += ds[2];
+			center[0] += ds[0];
+			center[2] += ds[2];
+		}
 	}
 	else {
-		eye += ds; center += ds;
+		_eye += ds;
+		if (!couldMoveTo(_eye)) {
+		}
+		else {
+			eye += ds; center += ds;
+		}
 	}
 	
 	syncWithCameraModel();
@@ -173,45 +197,84 @@ void World::move(const Vec &ds) {
 void World::move(int d, double step) {
 	if (d < 0 || d > 2) return;
 	++changing;
+	Point _eye = eye;
 	if (gameMode == GAME_MODE) {
 		if (d == 0) {
 			Vec t = ((center - eye)*up).normalize();
 			t = step * moveSpeed * t;
-			eye[0] += t[0];
-			eye[2] += t[2];
-			center[0] += t[0];
-			center[2] += t[2];
+			
+			_eye[0] += t[0];
+			_eye[2] += t[2];
+			if (!couldMoveTo(_eye)) {
+			}
+			else {
+				eye[0] += t[0];
+				eye[2] += t[2];
+				center[0] += t[0];
+				center[2] += t[2];
+			}
 		}
 		else if (d == 1) {
 			Vec t = (center - eye).normalize();
 			t = step * moveSpeed *t;
-			eye[0] += t[0];
-			eye[2] += t[2];
-			center[0] += t[0];
-			center[2] += t[2];
+			
+			_eye[0] += t[0];
+			_eye[2] += t[2];
+			if (!couldMoveTo(_eye)) {
+			}
+			else {
+				eye[0] += t[0];
+				eye[2] += t[2];
+				center[0] += t[0];
+				center[2] += t[2];
+			}
 		}
 		else {
 			Vec t = step * moveSpeed * up;
-			eye[0] += t[0];
-			eye[2] += t[2];
-			center[0] += t[0];
-			center[2] += t[2];
+			
+			_eye[0] += t[0];
+			_eye[2] += t[2];
+			if (!couldMoveTo(_eye)) {
+			}
+			else {
+				eye[0] += t[0];
+				eye[2] += t[2];
+				center[0] += t[0];
+				center[2] += t[2];
+			}
 		}
 	}
 	else {
 		if (d == 0) {
 			Vec t = ((center - eye)*up).normalize();
 			t = step * moveSpeed * t;
-			eye += t; center += t;
+
+			_eye += t;
+			if (!couldMoveTo(_eye)) {
+			}
+			else {
+				eye += t; center += t;
+			}
 		}
 		else if (d == 1) {
 			Vec t = (center - eye).normalize();
 			t = step * moveSpeed *t;
-			eye += t;  center += t;
+
+			_eye += t;
+			if (!couldMoveTo(_eye)) {
+			}
+			else {
+				eye += t;  center += t;
+			}
 		}
 		else {
-			eye += step * moveSpeed * up;
-			center += step * moveSpeed * up;
+			_eye += step * moveSpeed * up;
+			if (!couldMoveTo(_eye)) {
+			}
+			else {
+				eye += step * moveSpeed * up;
+				center += step * moveSpeed * up;
+			}
 		}
 	}
 
@@ -223,6 +286,8 @@ void World::_move(double dx, double dy) {
 
 	if (gameMode == GOD_MODE) {
 		Vec up = Vec(0,1,0);
+
+		//couldMoveTo≈–∂œ
 		Vec t = -(up*(center-eye)).normalize()*dx*0.1;
 		eye += moveSpeed*t; center += moveSpeed*t;
 		t = -up*dy*0.1;
@@ -335,6 +400,7 @@ void World::display() {
 	}
 
 	subtractBlood();
+	solveJump();
 
 #ifndef NO_SHADOW
 	LightManager::displayWithShadow(drawAll);
@@ -422,7 +488,8 @@ void World::keyboard(unsigned char key, int x, int y) {
 		//	REP (i, 0, 2) lightColor[1][i] += 0.1;
 		//	break;
 	case ' ':
-		shoot();
+		puts("haha");
+		jump();//shoot();
 		break;
 	default:
 		break;
@@ -793,4 +860,22 @@ void World::subtractBlood() {
 	delete sphere_A;
 	delete sphere_B;
 	delete sphere_shape;*/
+}
+
+
+
+/*  œ‡ª˙Ã¯‘æ  */
+void World::jump() {
+	if (!jumping) {
+		jumping = 1;
+		jumpA = -10;
+		jumpV = 7.5;
+	}
+}
+void World::solveJump() {
+	if (jumping) {
+		jumpHeight = jumpHeight + jumpV*jumpDt;
+		jumpV = jumpV + jumpA*jumpDt;
+		if (jumpHeight < 0) jumping = 0;
+	}
 }

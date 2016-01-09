@@ -1,4 +1,4 @@
-#include "DrawScene.h"
+﻿#include "DrawScene.h"
 #include <vector>
 #include "Physics.h"
 vector<Rect> skybox;
@@ -104,7 +104,7 @@ bool PushSceneOfName(string name)
 		}
 	}
 
-	for (int i = -3; i < 5; i++)//�м�ĳ�ǽ
+	for (int i = -3; i < 5; i++)//ÖÐ¼äµÄ³¤Ç½
 	{
 		a.size = Vec(5, 3, 1);
 		a.texutre = tex_board;
