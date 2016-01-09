@@ -103,7 +103,7 @@ bool PushSceneOfName(string name)
 	GLuint tex_nitu = loadTexture("nitu.bmp");
 	//unsigned char  filewall[board_h][board_w];
 	//FILE *fp = fopen(name.c_str(), "rb");
-	//fread(filewall, board_w*board_h *rect_width * rect_width, 1, fp);//»ñÈ¡Êý¾Ý
+	//fread(filewall, board_w*board_h *rect_width * rect_width, 1, fp);//ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½
 	//fclose(fp);
 
 	for (int i = 0; i < board_h; i++)
