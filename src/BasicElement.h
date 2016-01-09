@@ -6,9 +6,9 @@
 /*  基本三维物体  */
 class BasicElement {
 private:
-	unsigned int id;
 
 public:
+	unsigned int id;
 	Point centroid;  //体心
 	Quat rotateQuat;  //GLMat rotateMat;
 	Vec scaleValue;
@@ -20,7 +20,7 @@ public:
 
 
 	/*  draw函数不仅绘制了物体，还会对物体进行相应的平移和旋转操作  */
-	void draw();
+	virtual void draw();
 
 	/*  drawNaive函数类似glutSolidTeapot函数，将物体以原点为中心进行绘制  */
 	virtual void drawNaive();
@@ -115,22 +115,46 @@ public:
 	~AviBoard(void);
 	void drawNaive();
 };
-class objectmodel : public BasicElement {
+
+
+/*Life Bar*/
+class LifeBar {
 private:
-	int blood;
-	int fullblood;
+	double barlen = 4, barw = 0.5;
+	double max_life;
+public:
+	LifeBar();
+	LifeBar(double _max_life);
+	LifeBar(double _max_life, double len, double w);
+	~LifeBar();
+	void DrawBar(Point pos, double life);
+};
+class objectmodel : public BasicElement {
+protected:
 	Model* mymo;
 public:
-	objectmodel(objectmodel&other)
-	{
-		mymo = new Model(*other.mymo);
-	}
-	objectmodel(Point p, string name );
-	~objectmodel(void);
-	void drawNaive();
-	void subblood();
-	bool shoulddead();
+	//objectmodel(objectmodel&other)
+	//{
+	//	mymo = new Model(*other.mymo);
+	//}
+	objectmodel(Point p, string name);
+	virtual ~objectmodel(void);
+	//virtual void draw();
+	virtual void drawNaive();
 	void objectmodel::addToPhysicsWorld(double coliisionscale = 30, double weight = 100000);
+};
+
+class Monster : public objectmodel {
+protected:
+	int blood;
+	int fullblood;
+	LifeBar lifeBar;
+public:
+	Monster(Point p, string name);
+	void subblood();
+	bool shouldBeRemoved();
+	void draw();
+	void drawNaive();
 };
 
 class CameraModel : public BasicElement {
@@ -147,48 +171,7 @@ public:
 	int slices, stacks;
 	Bullet(Point p, double radius=0.5, int slices=50, int stacks=50);
 	void drawNaive();
+	bool shouldBeRemoved();
 };
 
-/*Life Bar*/
-class LifeBar{
-private:
-	double barlen = 4, barw = 0.5;
-	double max_life;
-public:
-	LifeBar(double _max_life) :max_life(_max_life) {}
-	LifeBar(double _max_life, double len, double w) :barlen(len), barw(w), max_life(_max_life){}
-	~LifeBar(){}
-	void DrawBar(Point pos, double life)
-	{
-		glEnable(GL_COLOR_MATERIAL);
-		glPushMatrix();
-		glTranslatef(pos.getX(), pos.getY(), pos.getZ());
-		glColor3f(0, 1, 0);
-		glBegin(GL_LINE_STRIP);
-		glVertex3f(-barlen/2, 0, -barw/2);
-		glVertex3f(-barlen / 2, 0, barw / 2);
-		glVertex3f(barlen / 2, 0, barw / 2);
-		glVertex3f(barlen / 2, 0, -barw / 2);
-		glVertex3f(-barlen / 2, 0, -barw / 2);
-		glEnd();
-		if (life < max_life / 3) glColor3f(1, 0, 0);
-		else glColor3f(0, 1, 0);
-		glBegin(GL_QUADS);
-		glVertex3f(-barlen / 2, 0, -barw / 2);
-		glVertex3f(-barlen / 2, 0, barw/2);
-		glVertex3f(-barlen / 2 + barlen * (life / max_life), 0, barw / 2);
-		glVertex3f(-barlen / 2 + barlen*(life / max_life), 0, -barw / 2);		
-		glEnd();
-		glPopMatrix();
-		glDisable(GL_COLOR_MATERIAL);
-		float am[4] = { 0.3, 0.3, 0.3, 1 };
-		float nor[4] = { 0.5, 0.5, 0.5, 1 };
-		float zero[4] = { 0.3, 0.3, 0.3, 1 };
-
-		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, am);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, zero);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, nor);
-		glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 70.0);
-	}
-};
 #endif

@@ -29,7 +29,7 @@ double World::rotateSpeed = 0.1;
 double World::zoomFactor = 1, World::zoomSpeed = 0.005;
 
 unsigned int World::chosenID = -1;
-int World::gameMode = 1;
+int World::gameMode = 0;
 int World::gameModeTotalNum = 2;
 
 void(*World::_display)() = NULL;
@@ -55,9 +55,9 @@ bool World::couldMoveTo(Point eye) {
 	for (auto &wall : Walls) {
 		auto t = eye - wall.position;
 		bool flag = 1;
-		for (int i=0; i<3; i++) flag &= (fabs(t[i]) < fabs(wall.size[i]+1.5));
+		for (int i=0; i<3; i++) flag &= (fabs(t[i]) < fabs(wall.size[i])*2+0.5);
 		//ios::sync_with_stdio(false);
-		//cout<<eye<<" "<<wall.position<<" | "<<t<<" "<<wall.size<<" | "<<flag<<endl;
+		//cout<<eye<<" "<<wall.position<<" | "<<t<<" "<<wall.size<<" | "<<flag<<endl;  //慢只是因为cout...
 		if (flag) return 0;
 	}
 	return 1;
@@ -144,7 +144,7 @@ void World::reCenter() {
 	center = eye + Vec(cos(fi)*cos(theta), sin(fi), cos(fi)*sin(theta))*t.abs();
 }
 double World::getCameraHeight() {
-	return 2.5 + jumpHeight;
+	return 3.5 + jumpHeight;
 }
 void World::syncWithCameraModel() {
 	if (gameMode == GAME_MODE) {
@@ -317,7 +317,8 @@ void World::zoom(double d) {
 
 void World::drawAll() {
 	for (auto it = objects.begin(); it != objects.end();) {
-		if (it->second->classType == 1 && !isInside(it->second->centroid)) {
+		//if (it->second->classType == 1 && !isInside(it->second->centroid)) {
+		if (it->second->shouldBeRemoved()) {
 			BasicElement *be = it->second;
 			it++;
 			delete be;
@@ -374,7 +375,7 @@ bool World::isInside(Point p) {
 
 /*  GLU FUNC  */
 void World::perspective() {
-	gluPerspective(90*zoomFactor, (double)windowWidth / windowHeight, 1, 3000);  //听说fovy要设在45度以下才能获得比较好的效果
+	gluPerspective(30*zoomFactor, (double)windowWidth / windowHeight, 1, 3000);  //听说fovy要设在45度以下才能获得比较好的效果
 }
 void World::lookAt() {
 	gluLookAt(eye[0], eye[1], eye[2], center[0], center[1], center[2], up[0], up[1], up[2]);
@@ -627,8 +628,8 @@ void World::gl_select(int x, int y) {
 	//pretend to draw the objects onto the screen
 	glMatrixMode(GL_MODELVIEW);
 	glutSwapBuffers();
-	//drawAll();
-	LightManager::displayWithShadow(drawAll);
+	drawAll();  //要这样写才能检测到点击事件
+	//LightManager::displayWithShadow(drawAll);
 	//restore the view
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
@@ -647,9 +648,14 @@ void World::gl_select(int x, int y) {
 			}
 		}
 		chosenID = choose;
+		if (chosenID > 0) {
+			if (objects[(unsigned int)chosenID]->classType == 2) {
+				((Monster *)objects[(unsigned int)chosenID])->subblood();
+			}
+		}
+		cout << "hits: " << hits << "   ID: " << chosenID << endl;
 	}
 	else chosenID = -1;
-	cout << "hits: " << hits << "   ID: " << chosenID << endl;
 
 	glMatrixMode(GL_MODELVIEW);
 }

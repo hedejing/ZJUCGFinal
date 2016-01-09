@@ -205,8 +205,8 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 		shadowMatV[i] = lookAtMat(lights[i].position, shadowCenter, World::up);
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		World::perspective();
-		//gluPerspective(90, (double)World::windowWidth / World::windowHeight, 1.0f, 1.0e10f);// hedjin : value of near must be 1.0 !!! 
+		//World::perspective();
+		gluPerspective(90, (double)World::windowWidth / World::windowHeight, 1.0f, 1.0e10f);// hedjin : value of near must be 1.0 !!! 
 		//gluPerspective(90, 1, 1.0f, 1.0e10f);// hedjin : value of near must be 1.0 !!! 
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
@@ -301,7 +301,10 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 	glActiveTexture(GL_TEXTURE0); glEnable(GL_TEXTURE_2D);
 
 	glBindTexture(GL_TEXTURE_2D, tex_walls);
-
+	
+	glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		World::perspective();
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	World::lookAt();
@@ -352,6 +355,9 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 		glActiveTexture(GL_TEXTURE2);
 		glBindTexture(GL_TEXTURE_2D, shadowStuff.tex_shadow[i]);
 
+		glMatrixMode(GL_PROJECTION);
+			glLoadIdentity();
+			World::perspective();
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 		World::lookAt();
@@ -370,6 +376,9 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 		glTexGendv(GL_R, GL_EYE_PLANE, mat[2]);
 		glTexGendv(GL_Q, GL_EYE_PLANE, mat[3]);
 
+		glMatrixMode(GL_PROJECTION);
+			glLoadIdentity();
+			World::perspective();
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 		World::lookAt();

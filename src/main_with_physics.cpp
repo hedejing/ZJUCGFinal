@@ -19,7 +19,7 @@ using namespace std;
 
 void define() {
 	double size = 1;
-	GLuint tt=loadTexture("389a18c0.bmp");
+	GLuint tt=loadTexture("board.bmp");
 	Cube *c = new Cube(Point(2, 2, 0),tt);
 	c->rotateTo(45, 0, 0, 1);
 	c->scaleValue = Vec(2, 2, 2);
@@ -68,11 +68,11 @@ void define() {
 
 	//AviBoard *avi = new AviBoard(Point(0, 30, 0), 100, 100, "test2.rgb");
 	
-	objectmodel *tempobj1 = new objectmodel(Point(-50, 0, 4), "./obj/f1.obj");
+	Monster *tempobj1 = new Monster(Point(-50, 0, 4), "./obj/f1.obj");
 	tempobj1->rotate(90, 0, 0, 1);
 	tempobj1->addToPhysicsWorld(30, 10);
 	//getTreesObj();
-	objectmodel *tempobj2 = new objectmodel(Point(-30, -4, -10), "./obj/f2.obj");
+	/*objectmodel *tempobj2 = new objectmodel(Point(-30, -4, -10), "./obj/f2.obj");
 	tempobj2->rotate(90, 0, 0, 1);
 	tempobj2->rotate(-90, 1, 0, 0);
 	tempobj2->addToPhysicsWorld(30, 10);
@@ -91,16 +91,17 @@ void define() {
 	tempobj5->rotate(90, 0, 0, 1);
 	tempobj5->rotate(-90, 1, 0, 0);
 	tempobj5->addToPhysicsWorld(30, 10);
-	
+		
 	objectmodel *tempobj6 = new objectmodel(Point(-30, 0, -30), "./obj/f1.obj");
 	tempobj6->rotate(90, 0, 0, 1);
 	tempobj6->rotate(-90, 1, 0, 0);
 	tempobj6->addToPhysicsWorld(30, 10);
-
+	*/
+	/*
 	objectmodel *tempobj7 = new objectmodel(Point(25, 0, -20), "./obj/house1.obj");
 	
 	tempobj7->rotate(-90, 1, 0, 0);
-	
+	*/
 	DrawScene_Of_CS("");
 	//InitSkyBox(1999);
 
@@ -116,8 +117,8 @@ void draw_world()
 	//LightManager::xoy_foor(200, 3, 100);
 	glPopMatrix();
 	//glPushMatrix();
-	LifeBar a(100, 3, 0.5);
-	a.DrawBar(Point(5, 11, 4), 30);
+	//////LifeBar a(100, 3, 0.5);
+	//////a.DrawBar(Point(5, 11, 4), 30);
 	//glTranslatef(0, height, 0);
 	//glutSolidCube(2);
 

@@ -264,25 +264,54 @@ void AviBoard::drawNaive() {
 	glPopMatrix();
 }
 
+
+
+LifeBar::LifeBar() {}
+LifeBar::LifeBar(double _max_life) :max_life(_max_life) {}
+LifeBar::LifeBar(double _max_life, double len, double w) : barlen(len), barw(w), max_life(_max_life) {}
+LifeBar::~LifeBar() {}
+void LifeBar::DrawBar(Point pos, double life)
+{
+	glEnable(GL_COLOR_MATERIAL);
+	glPushMatrix();
+	glTranslatef(pos.getX(), pos.getY(), pos.getZ());
+	glColor3f(0, 1, 0);
+	glBegin(GL_LINE_STRIP);
+	glVertex3f(-barlen/2, 0, -barw/2);
+	glVertex3f(-barlen / 2, 0, barw / 2);
+	glVertex3f(barlen / 2, 0, barw / 2);
+	glVertex3f(barlen / 2, 0, -barw / 2);
+	glVertex3f(-barlen / 2, 0, -barw / 2);
+	glEnd();
+	if (life < max_life / 3) glColor3f(1, 0, 0);
+	else glColor3f(0, 1, 0);
+	glBegin(GL_QUADS);
+	glVertex3f(-barlen / 2, 0, -barw / 2);
+	glVertex3f(-barlen / 2, 0, barw/2);
+	glVertex3f(-barlen / 2 + barlen * (life / max_life), 0, barw / 2);
+	glVertex3f(-barlen / 2 + barlen*(life / max_life), 0, -barw / 2);		
+	glEnd();
+	glPopMatrix();
+	glDisable(GL_COLOR_MATERIAL);
+	float am[4] = { 0.3, 0.3, 0.3, 1 };
+	float nor[4] = { 0.5, 0.5, 0.5, 1 };
+	float zero[4] = { 0.3, 0.3, 0.3, 1 };
+
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, am);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, zero);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, nor);
+	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 70.0);
+}
+
+
 objectmodel::objectmodel(Point p, string name)
 {
-	classType = 2;
-	blood = 100;
-	fullblood = 100;
 	centroid = p;
 	mymo = new  Model();
 	mymo->Readobj(name.c_str());
-	this->scale(0.1);
+	scale(0.1);
 }
-void objectmodel::subblood(){
-	blood = blood - 25;
-}
-bool objectmodel::shoulddead(){
-	if (blood <= 0)
-		return true;
-	else
-		return false;
-}
+
 void objectmodel::drawNaive()
 {
 	mymo->draw();
@@ -292,10 +321,50 @@ void objectmodel::addToPhysicsWorld(double coliisionscale , double weight)
 	btRigidBody* temp = Physics::CreateRigidBodyForModelWithShape(this, mymo->getCollisionRect() / coliisionscale, weight);
 	Physics::AddRigidBodyAndElement(temp, this);
 }
-objectmodel::~objectmodel(void)
-{
+objectmodel::~objectmodel(void) {
 }
 
+Monster::Monster(Point p, string name):objectmodel(p, name) {
+	classType = 2;
+	blood = 100;
+	fullblood = 100;
+	lifeBar = LifeBar(fullblood);
+}
+void Monster::subblood(){
+	blood = blood - 25;
+}
+bool Monster::shouldBeRemoved() {
+	if (blood <= 0)
+		return true;
+	else
+		return false;
+}
+void Monster::draw() {
+	glPushMatrix();
+		glPushMatrix();
+			glTranslated(centroid[0], centroid[1], centroid[2]);
+			glTranslated(0, mymo->getCollisionRect()[1]*scaleValue[1]+1, 0);
+			glRotatef(90-World::elevation[0], 0, 1, 0);
+			glRotatef(90, 1, 0, 0);
+			lifeBar.DrawBar(Point(0, 0, 0), blood);
+		glPopMatrix();
+		glLoadName(id);
+		glTranslated(centroid[0], centroid[1], centroid[2]);
+		glPushMatrix();
+			glTranslated(0, mymo->getCollisionRect()[1]*scaleValue[1]+1, 0);
+			glRotatef(90-World::elevation[0], 0, 1, 0);
+			glRotatef(90, 1, 0, 0);
+			lifeBar.DrawBar(Point(0, 0, 0), blood);
+		glPopMatrix();
+		glMultMatrixd((GLMat)rotateQuat);  //glMultMatrixd(rotateMat);
+		glScaled(scaleValue[0], scaleValue[1], scaleValue[2]);
+		drawNaive();  //父类函数调用子类的函数??可以！
+		glLoadName(0);
+	glPopMatrix();
+}
+void Monster::drawNaive() {
+	mymo->draw();
+}
 
 
 CameraModel::CameraModel(Point p) {
@@ -316,4 +385,7 @@ Bullet::Bullet(Point p, double radius, int slices, int stacks) {
 }
 void Bullet::drawNaive() {
 	glutSolidSphere(radius, slices, stacks);
+}
+bool Bullet::shouldBeRemoved() {
+	return !World::isInside(centroid);
 }
