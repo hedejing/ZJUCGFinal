@@ -266,16 +266,32 @@ void AviBoard::drawNaive() {
 
 objectmodel::objectmodel(Point p, string name)
 {
+	classType = 2;
+	blood = 100;
+	fullblood = 100;
 	centroid = p;
 	mymo = new  Model();
 	mymo->Readobj(name.c_str());
 	this->scale(0.1);
 }
+void objectmodel::subblood(){
+	blood = blood - 25;
+}
+bool objectmodel::shoulddead(){
+	if (blood <= 0)
+		return true;
+	else
+		return false;
+}
 void objectmodel::drawNaive()
 {
 	mymo->draw();
 }
-
+void objectmodel::addToPhysicsWorld(double coliisionscale , double weight)
+{
+	btRigidBody* temp = Physics::CreateRigidBodyForModelWithShape(this, mymo->getCollisionRect() / coliisionscale, weight);
+	Physics::AddRigidBodyAndElement(temp, this);
+}
 objectmodel::~objectmodel(void)
 {
 }

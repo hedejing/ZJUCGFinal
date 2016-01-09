@@ -1,8 +1,25 @@
-#include "DrawScene.h"
+﻿#include "DrawScene.h"
 #include <vector>
 #include "Physics.h"
 vector<Rect> skybox;
-GLuint tex[6]; 
+GLuint tex[6];
+#define TreesNum 30
+void getTreesObj()
+{
+	objectmodel *tmp = new objectmodel(Point(10, 20, 3), "./obj/sakura.obj");
+	tmp->rotateTo(-180, 0, 0, 1);
+	tmp->scale(300);
+	tmp->addToPhysicsWorld();
+	/*for (int i = 0; i < TreesNum; i++)
+	{
+		objectmodel *temp = new objectmodel(*tmp);
+		tmp->rotateTo(90, 1, 0, 0);
+		temp->move(i, 0, 1);
+		temp->scale(30);
+		temp->addToPhysicsWorld();
+	}*/
+}
+
 void InitSkyBox()
 {
 	tex[0] = loadTexture("teide/negx.bmp");
@@ -67,7 +84,7 @@ void drawTexRect(Point centroid, double scaleValue, GLuint tex, int face)
 void drawSkyBox(double length)
 {
 	float zero[4] = { 0, 0, 0, 1 };
-	float white[4] = { 1, 1, 1, 1 };
+	float white[4] = { 0.5, 0.5, 0.5, 1 };
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, white);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, zero);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, zero);
