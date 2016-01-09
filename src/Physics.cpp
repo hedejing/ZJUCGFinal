@@ -11,7 +11,8 @@ btRigidBody* Physics::groundRigidBody;
 //btRigidBody* Physics::fallRigidBody;
 //btDefaultMotionState* Physics::fallMotionState;
 btDiscreteDynamicsWorld* Physics::dynamicsWorld;
-vector<RigidBody2Element> Physics::rigidbody2elements;
+map<BasicElement *, RigidBody2Element> Physics::rigidbody2elements = map<BasicElement *, RigidBody2Element>();
+//vector<RigidBody2Element> Physics::rigidbody2elements;
 
 void Physics::init()
 {
@@ -24,7 +25,7 @@ void Physics::init()
 
 	dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
 
-	dynamicsWorld->setGravity(btVector3(0, -10, 0));
+	dynamicsWorld->setGravity(btVector3(0, -20, 0));
 
 
 	groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
@@ -56,9 +57,9 @@ void Physics::free()
 	delete groundRigidBody->getMotionState();
 	delete groundRigidBody;
 
-	for (int i = 0; i < rigidbody2elements.size(); i++)
-	{
-		btRigidBody *thisone = rigidbody2elements[i].rigidbody;
+	for (auto xx : rigidbody2elements) {
+		auto x = xx.second;
+		btRigidBody *thisone = x.rigidbody;
 		dynamicsWorld->removeRigidBody(thisone);
 		delete thisone->getMotionState();
 		delete thisone;
@@ -83,22 +84,22 @@ void Physics::update()
 	Physics::dynamicsWorld->stepSimulation((time - timebase), 1);
 	timebase = time;
 
-	for (int i = 0; i < rigidbody2elements.size(); i++)
+	for (auto xx : rigidbody2elements)
 	{
-		if (!rigidbody2elements[i].enable)
-			continue;
+		auto x = xx.second;
+		if (!x.enable) continue;
 
 		btTransform trans;
-		rigidbody2elements[i].rigidbody->getMotionState()->getWorldTransform(trans);
-		rigidbody2elements[i].element->moveTo(Point(trans.getOrigin().getX(), trans.getOrigin().getY(), trans.getOrigin().getZ()));
-		rigidbody2elements[i].element->rotateQuat = Quat(trans.getRotation().getW(), trans.getRotation().getX(), trans.getRotation().getY(), trans.getRotation().getZ());
+		x.rigidbody->getMotionState()->getWorldTransform(trans);
+		x.element->moveTo(Point(trans.getOrigin().getX(), trans.getOrigin().getY(), trans.getOrigin().getZ()));
+		x.element->rotateQuat = Quat(trans.getRotation().getW(), trans.getRotation().getX(), trans.getRotation().getY(), trans.getRotation().getZ());
 	}
 }
 
-void Physics::AddRigidBodyAndElement(btRigidBody * rigidbody, BasicElement * element)
+void Physics::AddRigidBodyAndElement(btRigidBody * rigidbody, BasicElement * element, bool enable)
 {
 	dynamicsWorld->addRigidBody(rigidbody);
-	rigidbody2elements.push_back(RigidBody2Element(rigidbody, element));
+	rigidbody2elements[element] = (RigidBody2Element(rigidbody, element, enable));
 }
 
 btRigidBody *Physics::CreateSimpleRigidBody(const BasicElement *element, SimpleElementType type, double mass, Vec InertiaVec)
@@ -137,9 +138,13 @@ btRigidBody *Physics::CreateSimpleRigidBody(const BasicElement *element, SimpleE
 	case RECTANGLE: {
 		shape = new btBoxShape(btVector3(element->scaleValue[0], 0.01, element->scaleValue[2])); //just simplify
 		break;
+	}
+	case CAMERAMODEL: {
+		shape = new btBoxShape(btVector3(element->scaleValue[0], element->scaleValue[1], element->scaleValue[2]));
+		break;
+	}
 	default:
 		return NULL;
-	}
 
 	}
 	btVector3 Inertia(InertiaVec[0], InertiaVec[1], InertiaVec[2]);

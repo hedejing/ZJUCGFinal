@@ -68,6 +68,7 @@ Vec Vec::operator-() { return Vec(-t[0], -t[1], -t[2]); }
 //这些函数没有考虑w参数
 Vec operator-(const Point &a, const Point &b) {	return Vec(a[0]-b[0], a[1]-b[1], a[2]-b[2]); }
 Point operator+(const Point &a, const Vec &b) { return Point(a[0]+b[0], a[1]+b[1], a[2]+b[2]); }
+Point operator-(const Point &a, const Vec &b) { return Point(a[0]-b[0], a[1]-b[1], a[2]-b[2]); }
 Vec operator+(const Vec &a, const Vec &b) { return Vec(a[0]+b[0], a[1]+b[1], a[2]+b[2]); }
 Vec operator-(const Vec &a, const Vec &b) { return Vec(a[0]-b[0], a[1]-b[1], a[2]-b[2]); }
 Point &operator+=(Point &a, const Vec &b) { return a = a+b; }

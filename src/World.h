@@ -5,6 +5,7 @@
 #include <deque>
 #include "LightSource.h"
 #include "BasicElement.h"
+#include "Physics.h"
 using namespace std;
 
 
@@ -29,6 +30,8 @@ public:
 	static int cursorPos[2];
 	static int focusState;
 
+	static CameraModel *cameraModel;  static int changing;
+	static btRigidBody *cameraModelRigidBody;
 	static Point eye, center;
 	static const Vec up;  //up向量不能被修改
 	static double elevation[2];
@@ -40,7 +43,9 @@ public:
 
 	/*  游戏模式：0，上帝模式；1，游戏模式  */
 	static int gameMode;
-	static int gameModeNum;
+	static int gameModeTotalNum;
+	static const int GOD_MODE = 0;
+	static const int GAME_MODE = 1;
 
 
 	/*  初始化函数  */
@@ -61,8 +66,11 @@ public:
 	static void rotate(double angle, double x, double y, double z);
 
 	/*  旋转相机(d=01分别表示沿水平、沿竖直方向转，d等于其他值不做事；step为正则往右转或往上转)
-		相机仰角在[-75°,75°]之间                                                            */
+		相机仰角在[-45°,45°]之间                                                            */
 	static void rotate(int d, double step);
+
+	/*  将bullet那边的相机位置更改  */
+	static void syncWithCameraModel();
 
 	/*  zoom  */
 	static void zoom(double d);
@@ -74,6 +82,10 @@ public:
 	/*  外部可传入绘制函数  */
 	static void (*_display)();
 	static void(*_free)();
+
+	/*  判断子弹是否该删除  */
+	static double worldBound[3][2];
+	static bool isInside(Point p);
 
 	friend class BasicElement;
 

@@ -98,10 +98,9 @@ void draw_world()
 	//glutSolidTorus(0.5f, 1, 50, 50);
 	//glRotatef(-45, 1, 0, 0);
 	//glPopMatrix();
-
 }
 
-Sphere *bullet;
+Bullet *bullet;
 btRigidBody* bulletRigidBody;
 
 void update()
@@ -115,14 +114,14 @@ void shoot()
 {
 	//set the position of spwan
 	Vec direct = (World::center - World::eye).normalize();
-	Point spwan = World::eye + 2*direct;
-	double radius = 1;
-	bullet = new Sphere(spwan, radius);
+	Point spwan = World::eye + 10*direct;
+	double radius = 0.05;
+	bullet = new Bullet(spwan, radius);
 
 	btCollisionShape* bulletShape = new btSphereShape(radius);
 	btDefaultMotionState* bulletMotionState =
 		new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(spwan[0], spwan[1], spwan[2])));
-	btScalar mass = 1;
+	btScalar mass = 0.5;
 	btVector3 fallInertia(0, 0, 0);
 	bulletShape->calculateLocalInertia(mass, fallInertia);
 	btRigidBody::btRigidBodyConstructionInfo bulletRigidBodyCI(mass, bulletMotionState, bulletShape, fallInertia);
@@ -130,7 +129,6 @@ void shoot()
 	bulletRigidBody->setLinearVelocity(100*btVector3(direct[0], direct[1], direct[2]));
 
 	Physics::AddRigidBodyAndElement(bulletRigidBody, bullet);
-	
 }
 
 void free()
@@ -144,8 +142,19 @@ int main(int argc, char *argv[]) {
 	World::_free = free;
 	Physics::init();
 
+	{  //设置相机的碰撞检测
+		CameraModel *cameraModel = new CameraModel(Point(12, 12, 12));
+		cameraModel->scale(Vec(2, 2, 2));
+		btRigidBody *cameraModelRigidBody = Physics::CreateSimpleRigidBody(cameraModel, SimpleElementType::CAMERAMODEL, 5);
+		if (cameraModelRigidBody != NULL) Physics::AddRigidBodyAndElement(cameraModelRigidBody, cameraModel);
+
+
+		World::cameraModel = cameraModel;
+		World::cameraModelRigidBody = cameraModelRigidBody;
+	}
+	World::setCamera(Point(12, 12, 12), Point(0, 12, 0));
 	//World::setCamera(Point(-10, 10, 10), Point(0, 0, 0));
-	World::setCamera(Point(12, 12, 12), Point(0, 1, 0));
+
 
 	//可以在这里使用glutIdleFunc();对idle进行重写
 	//若要对鼠标和键盘函数进行重写，建议在World.cpp里修改
