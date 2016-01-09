@@ -216,3 +216,13 @@ void objectmodel::drawNaive()
 objectmodel::~objectmodel(void)
 {
 }
+
+
+
+CameraModel::CameraModel(Point p) {
+	centroid = p;
+}
+CameraModel::CameraModel() {
+}
+void CameraModel::drawNaive() {
+}

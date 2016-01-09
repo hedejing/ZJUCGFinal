@@ -17,6 +17,8 @@ int World::cursorPos[2];
 int World::focusState;
 
 CameraModel *World::cameraModel = NULL;
+int World::changing = 0;
+btRigidBody *World::cameraModelRigidBody = NULL;
 Point World::eye = Point(0, 0, 0);
 Point World::center = Point(1, 0, 0);
 const Vec World::up = Vec(0, 1, 0);
@@ -112,15 +114,35 @@ void World::reCenter() {
 	center = eye + Vec(cos(fi)*cos(theta), sin(fi), cos(fi)*sin(theta))*t.abs();
 }
 void World::setCamera(Point _eye, Point _center) {
+	++changing;
 	eye = _eye;  center = _center;
 	Vec t = center - eye;
 	elevation[0] = atan2(t[2], t[0]) * 180 / M_PI;
 	elevation[1] = atan2(t[1], hypot(t[0], t[2])) * 180 / M_PI;
+
+	if (cameraModelRigidBody!=NULL && cameraModel!=NULL) {
+		btTransform trans = cameraModelRigidBody->getWorldTransform();
+		trans.setOrigin(btVector3(eye[0], eye[1], eye[2]));
+		cameraModelRigidBody->setWorldTransform(trans);
+	}
+
+	--changing;
 }
 void World::move(double dx, double dy, double dz) { move(Vec(dx, dy, dz)); }
-void World::move(const Vec &ds) { eye += ds; center += ds; }
+void World::move(const Vec &ds) {
+	++changing;
+	eye += ds; center += ds;
+	
+	if (cameraModelRigidBody!=NULL && cameraModel!=NULL) {
+		btTransform trans = cameraModelRigidBody->getWorldTransform();
+		trans.setOrigin(btVector3(eye[0], eye[1], eye[2]));
+		cameraModelRigidBody->setWorldTransform(trans);
+	}
+	--changing;
+}
 void World::move(int d, double step) {
 	if (d < 0 || d > 2) return;
+	++changing;
 	if (d == 0) {
 		Vec t = ((center - eye)*up).normalize();
 		t = step * moveSpeed * t;
@@ -135,13 +157,30 @@ void World::move(int d, double step) {
 		eye += step * moveSpeed * up;
 		center += step * moveSpeed * up;
 	}
+	
+	if (cameraModelRigidBody!=NULL && cameraModel!=NULL) {
+		btTransform trans = cameraModelRigidBody->getWorldTransform();
+		trans.setOrigin(btVector3(eye[0], eye[1], eye[2]));
+		cameraModelRigidBody->setWorldTransform(trans);
+	}
+	--changing;
 }
 void World::_move(double dx, double dy) {
+	++changing;
+
 	Vec up = Vec(0,1,0);
 	Vec t = -(up*(center-eye)).normalize()*dx*0.1;
 	eye += moveSpeed*t; center += moveSpeed*t;
 	t = -up*dy*0.1;
 	eye += moveSpeed*t; center += moveSpeed*t;
+
+	
+	if (cameraModelRigidBody!=NULL && cameraModel!=NULL) {
+		btTransform trans = cameraModelRigidBody->getWorldTransform();
+		trans.setOrigin(btVector3(eye[0], eye[1], eye[2]));
+		cameraModelRigidBody->setWorldTransform(trans);
+	}
+	--changing;
 }
 void World::rotate(double angle, double x, double y, double z) {}
 void World::rotate(int d, double step) {
@@ -211,7 +250,8 @@ void World::display() {
 	windowPos[1] = glutGet(GLUT_WINDOW_Y);
 	if (focusState == GLUT_ENTERED) setCursorToCenter();
 
-	if (cameraModel != NULL) {
+	if (cameraModel != NULL && changing <= 0) {
+		//puts("changing eye");
 		Vec tmp = center - eye;
 		eye = cameraModel->centroid;
 		center = eye + tmp;
@@ -327,10 +367,13 @@ void World::special(int key, int x, int y) {
 void World::motion(int x, int y) {
 	POINT pos;
 	Point pcenter;
+	btTransform trans;
 	if (focusState == GLUT_ENTERED) {
 		switch (mouseState[0]*4+mouseState[1]*2+mouseState[2]) {
 		/*  orbit  */
 		case 3:  //×ó¼ü
+			++changing;
+
 			GetCursorPos(&pos);
 			x = pos.x;  y = pos.y;
 			elevation[0] += rotateSpeed * (x - cursorPos[0]);
@@ -342,6 +385,14 @@ void World::motion(int x, int y) {
 			reCenter();
 			eye = eye + (pcenter - center);
 			center = pcenter;
+			
+
+			if (cameraModelRigidBody!=NULL && cameraModel!=NULL) {
+				trans = cameraModelRigidBody->getWorldTransform();
+				trans.setOrigin(btVector3(eye[0], eye[1], eye[2]));
+				cameraModelRigidBody->setWorldTransform(trans);
+			}
+			--changing;
 			break;
 
 		/*  zoom  */

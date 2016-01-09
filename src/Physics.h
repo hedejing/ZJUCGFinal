@@ -22,7 +22,8 @@ enum SimpleElementType {
 	CONE,
 	CIRCLE,
 	CYLINDER,
-	RECTANGLE
+	RECTANGLE,
+	CAMERAMODEL
 };
 
 struct RigidBody2Element {

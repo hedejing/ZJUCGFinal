@@ -5,6 +5,7 @@
 #include <deque>
 #include "LightSource.h"
 #include "BasicElement.h"
+#include "Physics.h"
 using namespace std;
 
 
@@ -29,7 +30,8 @@ public:
 	static int cursorPos[2];
 	static int focusState;
 
-	static CameraModel *cameraModel;
+	static CameraModel *cameraModel;  static int changing;
+	static btRigidBody *cameraModelRigidBody;
 	static Point eye, center;
 	static const Vec up;  //up向量不能被修改
 	static double elevation[2];

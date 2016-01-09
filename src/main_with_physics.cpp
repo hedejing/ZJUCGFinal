@@ -95,7 +95,6 @@ void draw_world()
 	//glutSolidTorus(0.5f, 1, 50, 50);
 	//glRotatef(-45, 1, 0, 0);
 	//glPopMatrix();
-
 }
 
 Sphere *bullet;
@@ -127,7 +126,6 @@ void shoot()
 	bulletRigidBody->setLinearVelocity(100*btVector3(direct[0], direct[1], direct[2]));
 
 	Physics::AddRigidBodyAndElement(bulletRigidBody, bullet);
-	
 }
 
 void free()
@@ -141,8 +139,19 @@ int main(int argc, char *argv[]) {
 	World::_free = free;
 	Physics::init();
 
-	//World::setCamera(Point(-10, 10, 10), Point(0, 0, 0));
+	{  //设置相机的碰撞检测
+		CameraModel *cameraModel = new CameraModel(Point(12, 12, 12));
+		cameraModel->scale(Vec(2, 4, 2));
+		btRigidBody *cameraModelRigidBody = Physics::CreateSimpleRigidBody(cameraModel, SimpleElementType::CAMERAMODEL);
+		if (cameraModelRigidBody != NULL) Physics::AddRigidBodyAndElement(cameraModelRigidBody, cameraModel);
+
+
+		World::cameraModel = cameraModel;
+		World::cameraModelRigidBody = cameraModelRigidBody;
+	}
 	World::setCamera(Point(12, 12, 12), Point(0, 1, 0));
+	//World::setCamera(Point(-10, 10, 10), Point(0, 0, 0));
+
 
 	//可以在这里使用glutIdleFunc();对idle进行重写
 	//若要对鼠标和键盘函数进行重写，建议在World.cpp里修改

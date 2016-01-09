@@ -85,8 +85,7 @@ void Physics::update()
 
 	for (int i = 0; i < rigidbody2elements.size(); i++)
 	{
-		if (!rigidbody2elements[i].enable)
-			continue;
+		if (!rigidbody2elements[i].enable) continue;
 
 		btTransform trans;
 		rigidbody2elements[i].rigidbody->getMotionState()->getWorldTransform(trans);
@@ -137,9 +136,13 @@ btRigidBody *Physics::CreateSimpleRigidBody(const BasicElement *element, SimpleE
 	case RECTANGLE: {
 		shape = new btBoxShape(btVector3(element->scaleValue[0], 0.01, element->scaleValue[2])); //just simplify
 		break;
+	}
+	case CAMERAMODEL: {
+		shape = new btBoxShape(btVector3(element->scaleValue[0], element->scaleValue[1], element->scaleValue[2]));
+		break;
+	}
 	default:
 		return NULL;
-	}
 
 	}
 	btVector3 Inertia(InertiaVec[0], InertiaVec[1], InertiaVec[2]);
