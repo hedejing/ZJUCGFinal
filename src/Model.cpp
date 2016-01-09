@@ -203,6 +203,7 @@ GLuint Model::LoadTGA(const char *filename)
 }
 Model::Model(const Model &another)
 {
+	obj_mtl = another.obj_mtl;
 	DrawListID=another.DrawListID;
 }
 void Model::Readobj(const char * filename)

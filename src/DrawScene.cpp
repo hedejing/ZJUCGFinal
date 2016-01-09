@@ -3,6 +3,22 @@
 #include "Physics.h"
 vector<Rect> skybox;
 GLuint tex[6];
+#define TreesNum 30
+void getTreesObj()
+{
+	objectmodel *tmp = new objectmodel(Point(10, 20, 3), "./obj/sakura.obj");
+	tmp->rotateTo(-180, 0, 0, 1);
+	tmp->scale(300);
+	tmp->addToPhysicsWorld();
+	/*for (int i = 0; i < TreesNum; i++)
+	{
+		objectmodel *temp = new objectmodel(*tmp);
+		tmp->rotateTo(90, 1, 0, 0);
+		temp->move(i, 0, 1);
+		temp->scale(30);
+		temp->addToPhysicsWorld();
+	}*/
+}
 void InitSkyBox()
 {
 	tex[0] = loadTexture("teide/negx.bmp");

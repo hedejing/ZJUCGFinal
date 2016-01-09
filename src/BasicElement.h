@@ -116,11 +116,20 @@ public:
 };
 class objectmodel : public BasicElement {
 private:
+	int blood;
+	int fullblood;
 	Model* mymo;
 public:
-	objectmodel(Point p, string name);
+	objectmodel(objectmodel&other)
+	{
+		mymo = new Model(*other.mymo);
+	}
+	objectmodel(Point p, string name );
 	~objectmodel(void);
 	void drawNaive();
+	void subblood();
+	bool shoulddead();
+	void objectmodel::addToPhysicsWorld(double coliisionscale = 30, double weight = 100000);
 };
 
 class CameraModel : public BasicElement {
