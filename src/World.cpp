@@ -625,8 +625,8 @@ void World::gl_select(int x, int y) {
 	//pretend to draw the objects onto the screen
 	glMatrixMode(GL_MODELVIEW);
 	glutSwapBuffers();
-	drawAll();
-
+	//drawAll();
+	LightManager::displayWithShadow(drawAll);
 	//restore the view
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();

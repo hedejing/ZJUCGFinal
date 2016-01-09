@@ -111,12 +111,21 @@ Mtl_info::~Mtl_info()
 void Model::draw()
 {
 	int i = 0;
+	//glEnable(GL_COLOR_MATERIAL);
 	for (auto ID : DrawListID)
 	{
 		obj_mtl->change_MTL(ID_NAMES[i++]);
 		glCallList(ID);
 	}
-	
+	//glDisable(GL_COLOR_MATERIAL);
+	float am[4] = { 0.3, 0.3, 0.3, 1 };
+	float nor[4] = { 0.5, 0.5, 0.5, 1 };
+	float zero[4] = { 0.3, 0.3, 0.3, 1 };
+
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, am);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, zero);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, nor);
+	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 70.0);
 }
 Model::Model()
 {
