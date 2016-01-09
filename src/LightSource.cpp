@@ -2,7 +2,7 @@
 #include "texture.h"
 #include "World.h"
 #include "utility.h"
-
+#include "DrawScene.h"
 ShadowStuff LightManager::shadowStuff;
 vector<LightSource> LightManager::lights;
 
@@ -277,7 +277,6 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 		}
 		//delete[] data;
 	}
-
 	// 恢复视口、颜色模板、光照
 	glViewport(0, 0, World::windowWidth, World::windowHeight);
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
@@ -286,6 +285,7 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 	//-------------------------------------------第2次绘制，绘制场景------------
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
 	// 1 环境光
 	for (int i = 0; i < lights.size(); i++)
 	{
@@ -302,7 +302,7 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 	glLoadIdentity();
 	World::lookAt();
 	draw_world();
-
+	
 	//2 点光源
 	GLfloat la[4]; glGetFloatv(GL_LIGHT_MODEL_AMBIENT, la);
 	float gac[4] = { 0,0,0,1 }; glLightModelfv(GL_LIGHT_MODEL_AMBIENT, gac); // black
@@ -357,7 +357,6 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 		World::lookAt();
-
 		//enable light
 		Point p = lights[i].position;
 		GLfloat lightpos[] = { p[0], p[1], p[2], p[3] };
@@ -374,6 +373,8 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 	}
 #endif
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, la); // 恢复环境光
+	
+	
 	glDepthFunc(GL_LESS); glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	//glDisable(GL_BLEND);
 //	glActiveTexture(GL_TEXTURE1); glDisable(GL_TEXTURE_2D);

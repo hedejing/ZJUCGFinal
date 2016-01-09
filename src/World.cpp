@@ -4,7 +4,7 @@
 #include "World.h"
 #include "utility.h"
 #include "texture.h"
-
+#include "DrawScene.h"
 
 unsigned int World::nextId = 0;
 map<unsigned int, BasicElement *> World::objects = map<unsigned int, BasicElement *>();
@@ -178,7 +178,7 @@ void World::idle() {
 void World::display() {
 	if (focusState == GLUT_ENTERED)
 		setCursorToCenter();
-
+	
 #ifndef NO_SHADOW
 	LightManager::displayWithShadow(drawAll);
 #else
