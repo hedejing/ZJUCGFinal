@@ -109,6 +109,9 @@ void World::init(int *argc, char *argv[], int windowHeight, int windowWidth, int
 #endif
 		glEnable(GL_BLEND);
 	}
+	{
+		InitSkyBox();
+	}
 	//...
 }
 void World::setCursorToCenter() {

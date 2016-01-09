@@ -2,6 +2,16 @@
 #include <vector>
 #include "Physics.h"
 vector<Rect> skybox;
+GLuint tex[6];
+void InitSkyBox()
+{
+	tex[0] = loadTexture("teide/negx.bmp");
+	tex[1] = loadTexture("teide/posx.bmp");
+	tex[2] = loadTexture("teide/negz.bmp");
+	tex[3] = loadTexture("teide/posz.bmp");
+	tex[4] = loadTexture("teide/negy.bmp");
+	tex[5] = loadTexture("teide/posy.bmp");
+}
 
 void drawTexRect(Point centroid, double scaleValue, GLuint tex, int face)
 {
@@ -56,30 +66,18 @@ void drawTexRect(Point centroid, double scaleValue, GLuint tex, int face)
 
 void drawSkyBox(double length)
 {
-	
-	GLuint tex;
-	tex = loadTexture("teide/negx.bmp");
-	drawTexRect(Point(-length / 2, 0, 0), length, tex, 0);
-	
-
-	tex = loadTexture("teide/posx.bmp");
-	drawTexRect(Point(length / 2, 0, 0), length, tex, 1);
-
-	tex = loadTexture("teide/negz.bmp");
-	drawTexRect(Point(0, 0, -length / 2), length, tex, 2);
-
-
-	tex = loadTexture("teide/posz.bmp");
-	drawTexRect(Point(0, 0, length / 2), length, tex, 3);
-
-
-	tex = loadTexture("teide/negy.bmp");
-	drawTexRect(Point(0, -length / 2, 0), length, tex, 4);
-
-	
-
-	tex = loadTexture("teide/posy.bmp");
-	drawTexRect(Point(0, length / 2, 0), length, tex, 5);
+	//tex = loadTexture("teide/negx.bmp");
+	drawTexRect(Point(-length / 2, 0, 0), length, tex[0], 0);
+	//tex = loadTexture("teide/posx.bmp");
+	drawTexRect(Point(length / 2, 0, 0), length, tex[1], 1);
+	//tex = loadTexture("teide/negz.bmp");
+	drawTexRect(Point(0, 0, -length / 2), length, tex[2], 2);
+	//tex = loadTexture("teide/posz.bmp");
+	drawTexRect(Point(0, 0, length / 2), length, tex[3], 3);
+	//tex = loadTexture("teide/negy.bmp");
+	drawTexRect(Point(0, -length / 2, 0), length, tex[4], 4);
+	//tex = loadTexture("teide/posy.bmp");
+	drawTexRect(Point(0, length / 2, 0), length, tex[5], 5);
 	return;
 }
 using namespace std;

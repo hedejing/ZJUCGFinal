@@ -4,6 +4,6 @@
 #include "BasicElement.h"
 void DrawScene_Of_CS(string name);
 //void DrawSkyBox();
-//void InitSkyBox(double length);
+void InitSkyBox();
 void drawSkyBox(double length);
 #endif
