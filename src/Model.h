@@ -1,13 +1,12 @@
 #ifndef _Model_H_
 #define _Model_H_
-#include "GL/glew.h"
-#include "GL/GLUT.H"
+#define GLUT_DISABLE_ATEXIT_HACK
 #include <vector>
 #include <iostream>
 #include <string>
 #include <map>
-#include <GL/glew.h>
-#include "GL/glut.h"
+#include <glew.h>
+#include "glut.h"
 #include "texture.h"
 #include "utility.h"
 #define IF_KA 1

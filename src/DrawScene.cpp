@@ -86,20 +86,94 @@ struct wall_info{
 	GLuint texutre;
 	Point position;
 };
+
+
+#define board_w 20
+#define board_h 20
+#define rect_width 10
 vector<wall_info> Walls;
+GLuint board_info[board_w][board_h];
 bool PushSceneOfName(string name)
 {
 	//push all the objects into the vector
+
+	wall_info a;
+	GLuint tex_board = loadTexture("board.bmp");
+	GLuint tex_nitu = loadTexture("nitu.bmp");
+	for (int i = 0; i < board_h; i++)
+	{
+		for (int j = 0; j < board_w; j++)
+		{
+			if ((i - board_h / 2)*(i - board_h / 2) + (j - board_w / 2)*(j - board_w / 2) < (0.9*board_w / 2)*(0.9*board_h / 2))
+				board_info[i][j] = tex_board;
+			else
+				board_info[i][j] = tex_nitu;
+		}
+	}
+
+	for (int i = -3; i < 5; i++)
+	{
+		a.size = Vec(5, 3, 1);
+		a.texutre = tex_board;
+		a.position = Point(i * 2 * 5, 0.5, 0);
+		Walls.push_back(a);
+	}
+
+	for (int i = 0; i < 2; i++)
+	{
+		a.size = Vec(1, 3, 5);
+		a.texutre = tex_board;
+		a.position = Point(46, -1.5, 4 + i * 2 * 5);
+		Walls.push_back(a);
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		a.size = Vec(1, 3, 5);
+		a.texutre = tex_board;
+		a.position = Point(-36, -1.5, 4 + i * 2 * 5);
+		Walls.push_back(a);
+	}
+
+	for (int i = 0; i < 5; i++)
+	{
+		a.size = Vec(5, 3, 1);
+		a.texutre = tex_board;
+		a.position = Point(i * 2 * 5, 0.5, 18);
+		Walls.push_back(a);
+	}
+
+
 	return 0;
 }
 void DrawScene_Of_CS(string name)
 {
-//	DrawSkyBox(1999);
+	//	DrawSkyBox(1999);
 	//Draw walls
+	PushSceneOfName(name);
 	for (auto wall : Walls)
 	{
 		Cube *tmp = new Cube(wall.position, wall.texutre);
-		tmp->scaleValue=wall.size;
-		btRigidBody *temp = Physics::CreateSimpleRigidBody(tmp, SimpleElementType::CUBE,1000000);
+		tmp->scaleValue = wall.size;
+		btRigidBody *temp = Physics::CreateSimpleRigidBody(tmp, SimpleElementType::CUBE, 1000000);
+		btCollisionShape* shape = new  btBoxShape(btVector3(wall.size[0] - 0.005, wall.size[1] - 0.005, wall.size[2] - 0.005));
+		btDefaultMotionState* MotionState =
+			new btDefaultMotionState(btTransform(
+			btQuaternion(0, 0, 0, 1),
+			btVector3(wall.position[0], wall.position[1], wall.position[2])));
+		btVector3 Inertia(0, 0, 0);
+		shape->calculateLocalInertia(10000000, Inertia);
+		btRigidBody::btRigidBodyConstructionInfo RigidBodyCI(10000000, MotionState, shape, Inertia);
+		btRigidBody* RigidBody = new btRigidBody(RigidBodyCI);
+		Physics::AddRigidBodyAndElement(RigidBody, tmp);
+	}
+	for (int i = 0; i < board_w; i++)
+	{
+		for (int j = 0; j < board_h; j++)
+		{
+			Rect *tmp = new Rect(Point(rect_width*(i - board_w / 2), 0, rect_width*(j - board_h / 2)), board_info[i][j]);
+			tmp->scale(rect_width);
+			tmp->rotateTo(90, 0, 0, 1);
+		}
 	}
 }
