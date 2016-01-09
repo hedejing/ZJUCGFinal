@@ -1,6 +1,6 @@
 #ifndef __World_H__
 #define __World_H__
-
+#define GLUT_DISABLE_ATEXIT_HACK
 #include <map>
 #include <deque>
 #include "LightSource.h"

@@ -1,13 +1,12 @@
 #ifndef _Model_H_
 #define _Model_H_
-#include "GL/glew.h"
-#include "GL/GLUT.H"
+#define GLUT_DISABLE_ATEXIT_HACK
 #include <vector>
 #include <iostream>
 #include <string>
 #include <map>
-#include <GL/glew.h>
-#include "GL/glut.h"
+#include <glew.h>
+#include "glut.h"
 #include "texture.h"
 #include "utility.h"
 #define IF_KA 1
@@ -34,7 +33,7 @@ protected:
 	};
 public:
 	std::map<std::string, A_mtl> mtls;
-	Mtl_info(const char *filename);
+	Mtl_info(const char *filename,string path);
 	~Mtl_info();
 	void change_MTL(std::string mtl_name);
 };

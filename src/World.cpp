@@ -6,7 +6,7 @@
 #include "texture.h"
 #include "DrawScene.h"
 
-
+//#define NO_SHADOW
 unsigned int World::nextId = 0;
 map<unsigned int, BasicElement *> World::objects = map<unsigned int, BasicElement *>();
 deque<unsigned int> World::trash = deque<unsigned int>();
@@ -118,6 +118,9 @@ void World::init(int *argc, char *argv[], int windowHeight, int windowWidth, int
 		LightManager::shadow_init();
 #endif
 		glEnable(GL_BLEND);
+	}
+	{
+		InitSkyBox();
 	}
 	//...
 }

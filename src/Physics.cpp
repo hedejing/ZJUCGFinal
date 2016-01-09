@@ -107,7 +107,7 @@ btRigidBody *Physics::CreateSimpleRigidBody(const BasicElement *element, SimpleE
 	btCollisionShape* shape;
 	btDefaultMotionState* MotionState =
 		new btDefaultMotionState(btTransform(
-			btQuaternion(element->rotateQuat.w, element->rotateQuat.x, element->rotateQuat.y, element->rotateQuat.z), 
+			btQuaternion(element->rotateQuat.w, element->rotateQuat.x, element->rotateQuat.y, element->rotateQuat.z),
 			btVector3(element->centroid[0], element->centroid[1], element->centroid[2])));
 	switch (type)
 	{
@@ -151,6 +151,9 @@ btRigidBody *Physics::CreateSimpleRigidBody(const BasicElement *element, SimpleE
 	shape->calculateLocalInertia(mass, Inertia);
 	btRigidBody::btRigidBodyConstructionInfo RigidBodyCI(mass, MotionState, shape, Inertia);
 	btRigidBody* RigidBody = new btRigidBody(RigidBodyCI);
+
+	//delete MotionState;
+	//delete shape;
 
 	return RigidBody;
 }

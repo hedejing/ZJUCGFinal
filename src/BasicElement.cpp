@@ -118,7 +118,7 @@ Cube::Cube(Point p) {
 void Cube::drawNaive() {
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, tex);
-	MySolidCube(1);
+	MySolidCube(2);
 	glDisable(GL_TEXTURE_2D);
 }
 Cube::Cube(Point p, GLuint t)
