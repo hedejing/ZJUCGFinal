@@ -67,7 +67,7 @@ void define() {
 	//cylinder->rotateTo(45, 0, 0, 1);
 
 	//AviBoard *avi = new AviBoard(Point(0, 30, 0), 100, 100, "test2.rgb");
-	/*
+	
 	objectmodel *tempobj1 = new objectmodel(Point(-50, 0, 4), "./obj/f1.obj");
 	tempobj1->rotate(90, 0, 0, 1);
 	tempobj1->addToPhysicsWorld(30, 10);
@@ -95,7 +95,7 @@ void define() {
 	objectmodel *tempobj6 = new objectmodel(Point(-30, 0, -30), "./obj/f1.obj");
 	tempobj6->rotate(90, 0, 0, 1);
 	tempobj6->rotate(-90, 1, 0, 0);
-	tempobj6->addToPhysicsWorld(30, 10);*/
+	tempobj6->addToPhysicsWorld(30, 10);
 
 	objectmodel *tempobj7 = new objectmodel(Point(25, 0, -20), "./obj/house1.obj");
 	
