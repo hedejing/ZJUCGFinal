@@ -1,0 +1,16 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# 创建的文件:09.01.2016 22:35:14
+
+newmtl twnhouse
+	Ns 1.00
+	Ni 1.50
+	d 1.00
+	Tr 0.00
+	Tf 1.00 1.00 1.00 
+	illum 2
+	Ka 0.00 0.00 0.00
+	Kd 0.96 1.00 1.00
+	Ks 0.96 1.00 1.00
+	Ke 0.00 0.00 0.00
+	map_Ka twnhouse.bmp
+	map_Kd twnhouse.bmp

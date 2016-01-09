@@ -1,0 +1,44 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# 创建的文件:09.01.2016 23:07:17
+
+newmtl AG_Model_Mesh_Broken2
+	Ns 0.00
+	Ni 1.50
+	d 1.00
+	Tr 0.00
+	Tf 1.00 1.00 1.00 
+	illum 2
+	Ka 0.25 0.25 0.25
+	Kd 1.00 1.00 1.00
+	Ks 0.00 0.00 0.00
+	Ke 0.00 0.00 0.00
+	map_Ka AG_Model_Mesh_Broken2.bmp
+	map_Kd AG_Model_Mesh_Broken2.bmp
+
+newmtl AG_Model_Mesh_Broken2_Lum
+	Ns 0.00
+	Ni 1.50
+	d 1.00
+	Tr 0.00
+	Tf 1.00 1.00 1.00 
+	illum 2
+	Ka 1.00 1.00 1.00
+	Kd 0.00 0.00 0.00
+	Ks 0.00 0.00 0.00
+	Ke 0.00 0.00 0.00
+	map_Ka AG_Model_Mesh_Broken2.bmp
+	map_Kd AG_Model_Mesh_Broken2.bmp
+
+newmtl ARMORREFLECT4_Lum
+	Ns 0.00
+	Ni 1.50
+	d 1.00
+	Tr 0.00
+	Tf 1.00 1.00 1.00 
+	illum 2
+	Ka 1.00 1.00 1.00
+	Kd 0.00 0.00 0.00
+	Ks 0.00 0.00 0.00
+	Ke 0.00 0.00 0.00
+	map_Ka ARMORREFLECT4.bmp
+	map_Kd ARMORREFLECT4.bmp

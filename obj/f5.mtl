@@ -1,0 +1,85 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# 创建的文件:09.01.2016 21:17:54
+
+newmtl Material__523
+	Ns 10.00
+	Ni 1.50
+	d 1.00
+	Tr 0.00
+	Tf 1.00 1.00 1.00 
+	illum 2
+	Ka 0.59 0.59 0.59
+	Kd 0.59 0.59 0.59
+	Ks 0.00 0.00 0.00
+	Ke 0.00 0.00 0.00
+	map_Ka 3ceac660.bmp
+	map_Kd 3ceac660.bmp
+	map_Ks 3ceac2e0.bmp
+	map_Ke 3ceacc20.bmp
+	map_bump Map__104_法线凹凸.bmp
+
+newmtl Material__521
+	Ns 10.00
+	Ni 1.50
+	d 1.00
+	Tr 0.00
+	Tf 1.00 1.00 1.00 
+	illum 2
+	Ka 0.59 0.59 0.59
+	Kd 0.59 0.59 0.59
+	Ks 0.00 0.00 0.00
+	Ke 0.00 0.00 0.00
+	map_Ka 3ceac660.bmp
+	map_Kd 3ceac660.bmp
+	map_Ke 3ceac9e0.bmp
+	map_d 3ceac660.bmp
+
+newmtl Material__522
+	Ns 10.00
+	Ni 1.50
+	d 1.00
+	Tr 0.00
+	Tf 1.00 1.00 1.00 
+	illum 2
+	Ka 0.59 0.59 0.59
+	Kd 0.59 0.59 0.59
+	Ks 0.00 0.00 0.00
+	Ke 0.00 0.00 0.00
+	map_Ka 3ceac660.bmp
+	map_Kd 3ceac660.bmp
+	map_Ke 3ceac9e0.bmp
+	map_d 3ceac660.bmp
+
+newmtl Material__526
+	Ns 10.00
+	Ni 1.50
+	d 1.00
+	Tr 0.00
+	Tf 1.00 1.00 1.00 
+	illum 2
+	Ka 0.59 0.59 0.59
+	Kd 0.59 0.59 0.59
+	Ks 0.00 0.00 0.00
+	Ke 0.00 0.00 0.00
+	map_Ka 3ceacb00.bmp
+	map_Kd 3ceacb00.bmp
+	map_Ks 3ceacd60.bmp
+	map_Ke 3ceac1c0.bmp
+	map_bump Map__109_法线凹凸.bmp
+
+newmtl Material__528
+	Ns 10.00
+	Ni 1.50
+	d 1.00
+	Tr 0.00
+	Tf 1.00 1.00 1.00 
+	illum 2
+	Ka 0.59 0.59 0.59
+	Kd 0.59 0.59 0.59
+	Ks 0.00 0.00 0.00
+	Ke 0.00 0.00 0.00
+	map_Ka 3ceac780.bmp
+	map_Kd 3ceac780.bmp
+	map_Ks 3ceac420.bmp
+	map_Ke 3ceace80.bmp
+	map_bump Map__101_法线凹凸.bmp
