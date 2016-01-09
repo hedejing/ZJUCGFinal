@@ -45,6 +45,25 @@ int World::mouseState[3] = { GLUT_UP, GLUT_UP, GLUT_UP };
 
 
 
+bool World::jumping = 0;
+double World::jumpHeight = 0, World::jumpA = 0, World::jumpV = 0, World::jumpDt = 0.025;
+
+
+
+extern vector<wall_info> Walls;
+bool World::couldMoveTo(Point p) {
+	//for (auto &wall : Walls) {
+	//	auto t = eye - wall.position;
+	//	bool flag = 1;
+	//	for (int i=0; i<3; i++)
+	//		flag &= (fabs(t[i]) < fabs(wall.size[i]));
+	//	cout<<eye<<" "<<wall.position<<" "<<wall.size<<" | "<<flag<<endl;
+	//	if (flag) return 0;
+	//}
+	return 1;
+}
+
+
 
 unsigned int World::getNextId() {
 	if (trash.empty()) {
@@ -124,9 +143,12 @@ void World::reCenter() {
 	Vec t = center - eye;
 	center = eye + Vec(cos(fi)*cos(theta), sin(fi), cos(fi)*sin(theta))*t.abs();
 }
+double World::getCameraHeight() {
+	return 2.5 + jumpHeight;
+}
 void World::syncWithCameraModel() {
 	if (gameMode == GAME_MODE) {
-		eye[1] = 2.5;
+		eye[1] = getCameraHeight();
 		if (cameraModelRigidBody != NULL && cameraModel != NULL) {
 			btTransform trans = cameraModelRigidBody->getWorldTransform();
 			trans.setOrigin(btVector3(eye[0], eye[1], eye[2]));
@@ -147,14 +169,26 @@ void World::setCamera(Point _eye, Point _center) {
 void World::move(double dx, double dy, double dz) { move(Vec(dx, dy, dz)); }
 void World::move(const Vec &ds) {
 	++changing;
+	Point _eye = eye;
 	if (gameMode == GAME_MODE) {
-		eye[0] += ds[0];
-		eye[2] += ds[2];
-		center[0] += ds[0];
-		center[2] += ds[2];
+		_eye[0] += ds[0];
+		_eye[2] += ds[2];
+		if (!couldMoveTo(_eye)) {
+		}
+		else {
+			eye[0] += ds[0];
+			eye[2] += ds[2];
+			center[0] += ds[0];
+			center[2] += ds[2];
+		}
 	}
 	else {
-		eye += ds; center += ds;
+		_eye += ds;
+		if (!couldMoveTo(_eye)) {
+		}
+		else {
+			eye += ds; center += ds;
+		}
 	}
 	
 	syncWithCameraModel();
@@ -163,45 +197,84 @@ void World::move(const Vec &ds) {
 void World::move(int d, double step) {
 	if (d < 0 || d > 2) return;
 	++changing;
+	Point _eye = eye;
 	if (gameMode == GAME_MODE) {
 		if (d == 0) {
 			Vec t = ((center - eye)*up).normalize();
 			t = step * moveSpeed * t;
-			eye[0] += t[0];
-			eye[2] += t[2];
-			center[0] += t[0];
-			center[2] += t[2];
+			
+			_eye[0] += t[0];
+			_eye[2] += t[2];
+			if (!couldMoveTo(_eye)) {
+			}
+			else {
+				eye[0] += t[0];
+				eye[2] += t[2];
+				center[0] += t[0];
+				center[2] += t[2];
+			}
 		}
 		else if (d == 1) {
 			Vec t = (center - eye).normalize();
 			t = step * moveSpeed *t;
-			eye[0] += t[0];
-			eye[2] += t[2];
-			center[0] += t[0];
-			center[2] += t[2];
+			
+			_eye[0] += t[0];
+			_eye[2] += t[2];
+			if (!couldMoveTo(_eye)) {
+			}
+			else {
+				eye[0] += t[0];
+				eye[2] += t[2];
+				center[0] += t[0];
+				center[2] += t[2];
+			}
 		}
 		else {
 			Vec t = step * moveSpeed * up;
-			eye[0] += t[0];
-			eye[2] += t[2];
-			center[0] += t[0];
-			center[2] += t[2];
+			
+			_eye[0] += t[0];
+			_eye[2] += t[2];
+			if (!couldMoveTo(_eye)) {
+			}
+			else {
+				eye[0] += t[0];
+				eye[2] += t[2];
+				center[0] += t[0];
+				center[2] += t[2];
+			}
 		}
 	}
 	else {
 		if (d == 0) {
 			Vec t = ((center - eye)*up).normalize();
 			t = step * moveSpeed * t;
-			eye += t; center += t;
+
+			_eye += t;
+			if (!couldMoveTo(_eye)) {
+			}
+			else {
+				eye += t; center += t;
+			}
 		}
 		else if (d == 1) {
 			Vec t = (center - eye).normalize();
 			t = step * moveSpeed *t;
-			eye += t;  center += t;
+
+			_eye += t;
+			if (!couldMoveTo(_eye)) {
+			}
+			else {
+				eye += t;  center += t;
+			}
 		}
 		else {
-			eye += step * moveSpeed * up;
-			center += step * moveSpeed * up;
+			_eye += step * moveSpeed * up;
+			if (!couldMoveTo(_eye)) {
+			}
+			else {
+				eye += step * moveSpeed * up;
+				center += step * moveSpeed * up;
+			}
 		}
 	}
 
@@ -213,6 +286,8 @@ void World::_move(double dx, double dy) {
 
 	if (gameMode == GOD_MODE) {
 		Vec up = Vec(0,1,0);
+
+		//couldMoveTo判断
 		Vec t = -(up*(center-eye)).normalize()*dx*0.1;
 		eye += moveSpeed*t; center += moveSpeed*t;
 		t = -up*dy*0.1;
@@ -308,6 +383,7 @@ void World::idle() {
 	glutPostRedisplay();
 }
 
+
 void World::display() {
 	windowPos[0] = glutGet(GLUT_WINDOW_X);
 	windowPos[1] = glutGet(GLUT_WINDOW_Y);
@@ -322,6 +398,9 @@ void World::display() {
 		//center = eye + tmp;
 		syncWithCameraModel();
 	}
+
+	subtractBlood();
+	solveJump();
 
 #ifndef NO_SHADOW
 	LightManager::displayWithShadow(drawAll);
@@ -409,7 +488,8 @@ void World::keyboard(unsigned char key, int x, int y) {
 		//	REP (i, 0, 2) lightColor[1][i] += 0.1;
 		//	break;
 	case ' ':
-		shoot();
+		puts("haha");
+		jump();//shoot();
 		break;
 	default:
 		break;
@@ -716,4 +796,86 @@ void World::grabScreen(void) {  //TODO  截图时可以输出一个提示信息
 	// 释放内存和关闭文件
 	fclose(pWritingFile);
 	free(pPixelData);
+}
+
+void World::subtractBlood() {
+	/*btCollisionConfiguration* bt_collision_configuration;
+	btCollisionDispatcher* bt_dispatcher;
+	btBroadphaseInterface* bt_broadphase;
+	btCollisionWorld* bt_collision_world;
+
+	double scene_size = 500;
+	unsigned int max_objects = 16000;
+
+	bt_collision_configuration = new btDefaultCollisionConfiguration();
+	bt_dispatcher = new btCollisionDispatcher(bt_collision_configuration);
+
+	btScalar sscene_size = (btScalar) scene_size;
+	btVector3 worldAabbMin(-sscene_size, -sscene_size, -sscene_size);
+	btVector3 worldAabbMax(sscene_size, sscene_size, sscene_size);
+	//This is one type of broadphase, bullet has others that might be faster depending on the application
+	bt_broadphase = new bt32BitAxisSweep3(worldAabbMin, worldAabbMax, max_objects, 0, true);  // true for disabling raycast accelerator
+
+	bt_collision_world = new btCollisionWorld(bt_dispatcher, bt_broadphase, bt_collision_configuration);
+	//Create two collision objects
+	btCollisionObject* sphere_A = new btCollisionObject();
+	btCollisionObject* sphere_B = new btCollisionObject();
+	//Move each to a specific location
+	sphere_A->getWorldTransform().setOrigin(btVector3((btScalar) 2, (btScalar) 1.5, (btScalar) 0));
+	sphere_B->getWorldTransform().setOrigin(btVector3((btScalar) 2, (btScalar) 0, (btScalar) 0));
+	//Create a sphere with a radius of 1
+	btSphereShape * sphere_shape = new btSphereShape(1);
+	//Set the shape of each collision object
+	sphere_A->setCollisionShape(sphere_shape);
+	sphere_B->setCollisionShape(sphere_shape);
+	//Add the collision objects to our collision world
+	bt_collision_world->addCollisionObject(sphere_A);
+	bt_collision_world->addCollisionObject(sphere_B);
+
+	//Perform collision detection
+	bt_collision_world->performDiscreteCollisionDetection();
+
+	int numManifolds = bt_collision_world->getDispatcher()->getNumManifolds();
+	//For each contact manifold
+	for (int i = 0; i < numManifolds; i++) {
+		btPersistentManifold* contactManifold = bt_collision_world->getDispatcher()->getManifoldByIndexInternal(i);
+		const btCollisionObject* obA = static_cast<const btCollisionObject*>(contactManifold->getBody0());
+		const btCollisionObject* obB = static_cast<const btCollisionObject*>(contactManifold->getBody1());
+		contactManifold->refreshContactPoints(obA->getWorldTransform(), obB->getWorldTransform());
+		int numContacts = contactManifold->getNumContacts();
+		//For each contact point in that manifold
+		for (int j = 0; j < numContacts; j++) {
+			//Get the contact information
+			btManifoldPoint& pt = contactManifold->getContactPoint(j);
+			btVector3 ptA = pt.getPositionWorldOnA();
+			btVector3 ptB = pt.getPositionWorldOnB();
+			double ptdist = pt.getDistance();
+		}
+	}
+
+	delete bt_collision_configuration;
+	delete bt_dispatcher;
+	delete bt_broadphase;
+	//delete bt_collision_world;
+	delete sphere_A;
+	delete sphere_B;
+	delete sphere_shape;*/
+}
+
+
+
+/*  相机跳跃  */
+void World::jump() {
+	if (!jumping) {
+		jumping = 1;
+		jumpA = -10;
+		jumpV = 7.5;
+	}
+}
+void World::solveJump() {
+	if (jumping) {
+		jumpHeight = jumpHeight + jumpV*jumpDt;
+		jumpV = jumpV + jumpA*jumpDt;
+		if (jumpHeight < 0) jumping = 0;
+	}
 }
