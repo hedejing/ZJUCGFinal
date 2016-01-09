@@ -12,6 +12,7 @@ public:
 	Point centroid;  //体心
 	Quat rotateQuat;  //GLMat rotateMat;
 	Vec scaleValue;
+	int classType;  //1为子弹，一般为0
 	BasicElement();
 	virtual ~BasicElement();
 	unsigned int getId();
@@ -128,5 +129,15 @@ public:
 	CameraModel();
 	void drawNaive();
 };
+
+
+class Bullet : public BasicElement {
+public:
+	double radius;
+	int slices, stacks;
+	Bullet(Point p, double radius=0.5, int slices=50, int stacks=50);
+	void drawNaive();
+};
+
 
 #endif

@@ -28,11 +28,17 @@ double World::rotateSpeed = 0.1;
 double World::zoomFactor = 1, World::zoomSpeed = 0.005;
 
 unsigned int World::chosenID = -1;
-int World::gameMode = 0;
-int World::gameModeNum = 2;
+int World::gameMode = 1;
+int World::gameModeTotalNum = 2;
 
 void (*World::_display)() = NULL;
 void (*World::_free)() = NULL;
+
+double World::worldBound[3][2] = {
+	{-100, 100},  //x
+	{-100, 100},  //y
+	{-100, 100},  //z
+};
 
 int World::mouseState[3] = {GLUT_UP, GLUT_UP, GLUT_UP};
 
@@ -77,6 +83,7 @@ void World::init(int *argc, char *argv[], int windowHeight, int windowWidth, int
 		glutEntryFunc(entry);
 		glutIdleFunc(idle);
 
+		glutFullScreen();
 		//glutSetCursor(GLUT_CURSOR_CROSSHAIR);
 		ShowCursor(0);
 	}
@@ -113,6 +120,16 @@ void World::reCenter() {
 	Vec t = center - eye;
 	center = eye + Vec(cos(fi)*cos(theta), sin(fi), cos(fi)*sin(theta))*t.abs();
 }
+void World::syncWithCameraModel() {
+	if (gameMode == GAME_MODE) {
+		eye[1] = 2.5;
+		if (cameraModelRigidBody!=NULL && cameraModel!=NULL) {
+			btTransform trans = cameraModelRigidBody->getWorldTransform();
+			trans.setOrigin(btVector3(eye[0], eye[1], eye[2]));
+			cameraModelRigidBody->setWorldTransform(trans);
+		}
+	}
+}
 void World::setCamera(Point _eye, Point _center) {
 	++changing;
 	eye = _eye;  center = _center;
@@ -120,12 +137,7 @@ void World::setCamera(Point _eye, Point _center) {
 	elevation[0] = atan2(t[2], t[0]) * 180 / M_PI;
 	elevation[1] = atan2(t[1], hypot(t[0], t[2])) * 180 / M_PI;
 
-	if (cameraModelRigidBody!=NULL && cameraModel!=NULL) {
-		btTransform trans = cameraModelRigidBody->getWorldTransform();
-		trans.setOrigin(btVector3(eye[0], eye[1], eye[2]));
-		cameraModelRigidBody->setWorldTransform(trans);
-	}
-
+	syncWithCameraModel();
 	--changing;
 }
 void World::move(double dx, double dy, double dz) { move(Vec(dx, dy, dz)); }
@@ -133,11 +145,7 @@ void World::move(const Vec &ds) {
 	++changing;
 	eye += ds; center += ds;
 	
-	if (cameraModelRigidBody!=NULL && cameraModel!=NULL) {
-		btTransform trans = cameraModelRigidBody->getWorldTransform();
-		trans.setOrigin(btVector3(eye[0], eye[1], eye[2]));
-		cameraModelRigidBody->setWorldTransform(trans);
-	}
+	syncWithCameraModel();
 	--changing;
 }
 void World::move(int d, double step) {
@@ -158,11 +166,7 @@ void World::move(int d, double step) {
 		center += step * moveSpeed * up;
 	}
 	
-	if (cameraModelRigidBody!=NULL && cameraModel!=NULL) {
-		btTransform trans = cameraModelRigidBody->getWorldTransform();
-		trans.setOrigin(btVector3(eye[0], eye[1], eye[2]));
-		cameraModelRigidBody->setWorldTransform(trans);
-	}
+	syncWithCameraModel();
 	--changing;
 }
 void World::_move(double dx, double dy) {
@@ -174,12 +178,7 @@ void World::_move(double dx, double dy) {
 	t = -up*dy*0.1;
 	eye += moveSpeed*t; center += moveSpeed*t;
 
-	
-	if (cameraModelRigidBody!=NULL && cameraModel!=NULL) {
-		btTransform trans = cameraModelRigidBody->getWorldTransform();
-		trans.setOrigin(btVector3(eye[0], eye[1], eye[2]));
-		cameraModelRigidBody->setWorldTransform(trans);
-	}
+	syncWithCameraModel();
 	--changing;
 }
 void World::rotate(double angle, double x, double y, double z) {}
@@ -187,24 +186,41 @@ void World::rotate(int d, double step) {
 	if (d < 0 || d > 1) return;
 	if (d == 0) elevation[0] += rotateSpeed * step;
 	else elevation[1] += rotateSpeed * step;
-	if (elevation[1] > 75) elevation[1] = 75;
-	if (elevation[1] < -75) elevation[1] = -75;
+	if (elevation[1] > 45) elevation[1] = 45;
+	if (elevation[1] < -45) elevation[1] = -45;
 
 	reCenter();
 }
 void World::zoom(double d) {
 	zoomFactor += zoomSpeed * d;
-	if (zoomFactor > 3.5) zoomFactor = 3.5;
-	if (zoomFactor < 0.1) zoomFactor = 0.1;
+	if (zoomFactor > 1.5) zoomFactor = 1.5;
+	if (zoomFactor < 0.6) zoomFactor = 0.6;
 }
 
 void World::drawAll() {
-	for (auto o : objects) o.second->draw();
+	for (auto it = objects.begin(); it != objects.end(); ) {
+		if (it->second->classType == 1 && !isInside(it->second->centroid)) {
+			BasicElement *be = it->second;
+			it++;
+			delete be;
+		}
+		else {
+			it->second->draw();
+			it++;
+		}
+	}
+	//for (auto o : objects) {
+	//	if (!isInside(o.second->centroid)) {
+	//		objects.erase(o.first);
+	//		delete o.second;
+	//	}
+	//	else  o.second->draw();
+	//}
 	if (_display != NULL) _display();
 	
 	/*  鼠标的绘制  */
 	glDisable(GL_LIGHTING);
-	double length = 0.05, perc = 0.2;
+	double length = 0.02, perc = 0.1;
 	Vec right = (center - eye) * up; right = right.normalize()*length;
 	Vec _up = right * (center - eye); _up = _up.normalize()*length;
 	Vec east = right, west = -right;
@@ -229,12 +245,18 @@ void World::drawAll() {
 		glEnd();
 	glPopMatrix();
 	glEnable(GL_LIGHTING);
+}
 
+bool World::isInside(Point p) {
+	if (p[0] < eye[0]+worldBound[0][0] || p[0] > eye[0]+worldBound[0][1]) return 0;
+	if (p[1] < eye[1]+worldBound[1][0] || p[1] > eye[1]+worldBound[1][1]) return 0;
+	if (p[2] < eye[2]+worldBound[2][0] || p[2] > eye[2]+worldBound[2][1]) return 0;
+	return 1;
 }
 
 /*  GLU FUNC  */
 void World::perspective() {
-	gluPerspective(45*zoomFactor, (double)windowWidth / windowHeight, 0.1, 100);
+	gluPerspective(30*zoomFactor, (double)windowWidth / windowHeight, 1, 100);  //听说fovy要设在45度以下才能获得比较好的效果
 }
 void World::lookAt() {
 	gluLookAt(eye[0], eye[1], eye[2],  center[0], center[1], center[2],  up[0], up[1], up[2]);
@@ -248,13 +270,16 @@ void World::idle() {
 void World::display() {
 	windowPos[0] = glutGet(GLUT_WINDOW_X);
 	windowPos[1] = glutGet(GLUT_WINDOW_Y);
+	windowHeight = glutGet(GLUT_WINDOW_HEIGHT);
+	windowWidth = glutGet(GLUT_WINDOW_WIDTH);
 	if (focusState == GLUT_ENTERED) setCursorToCenter();
 
 	if (cameraModel != NULL && changing <= 0) {
 		//puts("changing eye");
 		Vec tmp = center - eye;
-		eye = cameraModel->centroid;
-		center = eye + tmp;
+		//eye = cameraModel->centroid;
+		//center = eye + tmp;
+		syncWithCameraModel();
 	}
 
 #ifndef NO_SHADOW
@@ -355,8 +380,8 @@ void World::special(int key, int x, int y) {
 	case GLUT_KEY_F1:
 		grabScreen();
 		break;
-	case GLUT_KEY_F12:
-		(++gameMode) %= gameModeNum;
+	case GLUT_KEY_F6:  //不能用F12
+		(++gameMode) %= gameModeTotalNum;
 		break;
 	default:
 		break;
@@ -372,27 +397,21 @@ void World::motion(int x, int y) {
 		switch (mouseState[0]*4+mouseState[1]*2+mouseState[2]) {
 		/*  orbit  */
 		case 3:  //左键
-			++changing;
-
-			GetCursorPos(&pos);
-			x = pos.x;  y = pos.y;
-			elevation[0] += rotateSpeed * (x - cursorPos[0]);
-			elevation[1] += -rotateSpeed * (y - cursorPos[1]);
-			if (elevation[1] > 75) elevation[1] = 75;
-			if (elevation[1] < -75) elevation[1] = -75;
-
-			pcenter = center;
-			reCenter();
-			eye = eye + (pcenter - center);
-			center = pcenter;
-			
-
-			if (cameraModelRigidBody!=NULL && cameraModel!=NULL) {
-				trans = cameraModelRigidBody->getWorldTransform();
-				trans.setOrigin(btVector3(eye[0], eye[1], eye[2]));
-				cameraModelRigidBody->setWorldTransform(trans);
+			if (gameMode == GAME_MODE) {
 			}
-			--changing;
+			else {
+				GetCursorPos(&pos);
+				x = pos.x;  y = pos.y;
+				elevation[0] += rotateSpeed * (x - cursorPos[0]);
+				elevation[1] += -rotateSpeed * (y - cursorPos[1]);
+				if (elevation[1] > 45) elevation[1] = 45;
+				if (elevation[1] < -45) elevation[1] = -45;
+
+				pcenter = center;
+				reCenter();
+				eye = eye + (pcenter - center);
+				center = pcenter;
+			}
 			break;
 
 		/*  zoom  */
@@ -408,9 +427,13 @@ void World::motion(int x, int y) {
 
 		/*  pan  */
 		case 6:
-			GetCursorPos(&pos);
-			x = pos.x;  y = pos.y;
-			_move(x - cursorPos[0], y - cursorPos[1]);
+			if (gameMode == GAME_MODE) {
+			}
+			else {
+				GetCursorPos(&pos);
+				x = pos.x;  y = pos.y;
+				_move(x - cursorPos[0], y - cursorPos[1]);
+			}
 			break;
 		default:
 			break;
@@ -426,8 +449,8 @@ void World::passiveMotion(int x, int y) {
 		x = pos.x;  y = pos.y;
 		elevation[0] += rotateSpeed * (x - cursorPos[0]);
 		elevation[1] += -rotateSpeed * (y - cursorPos[1]);
-		if (elevation[1] > 75) elevation[1] = 75;
-		if (elevation[1] < -75) elevation[1] = -75;
+		if (elevation[1] > 45) elevation[1] = 45;
+		if (elevation[1] < -45) elevation[1] = -45;
 		reCenter();
 
 		glutPostRedisplay();
@@ -440,7 +463,9 @@ void World::entry(int state) {
 }
 void World::mouseClick(int button, int state, int x, int y) {
 	if ((button == GLUT_LEFT_BUTTON) && (state == GLUT_DOWN)) {
-		mousedw(x, y, button);
+		if (gameMode == GAME_MODE) shoot();
+		else mousedw(x, y, button);
+		
 	}
 	mouseState[button] = state;
 	

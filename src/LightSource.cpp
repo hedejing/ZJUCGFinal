@@ -202,9 +202,9 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 		shadowMatV[i] = lookAtMat(lights[i].position, shadowCenter, World::up);
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		//World::perspective();
+		World::perspective();
 		//gluPerspective(90, (double)World::windowWidth / World::windowHeight, 1.0f, 1.0e10f);// hedjin : value of near must be 1.0 !!! 
-		gluPerspective(90, 1, 1.0f, 1.0e10f);// hedjin : value of near must be 1.0 !!! 
+		//gluPerspective(90, 1, 1.0f, 1.0e10f);// hedjin : value of near must be 1.0 !!! 
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 		Point localeye = lights[i].position;

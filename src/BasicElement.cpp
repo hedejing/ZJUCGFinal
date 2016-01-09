@@ -10,8 +10,10 @@ BasicElement::BasicElement() {
 	//hdj : add an assignment for rotateQuat 1/8
 	rotateQuat = Quat(0, 0, 0, 1);
 
+	classType = 0;
 }
 BasicElement::~BasicElement() {
+	Physics::rigidbody2elements.erase(this);
 	World::erase(id);
 }
 unsigned int BasicElement::getId() {
@@ -283,4 +285,16 @@ CameraModel::CameraModel(Point p) {
 CameraModel::CameraModel() {
 }
 void CameraModel::drawNaive() {
+}
+
+
+Bullet::Bullet(Point p, double radius, int slices, int stacks) {
+	classType = 1;
+	centroid = p;
+	this->radius = radius;
+	this->slices = slices;
+	this->stacks = stacks;
+}
+void Bullet::drawNaive() {
+	glutSolidSphere(radius, slices, stacks);
 }
