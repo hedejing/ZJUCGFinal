@@ -1,8 +1,8 @@
 #ifndef __TEXTURE_H__
 #define __TEXTURE_H__
 #include <cstdlib>
-#include <glew.h>
-#include <glut.h>
+#include <GL/glew.h>
+#include <GL/glut.h>
 #include <cstdio>
 
 const int BMP_Header_Length = 54;
