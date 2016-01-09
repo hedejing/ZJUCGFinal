@@ -213,6 +213,9 @@ GLuint Model::LoadTGA(const char *filename)
 Model::Model(const Model &another)
 {
 	obj_mtl = another.obj_mtl;
+	minx = another.minx; miny = another.miny;
+	minz = another.minz, maxx = another.maxx;
+	maxy = another.maxy; maxz = another.maxz;
 	DrawListID=another.DrawListID;
 }
 void Model::Readobj(const char * filename)
