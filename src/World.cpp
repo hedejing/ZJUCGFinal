@@ -256,7 +256,7 @@ bool World::isInside(Point p) {
 
 /*  GLU FUNC  */
 void World::perspective() {
-	gluPerspective(30 * zoomFactor, (double)windowWidth / windowHeight, 1, 100);  //听说fovy要设在45度以下才能获得比较好的效果
+	gluPerspective(30 * zoomFactor, (double)windowWidth / windowHeight, 1, 10000);  //听说fovy要设在45度以下才能获得比较好的效果
 }
 void World::lookAt() {
 	gluLookAt(eye[0], eye[1], eye[2], center[0], center[1], center[2], up[0], up[1], up[2]);
