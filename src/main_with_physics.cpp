@@ -68,7 +68,6 @@ void define() {
 	AviBoard *avi = new AviBoard(Point(0, 10, 0), 100, 100, "test2.rgb");
 	objectmodel *sb = new objectmodel(Point(2, 0, 4), "f1.obj");
 	InitSkyBox(1999);
-	
 }
 
 void draw_world()
