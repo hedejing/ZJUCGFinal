@@ -19,6 +19,9 @@ BasicElement::~BasicElement() {
 unsigned int BasicElement::getId() {
 	return id;
 }
+bool BasicElement::shouldBeRemoved() {
+	return 0;
+}
 
 void BasicElement::draw() {
 	glPushMatrix();

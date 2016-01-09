@@ -156,7 +156,7 @@ int main(int argc, char *argv[]) {
 		World::cameraModel = cameraModel;
 		World::cameraModelRigidBody = cameraModelRigidBody;
 	}
-	World::setCamera(Point(12, 12, 12), Point(0, 12, 0));
+	World::setCamera(Point(12, 12, 3), Point(0, 12, 0));
 	//World::setCamera(Point(-10, 10, 10), Point(0, 0, 0));
 
 

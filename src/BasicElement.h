@@ -12,10 +12,11 @@ public:
 	Point centroid;  //体心
 	Quat rotateQuat;  //GLMat rotateMat;
 	Vec scaleValue;
-	int classType;  //1为子弹，一般为0
+	int classType;  //1为子弹，2为可以减血的物体，一般为0
 	BasicElement();
 	virtual ~BasicElement();
 	unsigned int getId();
+	virtual bool shouldBeRemoved();
 
 
 	/*  draw函数不仅绘制了物体，还会对物体进行相应的平移和旋转操作  */

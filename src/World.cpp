@@ -51,15 +51,15 @@ double World::jumpHeight = 0, World::jumpA = 0, World::jumpV = 0, World::jumpDt 
 
 
 extern vector<wall_info> Walls;
-bool World::couldMoveTo(Point p) {
-	//for (auto &wall : Walls) {
-	//	auto t = eye - wall.position;
-	//	bool flag = 1;
-	//	for (int i=0; i<3; i++)
-	//		flag &= (fabs(t[i]) < fabs(wall.size[i]));
-	//	cout<<eye<<" "<<wall.position<<" "<<wall.size<<" | "<<flag<<endl;
-	//	if (flag) return 0;
-	//}
+bool World::couldMoveTo(Point eye) {
+	for (auto &wall : Walls) {
+		auto t = eye - wall.position;
+		bool flag = 1;
+		for (int i=0; i<3; i++) flag &= (fabs(t[i]) < fabs(wall.size[i]+1.5));
+		//ios::sync_with_stdio(false);
+		//cout<<eye<<" "<<wall.position<<" | "<<t<<" "<<wall.size<<" | "<<flag<<endl;
+		if (flag) return 0;
+	}
 	return 1;
 }
 
@@ -108,10 +108,10 @@ void World::init(int *argc, char *argv[], int windowHeight, int windowWidth, int
 		ShowCursor(0);
 	}
 	{  //GLEW INIT
-	glewExperimental = TRUE;
-	if (GLenum err = glewInit())
-		fprintf(stderr, "Error is%s", glewGetErrorString(err));
-}
+		glewExperimental = TRUE;
+		if (GLenum err = glewInit())
+			fprintf(stderr, "Error is%s", glewGetErrorString(err));
+	}
 	{  //OPENGL INIT
 		glClearColor(0, 0, 0, 1);
 		glEnable(GL_DEPTH_TEST);
@@ -205,9 +205,11 @@ void World::move(int d, double step) {
 			
 			_eye[0] += t[0];
 			_eye[2] += t[2];
+			cout<<"eye="<<eye<<"    "<<"_eye="<<_eye<<endl;
 			if (!couldMoveTo(_eye)) {
 			}
 			else {
+			puts("haha");
 				eye[0] += t[0];
 				eye[2] += t[2];
 				center[0] += t[0];
