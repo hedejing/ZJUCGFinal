@@ -118,4 +118,12 @@ public:
 	~objectmodel(void);
 	void drawNaive();
 };
+
+class CameraModel : public BasicElement {
+public:
+	CameraModel(Point p);
+	CameraModel();
+	void drawNaive();
+};
+
 #endif

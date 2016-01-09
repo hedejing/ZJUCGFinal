@@ -53,6 +53,7 @@ struct Vec {
 
 Point &operator+=(Point &a, const Vec &b);
 Point operator+(const Point &a, const Vec &b);
+Point operator-(const Point &a, const Vec &b);
 
 Vec operator-(const Point &a, const Point &b);  //此函数没有考虑w参数
 Vec operator-(const Vec &a, const Vec &b);  //此函数没有考虑w参数

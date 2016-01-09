@@ -24,7 +24,7 @@ void Physics::init()
 
 	dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
 
-	dynamicsWorld->setGravity(btVector3(0, -10, 0));
+	dynamicsWorld->setGravity(btVector3(0, -20, 0));
 
 
 	groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);

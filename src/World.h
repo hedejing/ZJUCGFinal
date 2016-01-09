@@ -29,6 +29,7 @@ public:
 	static int cursorPos[2];
 	static int focusState;
 
+	static CameraModel *cameraModel;
 	static Point eye, center;
 	static const Vec up;  //up向量不能被修改
 	static double elevation[2];

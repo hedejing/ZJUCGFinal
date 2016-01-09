@@ -16,6 +16,7 @@ int World::windowPos[2];
 int World::cursorPos[2];
 int World::focusState;
 
+CameraModel *World::cameraModel = NULL;
 Point World::eye = Point(0, 0, 0);
 Point World::center = Point(1, 0, 0);
 const Vec World::up = Vec(0, 1, 0);
@@ -74,7 +75,8 @@ void World::init(int *argc, char *argv[], int windowHeight, int windowWidth, int
 		glutEntryFunc(entry);
 		glutIdleFunc(idle);
 
-		glutSetCursor(GLUT_CURSOR_CROSSHAIR);
+		//glutSetCursor(GLUT_CURSOR_CROSSHAIR);
+		ShowCursor(0);
 	}
 	{  //GLEW INIT
 		glewExperimental = TRUE;
@@ -100,7 +102,7 @@ void World::init(int *argc, char *argv[], int windowHeight, int windowWidth, int
 	//...
 }
 void World::setCursorToCenter() {
-	SetCursorPos(windowWidth / 2 + windowPos[0], windowHeight / 2 + windowPos[1]);  //TODO  这里的cursorPos并不准确
+	SetCursorPos(cursorPos[0] = windowWidth / 2 + windowPos[0], cursorPos[1] = windowHeight / 2 + windowPos[1]);  //TODO  这里的cursorPos并不准确
 }
 
 void World::reCenter() {
@@ -160,6 +162,35 @@ void World::zoom(double d) {
 void World::drawAll() {
 	for (auto o : objects) o.second->draw();
 	if (_display != NULL) _display();
+	
+	/*  鼠标的绘制  */
+	glDisable(GL_LIGHTING);
+	double length = 0.05, perc = 0.2;
+	Vec right = (center - eye) * up; right = right.normalize()*length;
+	Vec _up = right * (center - eye); _up = _up.normalize()*length;
+	Vec east = right, west = -right;
+	Vec north = _up, south = -_up;
+	Point pos = eye + (center - eye).normalize()*1.1;
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+		glTranslatef(pos[0], pos[1], pos[2]);
+		glBegin(GL_LINES);
+			//glColor3f(0.2, 0.2, 0.4);
+			glColor3f(0, 0, 0);
+
+			glVertex3f(east[0], east[1], east[2]);
+			glVertex3f(east[0]*perc, east[1]*perc, east[2]*perc);
+			glVertex3f(west[0], west[1], west[2]);
+			glVertex3f(west[0]*perc, west[1]*perc, west[2]*perc);
+
+			glVertex3f(north[0], north[1], north[2]);
+			glVertex3f(north[0]*perc, north[1]*perc, north[2]*perc);
+			glVertex3f(south[0], south[1], south[2]);
+			glVertex3f(south[0]*perc, south[1]*perc, south[2]*perc);
+		glEnd();
+	glPopMatrix();
+	glEnable(GL_LIGHTING);
+
 }
 
 /*  GLU FUNC  */
@@ -176,8 +207,15 @@ void World::idle() {
 }
 
 void World::display() {
-	if (focusState == GLUT_ENTERED)
-		setCursorToCenter();
+	windowPos[0] = glutGet(GLUT_WINDOW_X);
+	windowPos[1] = glutGet(GLUT_WINDOW_Y);
+	if (focusState == GLUT_ENTERED) setCursorToCenter();
+
+	if (cameraModel != NULL) {
+		Vec tmp = center - eye;
+		eye = cameraModel->centroid;
+		center = eye + tmp;
+	}
 
 #ifndef NO_SHADOW
 	LightManager::displayWithShadow(drawAll);
