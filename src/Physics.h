@@ -51,6 +51,7 @@ public:
 	static void update();
 	static void AddRigidBodyAndElement(btRigidBody* rigidbody, BasicElement* element);
 	static btRigidBody * CreateSimpleRigidBody(const BasicElement * element, SimpleElementType type, double mass = 1, Vec InertiaVec= Vec(0, 0, 0));
+	static btRigidBody *CreateRigidBodyForModelWithShape(const BasicElement * model, const Vec & BoxSize, double mass = 1, Vec InertiaVec = Vec(0, 0, 0));
 	Physics() {};
 	~Physics() {};
 };

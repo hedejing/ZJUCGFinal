@@ -149,3 +149,19 @@ btRigidBody *Physics::CreateSimpleRigidBody(const BasicElement *element, SimpleE
 
 	return RigidBody;
 }
+
+
+btRigidBody *Physics::CreateRigidBodyForModelWithShape(const BasicElement *model, const Vec & BoxSize, double mass, Vec InertiaVec)
+{
+	btCollisionShape* shape = new btBoxShape(btVector3(BoxSize[0], BoxSize[1], BoxSize[2]));
+	btDefaultMotionState* MotionState =
+		new btDefaultMotionState(btTransform(
+			btQuaternion(model->rotateQuat.w, model->rotateQuat.x, model->rotateQuat.y, model->rotateQuat.z),
+			btVector3(model->centroid[0], model->centroid[1], model->centroid[2])));
+	btVector3 Inertia(InertiaVec[0], InertiaVec[1], InertiaVec[2]);
+	shape->calculateLocalInertia(mass, Inertia);
+	btRigidBody::btRigidBodyConstructionInfo RigidBodyCI(mass, MotionState, shape, Inertia);
+	btRigidBody* RigidBody = new btRigidBody(RigidBodyCI);
+
+	return RigidBody;
+}
