@@ -83,7 +83,7 @@ void World::init(int *argc, char *argv[], int windowHeight, int windowWidth, int
 		glutEntryFunc(entry);
 		glutIdleFunc(idle);
 
-		glutFullScreen();
+		//glutFullScreen();
 		//glutSetCursor(GLUT_CURSOR_CROSSHAIR);
 		ShowCursor(0);
 	}
@@ -143,7 +143,15 @@ void World::setCamera(Point _eye, Point _center) {
 void World::move(double dx, double dy, double dz) { move(Vec(dx, dy, dz)); }
 void World::move(const Vec &ds) {
 	++changing;
-	eye += ds; center += ds;
+	if (gameMode == GAME_MODE) {
+		eye[0] += ds[0];
+		eye[2] += ds[2];
+		center[0] += ds[0];
+		center[2] += ds[2];
+	}
+	else {
+		eye += ds; center += ds;
+	}
 	
 	syncWithCameraModel();
 	--changing;
@@ -151,19 +159,46 @@ void World::move(const Vec &ds) {
 void World::move(int d, double step) {
 	if (d < 0 || d > 2) return;
 	++changing;
-	if (d == 0) {
-		Vec t = ((center - eye)*up).normalize();
-		t = step * moveSpeed * t;
-		eye += t; center += t;
-	}
-	else if (d == 1) {
-		Vec t = (center - eye).normalize();
-		t = step * moveSpeed *t;
-		eye += t;  center += t;
+	if (gameMode == GAME_MODE) {
+		if (d == 0) {
+			Vec t = ((center - eye)*up).normalize();
+			t = step * moveSpeed * t;
+			eye[0] += t[0];
+			eye[2] += t[2];
+			center[0] += t[0];
+			center[2] += t[2];
+		}
+		else if (d == 1) {
+			Vec t = (center - eye).normalize();
+			t = step * moveSpeed *t;
+			eye[0] += t[0];
+			eye[2] += t[2];
+			center[0] += t[0];
+			center[2] += t[2];
+		}
+		else {
+			Vec t = step * moveSpeed * up;
+			eye[0] += t[0];
+			eye[2] += t[2];
+			center[0] += t[0];
+			center[2] += t[2];
+		}
 	}
 	else {
-		eye += step * moveSpeed * up;
-		center += step * moveSpeed * up;
+		if (d == 0) {
+			Vec t = ((center - eye)*up).normalize();
+			t = step * moveSpeed * t;
+			eye += t; center += t;
+		}
+		else if (d == 1) {
+			Vec t = (center - eye).normalize();
+			t = step * moveSpeed *t;
+			eye += t;  center += t;
+		}
+		else {
+			eye += step * moveSpeed * up;
+			center += step * moveSpeed * up;
+		}
 	}
 	
 	syncWithCameraModel();
@@ -172,13 +207,15 @@ void World::move(int d, double step) {
 void World::_move(double dx, double dy) {
 	++changing;
 
-	Vec up = Vec(0,1,0);
-	Vec t = -(up*(center-eye)).normalize()*dx*0.1;
-	eye += moveSpeed*t; center += moveSpeed*t;
-	t = -up*dy*0.1;
-	eye += moveSpeed*t; center += moveSpeed*t;
-
-	syncWithCameraModel();
+	if (gameMode == GOD_MODE) {
+		Vec up = Vec(0,1,0);
+		Vec t = -(up*(center-eye)).normalize()*dx*0.1;
+		eye += moveSpeed*t; center += moveSpeed*t;
+		t = -up*dy*0.1;
+		eye += moveSpeed*t; center += moveSpeed*t;
+	}
+	else {
+	}
 	--changing;
 }
 void World::rotate(double angle, double x, double y, double z) {}
@@ -256,7 +293,7 @@ bool World::isInside(Point p) {
 
 /*  GLU FUNC  */
 void World::perspective() {
-	gluPerspective(30*zoomFactor, (double)windowWidth / windowHeight, 1, 100);  //听说fovy要设在45度以下才能获得比较好的效果
+	gluPerspective(30*zoomFactor, (double)windowWidth / windowHeight, 1, 1000);  //听说fovy要设在45度以下才能获得比较好的效果
 }
 void World::lookAt() {
 	gluLookAt(eye[0], eye[1], eye[2],  center[0], center[1], center[2],  up[0], up[1], up[2]);
