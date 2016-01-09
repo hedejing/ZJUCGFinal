@@ -65,8 +65,9 @@ void define() {
 	//调用了Physics:AddRigidBodyAndElement该物品就会接受物理世界的控制
 	//所以如果调用了Physics:AddRigidBodyAndElement的话尽量不要像下面这样直接修改物体
 	//cylinder->rotateTo(45, 0, 0, 1);
-	AviBoard *avi = new AviBoard(Point(0, 10, 0), 100, 100, "test2.rgb");
+	AviBoard *avi = new AviBoard(Point(0, 20, 0), 100, 100, "test2.rgb");
 	objectmodel *sb = new objectmodel(Point(2, 0, 4), "f1.obj");
+	DrawScene_Of_CS("");
 	InitSkyBox(1999);
 }
 
@@ -77,7 +78,7 @@ void draw_world()
 	glPushMatrix();
 	glRotatef(90, -1, 0, 0);
 	glTranslatef(-10, -10, 0);
-	LightManager::xoy_foor(200, 3, 100);
+	//LightManager::xoy_foor(200, 3, 100);
 	glPopMatrix();
 	//glPushMatrix();
 
