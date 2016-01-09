@@ -66,10 +66,41 @@ void define() {
 	//所以如果调用了Physics:AddRigidBodyAndElement的话尽量不要像下面这样直接修改物体
 	//cylinder->rotateTo(45, 0, 0, 1);
 
-	AviBoard *avi = new AviBoard(Point(0, 20, 0), 100, 100, "test2.rgb");
-	objectmodel *sb = new objectmodel(Point(0, 4, 4), "./sec.obj");
-	sb->rotate(-90,1,0,0);
-	sb->move(-1,0,5);
+	//AviBoard *avi = new AviBoard(Point(0, 30, 0), 100, 100, "test2.rgb");
+	/*
+	objectmodel *tempobj1 = new objectmodel(Point(-50, 0, 4), "./obj/f1.obj");
+	tempobj1->rotate(90, 0, 0, 1);
+	tempobj1->addToPhysicsWorld(30, 10);
+	//getTreesObj();
+	objectmodel *tempobj2 = new objectmodel(Point(-30, -4, -10), "./obj/f2.obj");
+	tempobj2->rotate(90, 0, 0, 1);
+	tempobj2->rotate(-90, 1, 0, 0);
+	tempobj2->addToPhysicsWorld(30, 10);
+	
+	objectmodel *tempobj3 = new objectmodel(Point(-30, 2, 10), "./obj/f3.obj");
+	tempobj3->rotate(90, 0, 0, 1);
+	tempobj3->rotate(180, 1, 0, 0);
+	tempobj3->addToPhysicsWorld(30, 10);
+	
+	objectmodel *tempobj4 = new objectmodel(Point(30, 0, 10), "./obj/f4.obj");
+	tempobj4->rotate(90, 0, 0, 1);
+	tempobj4->rotate(90, 1, 0, 0);
+	tempobj4->addToPhysicsWorld(30, 10);
+	
+	objectmodel *tempobj5 = new objectmodel(Point(-30, 0, 30), "./obj/f5.obj");
+	tempobj5->rotate(90, 0, 0, 1);
+	tempobj5->rotate(-90, 1, 0, 0);
+	tempobj5->addToPhysicsWorld(30, 10);
+	
+	objectmodel *tempobj6 = new objectmodel(Point(-30, 0, -30), "./obj/f1.obj");
+	tempobj6->rotate(90, 0, 0, 1);
+	tempobj6->rotate(-90, 1, 0, 0);
+	tempobj6->addToPhysicsWorld(30, 10);*/
+
+	objectmodel *tempobj7 = new objectmodel(Point(25, 0, -20), "./obj/house1.obj");
+	
+	tempobj7->rotate(-90, 1, 0, 0);
+	
 	DrawScene_Of_CS("");
 	//InitSkyBox(1999);
 
