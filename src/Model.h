@@ -34,7 +34,7 @@ protected:
 	};
 public:
 	std::map<std::string, A_mtl> mtls;
-	Mtl_info(const char *filename);
+	Mtl_info(const char *filename,string path);
 	~Mtl_info();
 	void change_MTL(std::string mtl_name);
 };
