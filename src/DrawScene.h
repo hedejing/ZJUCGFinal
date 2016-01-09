@@ -3,6 +3,7 @@
 #include "utility.h"
 #include "BasicElement.h"
 void DrawScene_Of_CS(string name);
-void DrawSkyBox();
-void InitSkyBox(double length);
+//void DrawSkyBox();
+//void InitSkyBox(double length);
+void drawSkyBox(double length);
 #endif
