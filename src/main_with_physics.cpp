@@ -69,7 +69,7 @@ void define() {
 	AviBoard *avi = new AviBoard(Point(0, 20, 0), 100, 100, "test2.rgb");
 	objectmodel *sb = new objectmodel(Point(2, 0, 4), "f1.obj");
 	DrawScene_Of_CS("");
-	InitSkyBox(1999);
+	//InitSkyBox(1999);
 
 }
 
@@ -174,7 +174,7 @@ int main(int argc, char *argv[]) {
 	////rect2.rotateTo(90, 1, 0, 0);
 	//rect2.rotate(90, 0, 1, 0);
 	{  //LIGHTING
-		auto c = new Cube(Point(10, 10, 10));
+		//auto c = new Cube(Point(10, 10, 10));
 		LightSource ls(Point(10, 10, 10, 1));
 		LightManager::addLight(ls);
 		//LightSource ls2(Point(-2, 6, 5, 1));
