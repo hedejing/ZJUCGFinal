@@ -81,13 +81,6 @@ void drawSkyBox(double length)
 	return;
 }
 using namespace std;
-struct wall_info{
-	Vec size;
-	GLuint texutre;
-	Point position;
-};
-
-
 #define board_w 20
 #define board_h 20
 #define rect_width 10
@@ -161,8 +154,6 @@ bool PushSceneOfName(string name)
 		a.position = Point(i * 2 * 5, 0.5, 18);
 		Walls.push_back(a);
 	}
-
-
 	return 0;
 }
 void DrawScene_Of_CS(string name)
