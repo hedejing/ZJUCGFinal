@@ -9,6 +9,7 @@
 #include <GL/glew.h>
 #include "GL/glut.h"
 #include "texture.h"
+#include "utility.h"
 #define IF_KA 1
 #define IF_KD 2
 #define IF_KS 4
@@ -64,7 +65,13 @@ protected:
 	  std::vector<GLuint> DrawListID;
 	  std::vector<std::string> ID_NAMES;
 	  Mtl_info *obj_mtl=NULL;
+	  bool getC = 0;
+	  double minx, miny, minz, maxx, maxy, maxz;
 public:
+	Vec getCollisionRect()
+	{
+		return Vec(maxx - minx, maxy - miny, maxz - minz);
+	}
 	//在绘制obj之前记得读取一个obj文件，在opengl初始化之后再读取
 	  virtual void Readobj(const char * filename);
 	  //绘制函数

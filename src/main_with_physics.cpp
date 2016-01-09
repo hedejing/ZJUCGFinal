@@ -40,9 +40,11 @@ void define() {
 		Physics::AddRigidBodyAndElement(cubeRigidBody, c);
 
 	Sphere *sphere = new Sphere(Point(2, 1, 2));  //球
-	btRigidBody* sphereRigidBody = Physics::CreateSimpleRigidBody(sphere, SimpleElementType::SPHERE);
-	if (sphereRigidBody != NULL)
-		Physics::AddRigidBodyAndElement(sphereRigidBody, sphere);
+	//btRigidBody* sphereRigidBody = Physics::CreateSimpleRigidBody(sphere, SimpleElementType::SPHERE);
+	//if (sphereRigidBody != NULL)
+	//	Physics::AddRigidBodyAndElement(sphereRigidBody, sphere);
+	btRigidBody* sphereRigidBody = Physics::CreateRigidBodyForModelWithShape(sphere, Vec(1, 1, 1));
+	Physics::AddRigidBodyAndElement(sphereRigidBody, sphere);
 
 	Cone *cone = new Cone(Point(2, 2, -3));  //圆锥
 	btRigidBody* coneRigidBody = Physics::CreateSimpleRigidBody(cone, SimpleElementType::CONE);
@@ -62,6 +64,8 @@ void define() {
 	//调用了Physics:AddRigidBodyAndElement该物品就会接受物理世界的控制
 	//所以如果调用了Physics:AddRigidBodyAndElement的话尽量不要像下面这样直接修改物体
 	//cylinder->rotateTo(45, 0, 0, 1);
+	AviBoard *avi = new AviBoard(Point(0, 10, 0), 100, 100, "test2.rgb");
+	objectmodel *sb = new objectmodel(Point(2, 0, 4), "f1.obj");
 }
 
 void draw_world()
