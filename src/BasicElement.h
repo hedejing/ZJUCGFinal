@@ -173,5 +173,68 @@ public:
 	void drawNaive();
 	bool shouldBeRemoved();
 };
+/*explosion*/
 
+class Explosion :public BasicElement{
+private:
+#define MAX_PARTICLES 400
+	float	slowdown = 2.0f;				// Slow Down Particles
+	float	xspeed=0;						// Base X Speed (To Allow Keyboard Direction Of Tail)
+	float	yspeed=0;
+	int Extex;
+	float	zoom = -40.0f;				// Used To Zoom Out
+	GLuint	loop;						// Misc Loop Variable
+	GLuint	col = 0;						// Current Color Selection
+	GLuint	delay;						// Rainbow Effect Delay
+	GLuint	texture[1];
+	typedef struct						// Create A Structure For Particle
+	{
+		bool	active;					// Active (Yes/No)
+		float	life;					// Particle Life
+		float	fade;					// Fade Speed
+		float	r;						// Red Value
+		float	g;						// Green Value
+		float	b;						// Blue Value
+		float	x;						// X Position
+		float	y;						// Y Position
+		float	z;						// Z Position
+		float	xi;						// X Direction
+		float	yi;						// Y Direction
+		float	zi;						// Z Direction
+		float	xg;						// X Gravity
+		float	yg;						// Y Gravity
+		float	zg;						// Z Gravity
+	}
+	particles;							// Particles Structure
+	
+	particles particle[MAX_PARTICLES];
+public:
+	Explosion(Point P){
+		texture[0] = loadTexture("Particle.bmp");
+		centroid = P;
+		GLfloat colors[12][3] = {
+			{ 1.0f, 0.5f, 0.5f }, { 1.0f, 0.75f, 0.5f }, { 1.0f, 1.0f, 0.5f }, { 0.75f, 1.0f, 0.5f },
+			{ 0.5f, 1.0f, 0.5f }, { 0.5f, 1.0f, 0.75f }, { 0.5f, 1.0f, 1.0f }, { 0.5f, 0.75f, 1.0f },
+			{ 0.5f, 0.5f, 1.0f }, { 0.75f, 0.5f, 1.0f }, { 1.0f, 0.5f, 1.0f }, { 1.0f, 0.5f, 0.75f }
+		};
+		glBindTexture(GL_TEXTURE_2D, texture[0]);			// Select Our Texture
+		for (loop = 0; loop<MAX_PARTICLES; loop++)				// Initials All The Textures
+		{
+			particle[loop].active = true;								// Make All The Particles Active
+			particle[loop].life = 1.0f;								// Give All The Particles Full Life
+			particle[loop].fade = float(rand() % 100) / 1000.0f + 0.003f;	// Random Fade Speed
+			particle[loop].r = colors[loop*(12 / MAX_PARTICLES)][0];	// Select Red Rainbow Color
+			particle[loop].g = colors[loop*(12 / MAX_PARTICLES)][1];	// Select Red Rainbow Color
+			particle[loop].b = colors[loop*(12 / MAX_PARTICLES)][2];	// Select Red Rainbow Color
+			particle[loop].xi = float((rand() % 50) - 26.0f)*10.0f;		// Random Speed On X Axis
+			particle[loop].yi = float((rand() % 50) - 25.0f)*10.0f;		// Random Speed On Y Axis
+			particle[loop].zi = float((rand() % 50) - 25.0f)*10.0f;		// Random Speed On Z Axis
+			particle[loop].xg = 0.0f;									// Set Horizontal Pull To Zero
+			particle[loop].yg = 0.8f;								// Set Vertical Pull Downward
+			particle[loop].zg = 0.0f;									// Set Pull On Z Axis To Zero
+		}
+	}
+	~Explosion(){};
+	void drawNaive();
+};
 #endif

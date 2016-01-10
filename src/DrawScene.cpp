@@ -123,6 +123,8 @@ bool PushSceneOfName(string name)
 	wall_info a;
 	GLuint tex_board = loadTexture("board.bmp");
 	GLuint tex_nitu = loadTexture("nitu.bmp");
+	GLuint tex_qiang = loadTexture("qiang.bmp");
+
 	//unsigned char  filewall[board_h][board_w];
 	//FILE *fp = fopen(name.c_str(), "rb");
 	//fclose(fp);
@@ -143,7 +145,7 @@ bool PushSceneOfName(string name)
 
 	{
 		a.size = Vec(5, 3, 1);
-		a.texutre = tex_board;
+		a.texutre = tex_qiang;
 		a.position = Point(i * 2 * 5, 0.5, 0);
 		for (int j = a.position[0] - 5; j < a.position[0] + 5; j++)
 	 	{
@@ -156,7 +158,7 @@ bool PushSceneOfName(string name)
 	for (int i = -3; i < 8; i++)
 	{ 
 		a.size = Vec(5, 3, 1);
-		a.texutre = tex_board;
+		a.texutre = tex_qiang;
 		a.position = Point(i * 2 * 5, 0.5, 38);
 		for (int j = a.position[0] - 5; j < a.position[0] + 5; j++)
 		{ 
@@ -168,7 +170,7 @@ bool PushSceneOfName(string name)
 	for (int i = 0; i < 2; i++)
 	{ 
 		a.size = Vec(1, 3, 5);
-		a.texutre = tex_board;
+		a.texutre = tex_qiang;
 		a.position = Point(46, -1.5, 4 + i * 2 * 5);
 		for (int j = a.position[2] - 5; j < a.position[2] + 5; j++)
 		{ 
@@ -181,7 +183,7 @@ bool PushSceneOfName(string name)
 	for (int i = -4; i < 4; i++)
 	{ 
 		a.size = Vec(1, 3, 5);
-		a.texutre = tex_board;
+		a.texutre = tex_qiang;
 		a.position = Point(-36, -1.5, 4 + i * 2 * 5);
 		for (int j = a.position[2] - 5; j < a.position[2] + 5; j++)
 		{ 
@@ -193,7 +195,7 @@ bool PushSceneOfName(string name)
  
 	for (int i = -3; i < 1; i++){
 		a.size = Vec(5, 3, 1);
-		a.texutre = tex_board;
+		a.texutre = tex_qiang;
 		a.position = Point(i * 2 * 5, 0.5, -20);
 		for (int j = a.position[0] - 5; j < a.position[0] + 5; j++)
 		{
@@ -205,7 +207,7 @@ bool PushSceneOfName(string name)
 
 	for (int i = -3; i < 5; i++){
 		a.size = Vec(5, 3, 1);
-		a.texutre = tex_board;
+		a.texutre = tex_qiang;
 		a.position = Point(i * 2 * 5, 0.5, -40);
 		for (int j = a.position[0] - 5; j < a.position[0] + 5; j++)
 		{
@@ -217,7 +219,7 @@ bool PushSceneOfName(string name)
 	for (int i = 0; i < 5; i++)
 	{
 		a.size = Vec(5, 3, 1);
-		a.texutre = tex_board;
+		a.texutre = tex_qiang;
 		a.position = Point(i * 2 * 5, 0.5, 18);
 		for (int j = a.position[0] - 5; j < a.position[0] + 5; j++)
 		{
