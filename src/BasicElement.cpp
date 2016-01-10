@@ -388,14 +388,16 @@ void CameraModel::drawNaive() {
 }
 
 
-Bullet::Bullet(Point p, double radius, int slices, int stacks) {
+Bullet::Bullet(Point p, double radius, int slices, int stacks, int tex) {
 	classType = 1;
 	centroid = p;
 	this->radius = radius;
 	this->slices = slices;
 	this->stacks = stacks;
+	this->tex = tex;
 }
 void Bullet::drawNaive() {
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, Color(0.2, 0.2, 0.2));
 	glutSolidSphere(radius, slices, stacks);
 }
 bool Bullet::shouldBeRemoved() {

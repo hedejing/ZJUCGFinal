@@ -41,34 +41,34 @@ void define() {
 	if(cubeRigidBody!=NULL)
 		Physics::AddRigidBodyAndElement(cubeRigidBody, c);
 
-	Sphere *sphere = new Sphere(Point(2, 1, 2));  //球
-	//btRigidBody* sphereRigidBody = Physics::CreateSimpleRigidBody(sphere, SimpleElementType::SPHERE);
-	//if (sphereRigidBody != NULL)
-	//	Physics::AddRigidBodyAndElement(sphereRigidBody, sphere);
-	btRigidBody* sphereRigidBody = Physics::CreateRigidBodyForModelWithShape(sphere, Vec(1, 1, 1));
-	Physics::AddRigidBodyAndElement(sphereRigidBody, sphere);
+	//Sphere *sphere = new Sphere(Point(2, 1, 2));  //球
+	////btRigidBody* sphereRigidBody = Physics::CreateSimpleRigidBody(sphere, SimpleElementType::SPHERE);
+	////if (sphereRigidBody != NULL)
+	////	Physics::AddRigidBodyAndElement(sphereRigidBody, sphere);
+	//btRigidBody* sphereRigidBody = Physics::CreateRigidBodyForModelWithShape(sphere, Vec(1, 1, 1));
+	//Physics::AddRigidBodyAndElement(sphereRigidBody, sphere);
 
-	Cone *cone = new Cone(Point(2, 2, -3));  //圆锥
-	btRigidBody* coneRigidBody = Physics::CreateSimpleRigidBody(cone, SimpleElementType::CONE);
-	if (coneRigidBody != NULL)
-		Physics::AddRigidBodyAndElement(coneRigidBody, cone);
+	//Cone *cone = new Cone(Point(2, 2, -3));  //圆锥
+	//btRigidBody* coneRigidBody = Physics::CreateSimpleRigidBody(cone, SimpleElementType::CONE);
+	//if (coneRigidBody != NULL)
+	//	Physics::AddRigidBodyAndElement(coneRigidBody, cone);
 
-	Circle *circle = new Circle(Point(-2, 2, 2));  //圆
-	btRigidBody* circleRigidBody = Physics::CreateSimpleRigidBody(circle, SimpleElementType::CIRCLE);
-	if (circleRigidBody != NULL)
-		Physics::AddRigidBodyAndElement(circleRigidBody, circle);
+	//Circle *circle = new Circle(Point(-2, 2, 2));  //圆
+	//btRigidBody* circleRigidBody = Physics::CreateSimpleRigidBody(circle, SimpleElementType::CIRCLE);
+	//if (circleRigidBody != NULL)
+	//	Physics::AddRigidBodyAndElement(circleRigidBody, circle);
 
-	Cylinder *cylinder = new Cylinder(Point(2, -2, 4));  //圆柱
-	btRigidBody* cylinderRigidBody = Physics::CreateSimpleRigidBody(cylinder, SimpleElementType::CYLINDER);
-	if (cylinderRigidBody != NULL)
-		Physics::AddRigidBodyAndElement(cylinderRigidBody, cylinder);
+	//Cylinder *cylinder = new Cylinder(Point(2, -2, 4));  //圆柱
+	//btRigidBody* cylinderRigidBody = Physics::CreateSimpleRigidBody(cylinder, SimpleElementType::CYLINDER);
+	//if (cylinderRigidBody != NULL)
+	//	Physics::AddRigidBodyAndElement(cylinderRigidBody, cylinder);
 
 	//调用了Physics:AddRigidBodyAndElement该物品就会接受物理世界的控制
 	//所以如果调用了Physics:AddRigidBodyAndElement的话尽量不要像下面这样直接修改物体
 	//cylinder->rotateTo(45, 0, 0, 1);
 
 	//AviBoard *avi = new AviBoard(Point(0, 30, 0), 100, 100, "test2.rgb");
-	
+	/*
 	Monster *tempobj1 = new Monster(Point(-50, 0, 4), "./obj/f1.obj");
 	tempobj1->rotate(90, 0, 0, 1);
 	tempobj1->addToPhysicsWorld(30, 10);
@@ -102,9 +102,8 @@ void define() {
 	
 	
 	objectmodel *tempobj7 = new objectmodel(Point(25, 0, -20), "./obj/house1.obj");
-	
 	tempobj7->rotate(-90, 1, 0, 0);
-	
+	*/
 	DrawScene_Of_CS("");
 	//InitSkyBox(1999);
 
@@ -155,7 +154,8 @@ void shoot()
 	Vec direct = (World::center - World::eye).normalize();
 	Point spwan = World::eye + 15*direct;
 	double radius = 0.05;
-	bullet = new Bullet(spwan, radius);
+	static int tex = loadTexture("bullet.bmp");
+	bullet = new Bullet(spwan, radius, 50, 50, tex);
 
 	btCollisionShape* bulletShape = new btSphereShape(radius);
 	btDefaultMotionState* bulletMotionState =

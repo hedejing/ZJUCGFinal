@@ -121,9 +121,9 @@ bool PushSceneOfName(string name)
 	//push all the objects into the vector
 
 	wall_info a;
-	GLuint tex_board = loadTexture("board.bmp");
+	GLuint tex_board = loadTexture("qiang2.bmp");
 	GLuint tex_nitu = loadTexture("nitu.bmp");
-	GLuint tex_qiang = loadTexture("qiang.bmp");
+	GLuint tex_qiang = loadTexture("qiang3.bmp");
 
 	//unsigned char  filewall[board_h][board_w];
 	//FILE *fp = fopen(name.c_str(), "rb");

@@ -29,7 +29,7 @@ double World::rotateSpeed = 0.1;
 double World::zoomFactor = 1, World::zoomSpeed = 0.005;
 
 unsigned int World::chosenID = -1;
-int World::gameMode = 0;
+int World::gameMode = 1;
 int World::gameModeTotalNum = 2;
 
 void(*World::_display)() = NULL;
@@ -957,7 +957,7 @@ void World::subtractBlood() {
 void World::jump() {
 	if (!jumping) {
 		jumping = 1;
-		jumpA = -10;
+		jumpA = -30;
 		jumpV = 7.5;
 	}
 }

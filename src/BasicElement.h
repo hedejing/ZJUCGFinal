@@ -169,7 +169,8 @@ class Bullet : public BasicElement {
 public:
 	double radius;
 	int slices, stacks;
-	Bullet(Point p, double radius=0.5, int slices=50, int stacks=50);
+	int tex;
+	Bullet(Point p, double radius=0.5, int slices=50, int stacks=50, int tex=0);
 	void drawNaive();
 	bool shouldBeRemoved();
 };
