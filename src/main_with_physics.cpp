@@ -16,6 +16,40 @@ using namespace std;
 
 	注：在函数中如果不用new定义，就不能显示物体是因为函数结束时会调用那个对象的析构函数，然后那个对象就没了...
 */
+void CreateBasicBox(GLuint tt, const Point& p)
+{
+	Cube *c1 = new Cube(p, tt);
+	c1->scaleValue = Vec(2, 2, 2);
+	//btRigidBody* cubeRigidBody = Physics::CreateSimpleRigidBody(c1, SimpleElementType::CUBE, 10);
+	btCollisionShape* shape = new btBoxShape(btVector3(1.9, 1.9, 1.9));
+	btDefaultMotionState* MotionState =
+		new btDefaultMotionState(btTransform(
+			btQuaternion(0, 0, 0, 1),
+			btVector3(p[0], p[1], p[2])));
+
+	btVector3 Inertia(0, 0, 0);
+	shape->calculateLocalInertia(1, Inertia);
+	btRigidBody::btRigidBodyConstructionInfo RigidBodyCI(1, MotionState, shape, Inertia);
+	btRigidBody* RigidBody = new btRigidBody(RigidBodyCI);
+	Physics::AddRigidBodyAndElement(RigidBody, c1);
+}
+
+void PlaceBoxs(GLuint tt)
+{
+	CreateBasicBox(tt, Point(0, 4, -5));
+	CreateBasicBox(tt, Point(4, 4, -5));
+	CreateBasicBox(tt, Point(8, 4, -5));
+	CreateBasicBox(tt, Point(4, 8, -5));
+	CreateBasicBox(tt, Point(8, 8, -5));
+	CreateBasicBox(tt, Point(4, 4, -9));
+	CreateBasicBox(tt, Point(8, 4, -9));
+	CreateBasicBox(tt, Point(6, 8, -9));
+	CreateBasicBox(tt, Point(6, 8, -13));
+	CreateBasicBox(tt, Point(12, 4, -5));
+	CreateBasicBox(tt, Point(6, 12, -5));
+}
+
+
 
 void define() {
 
@@ -68,14 +102,15 @@ void define() {
 	//cylinder->rotateTo(45, 0, 0, 1);
 
 	//AviBoard *avi = new AviBoard(Point(0, 30, 0), 100, 100, "test2.rgb");
-	/*
+	
 	Monster *tempobj1 = new Monster(Point(-50, 0, 4), "./obj/f1.obj");
 	tempobj1->rotate(90, 0, 0, 1);
 	tempobj1->addToPhysicsWorld(30, 10);
 
-	Explosion *exp = new Explosion(Point(-50, 10, 40));
+	//Explosion *exp = new Explosion(Point(-10, 10, 4));
+	//exp->rotateTo(90, 0, 1, 0);
 	//getTreesObj();
-	objectmodel *tempobj2 = new objectmodel(Point(-30, -4, -10), "./obj/f2.obj");
+	/*objectmodel *tempobj2 = new objectmodel(Point(-30, -4, -10), "./obj/f2.obj");
 	tempobj2->rotate(90, 0, 0, 1);
 	tempobj2->rotate(-90, 1, 0, 0);
 	tempobj2->addToPhysicsWorld(30, 10);
@@ -106,7 +141,8 @@ void define() {
 	*/
 	DrawScene_Of_CS("");
 	//InitSkyBox(1999);
-
+	
+	PlaceBoxs(tt);
 }
 void draw_world()
 {
@@ -153,7 +189,7 @@ void shoot()
 	//set the position of spwan
 	Vec direct = (World::center - World::eye).normalize();
 	Point spwan = World::eye + 15*direct;
-	double radius = 0.05;
+	double radius = World::bulletRadius;
 	static int tex = loadTexture("bullet.bmp");
 	bullet = new Bullet(spwan, radius, 50, 50, tex);
 

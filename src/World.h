@@ -135,6 +135,11 @@ public:
 	static double getCameraHeight();
 	static void jump();
 	static void solveJump();
+
+
+	static double bulletRadius;
+
+	static void SwitchNightAndDay(bool isDay);
 };
 
 

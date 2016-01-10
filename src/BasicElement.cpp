@@ -413,8 +413,10 @@ void Explosion::drawNaive()
 		{ 0.5f, 0.5f, 1.0f }, { 0.75f, 0.5f, 1.0f }, { 1.0f, 0.5f, 1.0f }, { 1.0f, 0.5f, 0.75f }
 	};
 	glEnable(GL_COLOR_MATERIAL);
+	glDisable(GL_LIGHTING);
 	//glEnable(GL_TEXTURE_2D);
 	//glBindTexture(GL_TEXTURE_2D, texture[0]);
+	float red[4]={1,0,0,1};
 	glPushMatrix();
 	for (loop = 0; loop<MAX_PARTICLES; loop++)					// Loop Through All The Particles
 	{
@@ -425,13 +427,13 @@ void Explosion::drawNaive()
 			float z = particle[loop].z + zoom;					// Particle Z Pos + Zoom
 			
 			// Draw The Particle Using Our RGB Values, Fade The Particle Based On It's Life
-			glColor4f(1, 0,0, 1);
+			glColor4f(1, 1, 1, 1);
 			//cout << particle[loop].life << endl;
 			glBegin(GL_TRIANGLE_STRIP);						// Build Quad From A Triangle Strip
-			glTexCoord2d(1, 1); glVertex3f(x + 0.05f, y + 0.05f, z); // Top Right
-			glTexCoord2d(0, 1); glVertex3f(x - 0.05f, y + 0.05f, z); // Top Left
-			glTexCoord2d(1, 0); glVertex3f(x + 0.05f, y - 0.05f, z); // Bottom Right
-			glTexCoord2d(0, 0); glVertex3f(x - 0.05f, y - 0.05f, z); // Bottom Left
+			glVertex3f(x + 0.05f, y + 0.05f, z); // Top Right
+			glVertex3f(x - 0.05f, y + 0.05f, z); // Top Left
+			glVertex3f(x + 0.05f, y - 0.05f, z); // Bottom Right
+			glVertex3f(x - 0.05f, y - 0.05f, z); // Bottom Left
 			glEnd();										// Done Building Triangle Strip
 
 			particle[loop].x += particle[loop].xi / (slowdown * 1000);// Move On The X Axis By X Speed
@@ -461,6 +463,7 @@ void Explosion::drawNaive()
 		}
 	}
 	glPopMatrix();
+	glEnable(GL_LIGHTING);
 	//glDisable(GL_TEXTURE_2D);
 	glDisable(GL_COLOR_MATERIAL);
 }

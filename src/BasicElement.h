@@ -178,7 +178,7 @@ public:
 
 class Explosion :public BasicElement{
 private:
-#define MAX_PARTICLES 400
+#define MAX_PARTICLES 1000
 	float	slowdown = 2.0f;				// Slow Down Particles
 	float	xspeed=0;						// Base X Speed (To Allow Keyboard Direction Of Tail)
 	float	yspeed=0;

@@ -50,6 +50,9 @@ bool World::jumping = 0;
 double World::jumpHeight = 0, World::jumpA = 0, World::jumpV = 0, World::jumpDt = 0.025;
 
 
+double World::bulletRadius = 0.05;
+
+
 
 extern vector<wall_info> Walls;
 bool World::couldMoveTo(Point eye) {
@@ -317,6 +320,23 @@ void World::zoom(double d) {
 	if (zoomFactor < 0.6) zoomFactor = 0.6;
 }
 
+bool isDay = true;
+
+void World::SwitchNightAndDay(bool isDay)
+{
+	if (isDay)
+	{
+		LightManager::lights[0] = Point(100, 100, 100);
+		glLightfv(GL_LIGHT0, GL_AMBIENT, Color(1, 1, 1));
+	}
+	else
+	{
+		LightManager::lights[0] = Point(10, 10, 10);
+		glLightfv(GL_LIGHT0, GL_AMBIENT, Color(0, 0, 0));
+	}
+}
+
+
 void World::drawAll() {
 	for (auto it = objects.begin(); it != objects.end();) {
 		//if (it->second->classType == 1 && !isInside(it->second->centroid)) {
@@ -445,6 +465,22 @@ void World::keyboard(unsigned char key, int x, int y) {  //Ê£ÏÂÁ½¸ö²ÎÊýÊÇÊó±êÔÚ´
 	const double moveStep = 1;
 	const double rotateStep = 8;
 
+	switch (key) {
+	case '+':
+		bulletRadius += 0.05;
+		if (bulletRadius > 1) bulletRadius = 0.05;
+		break;
+	case '-':
+		bulletRadius -= 0.05;
+		if (bulletRadius < 0.05) bulletRadius = 0.05;
+		break;
+	case 'n':
+		isDay = !isDay;
+		SwitchNightAndDay(isDay);
+		break;
+	default:
+		break;
+	}
 	//switch (key) {
 	//case 27: {
 	//			 if (_free != NULL)
