@@ -97,10 +97,12 @@ public:
 
 	/*  GLUT FUNC  */
 	static int mouseState[3];
+	static int keyboardPressing[256];
 
 	static void idle();  //加上static后就可以传入glutIdleFunc()里了
 	static void display();
 	static void keyboard(unsigned char key, int x, int y);
+	static void keyboardUp(unsigned char key, int x, int y);
 	static void special(int key, int x, int y);
 	static void motion(int x, int y);
 	static void passiveMotion(int x, int y);
@@ -110,6 +112,9 @@ public:
 		/*  点选辅助函数  */
 		static void gl_select(int x, int y);
 		static void mousedw(int x, int y, int but);
+
+		/*  键盘辅助函数  */
+		static void keyboardResponse();
 
 	//TODO  碰撞检测、光照处理等函数需要添加
 

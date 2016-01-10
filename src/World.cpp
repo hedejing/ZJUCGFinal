@@ -42,6 +42,7 @@ double World::worldBound[3][2] = {
 };
 
 int World::mouseState[3] = { GLUT_UP, GLUT_UP, GLUT_UP };
+int World::keyboardPressing[256] = {0};
 
 
 
@@ -96,6 +97,7 @@ void World::init(int *argc, char *argv[], int windowHeight, int windowWidth, int
 		glutDisplayFunc(display);
 		//glutReshapeFunc(reshape);
 		glutKeyboardFunc(keyboard);
+		glutKeyboardUpFunc(keyboardUp);
 		glutSpecialFunc(special);
 		glutMotionFunc(motion);
 		glutPassiveMotionFunc(passiveMotion);
@@ -205,11 +207,11 @@ void World::move(int d, double step) {
 			
 			_eye[0] += t[0];
 			_eye[2] += t[2];
-			cout<<"eye="<<eye<<"    "<<"_eye="<<_eye<<endl;
+			//cout<<"eye="<<eye<<"    "<<"_eye="<<_eye<<endl;
 			if (!couldMoveTo(_eye)) {
 			}
 			else {
-			puts("haha");
+			//puts("haha");
 				eye[0] += t[0];
 				eye[2] += t[2];
 				center[0] += t[0];
@@ -402,8 +404,9 @@ void World::display() {
 		syncWithCameraModel();
 	}
 
-	subtractBlood();
+	//subtractBlood();
 	solveJump();
+	keyboardResponse();
 
 #ifndef NO_SHADOW
 	LightManager::displayWithShadow(drawAll);
@@ -433,70 +436,75 @@ void World::display() {
 extern void shoot();
 
 //  下面函数修改后，请在README.md中注明
-void World::keyboard(unsigned char key, int x, int y) {
+void World::keyboard(unsigned char key, int x, int y) {  //剩下两个参数是鼠标在窗口中的位置
 	const double moveStep = 1;
 	const double rotateStep = 8;
 
-	switch (key) {
-	case 27: {
-				 if (_free != NULL)
-					 _free();
-				 exit(0);
-	}
-	case 'a': case 'A':  //出现图形变扁的原因可能是我的这种移动一个像素转某个角度的逻辑有问题
-		move(0, -moveStep);
-		break;
-	case 'd': case 'D':
-		move(0, moveStep);
-		break;
-	case 'w': case 'W':
-		move(1, moveStep);
-		break;
-	case 's': case 'S':
-		move(1, -moveStep);
-		break;
-	case 'z': case 'Z':
-		move(2, -moveStep);
-		break;
-	case 'c': case 'C':
-		move(2, moveStep);
-		break;
-	case '-':  //速度的调整
-		moveSpeed -= 0.005;
-		break;
-	case '+':
-		moveSpeed += 0.005;
-		break;
+	//switch (key) {
+	//case 27: {
+	//			 if (_free != NULL)
+	//				 _free();
+	//			 exit(0);
+	//}
+	//case 'a': case 'A':  //出现图形变扁的原因可能是我的这种移动一个像素转某个角度的逻辑有问题
+	//	move(0, -moveStep);
+	//	break;
+	//case 'd': case 'D':
+	//	move(0, moveStep);
+	//	break;
+	//case 'w': case 'W':
+	//	move(1, moveStep);
+	//	break;
+	//case 's': case 'S':
+	//	move(1, -moveStep);
+	//	break;
+	//case 'z': case 'Z':
+	//	move(2, -moveStep);
+	//	break;
+	//case 'c': case 'C':
+	//	move(2, moveStep);
+	//	break;
+	//case '-':  //速度的调整
+	//	moveSpeed -= 0.005;
+	//	break;
+	//case '+':
+	//	moveSpeed += 0.005;
+	//	break;
 
-	case 'j': case 'J':  //出现图形变扁的原因可能是我的这种移动一个像素转某个角度的逻辑有问题
-		rotate(0, -rotateStep);
-		break;
-	case 'l': case 'L':
-		rotate(0, rotateStep);
-		break;
-	case 'i': case 'I':
-		rotate(1, rotateStep);
-		break;
-	case 'k': case 'K':
-		rotate(1, -rotateStep);
-		break;
-		//case 'f': case 'F':
-		//	autoForward = !autoForward;
-		//	break;
+	//case 'j': case 'J':  //出现图形变扁的原因可能是我的这种移动一个像素转某个角度的逻辑有问题
+	//	rotate(0, -rotateStep);
+	//	break;
+	//case 'l': case 'L':
+	//	rotate(0, rotateStep);
+	//	break;
+	//case 'i': case 'I':
+	//	rotate(1, rotateStep);
+	//	break;
+	//case 'k': case 'K':
+	//	rotate(1, -rotateStep);
+	//	break;
+	//	//case 'f': case 'F':
+	//	//	autoForward = !autoForward;
+	//	//	break;
 
-		//case ',': case '<':
-		//	REP (i, 0, 2) lightColor[1][i] -= 0.1;
-		//	break;
-		//case '.': case '>':
-		//	REP (i, 0, 2) lightColor[1][i] += 0.1;
-		//	break;
-	case ' ':
-		puts("haha");
-		jump();//shoot();
-		break;
-	default:
-		break;
-	}
+	//	//case ',': case '<':
+	//	//	REP (i, 0, 2) lightColor[1][i] -= 0.1;
+	//	//	break;
+	//	//case '.': case '>':
+	//	//	REP (i, 0, 2) lightColor[1][i] += 0.1;
+	//	//	break;
+	//case ' ':
+	//	puts("haha");
+	//	jump();//shoot();
+	//	break;
+	//default:
+	//	break;
+	//}
+	keyboardPressing[key] = 1;
+	glutPostRedisplay();
+}
+void World::keyboardUp(unsigned char key, int x, int y) {
+	keyboardPressing[key] = 0;
 	glutPostRedisplay();
 }
 void World::special(int key, int x, int y) {
@@ -588,7 +596,7 @@ void World::entry(int state) {
 void World::mouseClick(int button, int state, int x, int y) {
 	if ((button == GLUT_LEFT_BUTTON) && (state == GLUT_DOWN)) {
 		if (gameMode == GAME_MODE) shoot();
-		else mousedw(x, y, button);
+		mousedw(x, y, button);
 
 	}
 	mouseState[button] = state;
@@ -653,11 +661,79 @@ void World::gl_select(int x, int y) {
 				((Monster *)objects[(unsigned int)chosenID])->subblood();
 			}
 		}
-		cout << "hits: " << hits << "   ID: " << chosenID << endl;
+		//cout << "hits: " << hits << "   ID: " << chosenID << endl;
 	}
 	else chosenID = -1;
 
 	glMatrixMode(GL_MODELVIEW);
+}
+
+void World::keyboardResponse() {
+	const double moveStep = 0.7;
+	const double rotateStep = 8;
+	for (int key=0; key<128; key++) {
+		if (!keyboardPressing[key]) continue;
+
+		switch (key) {
+		case 27: {
+			if (_free != NULL)
+				_free();
+			exit(0);
+		}
+		case 'a': case 'A':  //出现图形变扁的原因可能是我的这种移动一个像素转某个角度的逻辑有问题
+			move(0, -moveStep);
+			break;
+		case 'd': case 'D':
+			move(0, moveStep);
+			break;
+		case 'w': case 'W':
+			move(1, moveStep);
+			break;
+		case 's': case 'S':
+			move(1, -moveStep);
+			break;
+		case 'z': case 'Z':
+			move(2, -moveStep);
+			break;
+		case 'c': case 'C':
+			move(2, moveStep);
+			break;
+		case '-':  //速度的调整
+			moveSpeed -= 0.005;
+			break;
+		case '+':
+			moveSpeed += 0.005;
+			break;
+
+		case 'j': case 'J':  //出现图形变扁的原因可能是我的这种移动一个像素转某个角度的逻辑有问题
+			rotate(0, -rotateStep);
+			break;
+		case 'l': case 'L':
+			rotate(0, rotateStep);
+			break;
+		case 'i': case 'I':
+			rotate(1, rotateStep);
+			break;
+		case 'k': case 'K':
+			rotate(1, -rotateStep);
+			break;
+			//case 'f': case 'F':
+			//	autoForward = !autoForward;
+			//	break;
+
+			//case ',': case '<':
+			//	REP (i, 0, 2) lightColor[1][i] -= 0.1;
+			//	break;
+			//case '.': case '>':
+			//	REP (i, 0, 2) lightColor[1][i] += 0.1;
+			//	break;
+		case ' ':
+			jump();//shoot();
+			break;
+		default:
+			break;
+		}
+	}
 }
 
 
