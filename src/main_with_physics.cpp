@@ -18,6 +18,7 @@ using namespace std;
 */
 
 void define() {
+
 	double size = 1;
 	GLuint tt=loadTexture("board.bmp");
 	Cube *c = new Cube(Point(2, 2, 0),tt);
@@ -95,8 +96,8 @@ void define() {
 	objectmodel *tempobj6 = new objectmodel(Point(-30, 0, -30), "./obj/f1.obj");
 	tempobj6->rotate(90, 0, 0, 1);
 	tempobj6->rotate(-90, 1, 0, 0);
-	tempobj6->addToPhysicsWorld(30, 10);
-	*/
+	tempobj6->addToPhysicsWorld(30, 10);*/
+	
 	/*
 	objectmodel *tempobj7 = new objectmodel(Point(25, 0, -20), "./obj/house1.obj");
 	
@@ -217,7 +218,7 @@ int main(int argc, char *argv[]) {
 		//LightSource ls3(Point(-3, 6, -3, 1));
 		//LightManager::addLight(ls3);
 		//glLightfv(GL_LIGHT0, GL_POSITION, lightPos0);
-		glLightfv(GL_LIGHT0, GL_AMBIENT, Color(0.3, 0.3, 0.3, 0));
+		glLightfv(GL_LIGHT0, GL_AMBIENT, Color(1,1, 1, 1));
 		glLightfv(GL_LIGHT0, GL_DIFFUSE, COLOR::white);
 		glLightfv(GL_LIGHT0, GL_SPECULAR, COLOR::white);
 		//glLightfv(GL_LIGHT0, GL_AMBIENT, Color(0, 0, 0, 0));//COLOR::white);

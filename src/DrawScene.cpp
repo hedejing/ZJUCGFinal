@@ -22,12 +22,12 @@ void getTreesObj()
 
 void InitSkyBox()
 {
-	tex[0] = loadTexture("teide/negx.bmp");
-	tex[1] = loadTexture("teide/posx.bmp");
-	tex[2] = loadTexture("teide/negz.bmp");
-	tex[3] = loadTexture("teide/posz.bmp");
-	tex[4] = loadTexture("teide/negy.bmp");
-	tex[5] = loadTexture("teide/posy.bmp");
+	tex[0] = loadTexture("teide/negx.bmp",1);
+	tex[1] = loadTexture("teide/posx.bmp",1);
+	tex[2] = loadTexture("teide/negz.bmp",1);
+	tex[3] = loadTexture("teide/posz.bmp",1);
+	tex[4] = loadTexture("teide/negy.bmp",1);
+	tex[5] = loadTexture("teide/posy.bmp",1);
 }
 
 void drawTexRect(Point centroid, double scaleValue, GLuint tex, int face)
@@ -84,7 +84,7 @@ void drawTexRect(Point centroid, double scaleValue, GLuint tex, int face)
 void drawSkyBox(double length)
 {
 	float zero[4] = { 0, 0, 0, 1 };
-	float white[4] = { 0.5, 0.5, 0.5, 1 };
+	float white[4] = { 1, 1, 1, 1 };
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, white);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, zero);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, zero);

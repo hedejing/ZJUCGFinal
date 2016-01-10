@@ -24,6 +24,14 @@ bool BasicElement::shouldBeRemoved() {
 }
 
 void BasicElement::draw() {
+	float ambient[4] = { 0.5, 0.5, 0.5, 1 };
+	float diffuse[4] = { 0.5, 0.5, 0.5, 1 };
+	float specular[4] = { 0.2, 0.2, 0.2, 1 };
+	float shinni = 40;
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &shinni);
 	glPushMatrix();
 		glLoadName(id);
 		glTranslated(centroid[0], centroid[1], centroid[2]);
@@ -32,6 +40,10 @@ void BasicElement::draw() {
 		drawNaive();  //父类函数调用子类的函数??可以！
 		glLoadName(0);
 	glPopMatrix();
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &shinni);
 }
 void BasicElement::drawNaive() {}
 

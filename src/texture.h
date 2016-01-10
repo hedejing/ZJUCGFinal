@@ -31,5 +31,5 @@ struct BMPInfoHeader {
 	unsigned long	biClrImportant;	// 重要颜色数
 };
 
-GLuint loadTexture(const char *fileName);  //返回值为0即为发生了错误
+GLuint loadTexture(const char *fileName,bool sky = 0);  //返回值为0即为发生了错误
 #endif

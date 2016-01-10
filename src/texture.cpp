@@ -3,7 +3,7 @@
 #include <iostream>
 using namespace std;
 
-GLuint loadTexture(const char *fileName) {  //返回值为0即为发生了错误
+GLuint loadTexture(const char *fileName,bool sky) {  //返回值为0即为发生了错误
 	FILE *fp = fopen(fileName, "rb");
 	if (!fp) return 0;
 	
@@ -67,8 +67,16 @@ GLuint loadTexture(const char *fileName) {  //返回值为0即为发生了错误
 	glBindTexture(GL_TEXTURE_2D, texture_ID);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	if (!sky)
+	{
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	}
+	else
+	{
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, 0x812F);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, 0x812F);
+	}
 	//glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);  //直接用纹理覆盖，没有光照效果
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);  //在做贴图时使用透明通道而不是glColor的alpha值参与blend运算。 贴图时:
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pixels);
