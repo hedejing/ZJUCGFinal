@@ -367,6 +367,11 @@ void World::drawAll() {
 	glPopMatrix();
 	glEnable(GL_LIGHTING);
 }
+void World::renderDrawAll() {
+	for (auto it = objects.begin(); it != objects.end(); it++)
+		if (it->second->classType == 2)
+			it->second->draw();
+}
 
 bool World::isInside(Point p) {
 	if (p[0] < eye[0] + worldBound[0][0] || p[0] > eye[0] + worldBound[0][1]) return 0;
@@ -630,13 +635,13 @@ void World::gl_select(int x, int y) {
 	glLoadIdentity();
 
 	//restrict the draw to an area around the cursor
-	gluPickMatrix(x, y, 0.1, 0.1, view);
+	gluPickMatrix(x, y, 0.000001, 0.000001, view);
 	perspective();  //gluPerspective(45*zoomFactor, 1, 1, 500);
 
 	//pretend to draw the objects onto the screen
 	glMatrixMode(GL_MODELVIEW);
 	glutSwapBuffers();
-	drawAll();  //要这样写才能检测到点击事件
+	renderDrawAll();  //要这样写才能检测到点击事件
 	//LightManager::displayWithShadow(drawAll);
 	//restore the view
 	glMatrixMode(GL_PROJECTION);

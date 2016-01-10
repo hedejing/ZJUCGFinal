@@ -78,6 +78,7 @@ public:
 
 	/*  一次性绘制所有物体  */
 	static void drawAll();
+	static void renderDrawAll();
 
 	/*  外部可传入绘制函数  */
 	static void (*_display)();

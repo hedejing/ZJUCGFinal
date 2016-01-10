@@ -152,7 +152,7 @@ void shoot()
 {
 	//set the position of spwan
 	Vec direct = (World::center - World::eye).normalize();
-	Point spwan = World::eye + 10*direct;
+	Point spwan = World::eye + 15*direct;
 	double radius = 0.05;
 	bullet = new Bullet(spwan, radius);
 
