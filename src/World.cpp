@@ -54,6 +54,7 @@ double World::bulletRadius = 0.05;
 
 
 
+
 extern vector<wall_info> Walls;
 bool World::couldMoveTo(Point eye) {
 	for (auto &wall : Walls) {
@@ -108,7 +109,7 @@ void World::init(int *argc, char *argv[], int windowHeight, int windowWidth, int
 		glutEntryFunc(entry);
 		glutIdleFunc(idle);
 
-		//glutFullScreen();
+		glutFullScreen();
 		//glutSetCursor(GLUT_CURSOR_CROSSHAIR);
 		ShowCursor(0);
 	}
@@ -413,47 +414,53 @@ void World::idle() {
 	glutPostRedisplay();
 }
 
-
+extern AviBoard* avi;
 void World::display() {
 	windowPos[0] = glutGet(GLUT_WINDOW_X);
 	windowPos[1] = glutGet(GLUT_WINDOW_Y);
 	windowHeight = glutGet(GLUT_WINDOW_HEIGHT);
 	windowWidth = glutGet(GLUT_WINDOW_WIDTH);
-	if (focusState == GLUT_ENTERED) setCursorToCenter();
 
-	if (cameraModel != NULL && changing <= 0) {
-		//puts("changing eye");
-		Vec tmp = center - eye;
-		//eye = cameraModel->centroid;
-		//center = eye + tmp;
-		syncWithCameraModel();
+	if (avi->isfull) {
+		if (focusState == GLUT_ENTERED) setCursorToCenter();
+
+		if (cameraModel != NULL && changing <= 0) {
+			//puts("changing eye");
+			Vec tmp = center - eye;
+			//eye = cameraModel->centroid;
+			//center = eye + tmp;
+			syncWithCameraModel();
+		}
+
+		//subtractBlood();
+		solveJump();
+		keyboardResponse();
+
+	#ifndef NO_SHADOW
+		LightManager::displayWithShadow(drawAll);
+	#else
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		perspective();  //gluPerspective(45, (double)windowWidth / windowHeight, 0.1, 500);
+
+		glMatrixMode(GL_MODELVIEW);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glLoadIdentity();
+		gluLookAt(eye[0], eye[1], eye[2],
+			center[0], center[1], center[2],
+			up[0], up[1], up[2]);
+		drawAll();
+	#endif
+		glutSwapBuffers();
+
+		{
+			int err = glGetError();
+			//if (err != GL_NO_ERROR) printf("%d: %s\n", err, (char *)glewGetErrorString(err));
+			//1281:  #define GL_INVALID_VALUE 0x0501
+		}
 	}
-
-	//subtractBlood();
-	solveJump();
-	keyboardResponse();
-
-#ifndef NO_SHADOW
-	LightManager::displayWithShadow(drawAll);
-#else
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	perspective();  //gluPerspective(45, (double)windowWidth / windowHeight, 0.1, 500);
-
-	glMatrixMode(GL_MODELVIEW);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glLoadIdentity();
-	gluLookAt(eye[0], eye[1], eye[2],
-		center[0], center[1], center[2],
-		up[0], up[1], up[2]);
-	drawAll();
-#endif
-	glutSwapBuffers();
-
-	{
-		int err = glGetError();
-		//if (err != GL_NO_ERROR) printf("%d: %s\n", err, (char *)glewGetErrorString(err));
-		//1281:  #define GL_INVALID_VALUE 0x0501
+	else {
+		avi->drawNaive();
 	}
 }
 
@@ -757,6 +764,9 @@ void World::keyboardResponse() {
 			break;
 		case 'k': case 'K':
 			rotate(1, -rotateStep);
+			break;
+		case '%':
+			avi->isfull=0;
 			break;
 			//case 'f': case 'F':
 			//	autoForward = !autoForward;

@@ -227,9 +227,57 @@ void Rect::drawNaive() {
 	glDisable(GL_TEXTURE_2D);
 }
 
-AviBoard::AviBoard(Point p, double height, double weight, string videoname)
+//AviBoard::AviBoard(Point p, double height, double weight, string videoname)
+//{
+//	centroid = p;
+//	FILE *fp = fopen(videoname.c_str(), "rb");
+//	if (fp == NULL){		//打开失败
+//		printf("Cannot open this file.\n");
+//		return ;	//需要统一？
+//	}
+//	fread(&pixel_w, sizeof(int), 1, fp);//获取长款
+//	fread(&pixel_h, sizeof(int), 1, fp);
+//	fread(&framenum, sizeof(int), 1, fp);//获取总帧数
+//	buffer = new unsigned char[pixel_w*pixel_h *framenum * 3];
+//	fread(buffer,  pixel_w*pixel_h *framenum * 3, 1,fp);//获取数据
+//	tmpbuff = buffer;
+//	fclose(fp);
+//	nowtime = 0;
+//	timebase = 0;
+//	count = 0;
+//	this->height = height;
+//	this->weight = weight;
+//}
+//
+//AviBoard::~AviBoard()
+//{
+//	delete[] buffer;
+//}
+//
+//void AviBoard::drawNaive() {
+//	nowtime = glutGet(GLUT_ELAPSED_TIME);//获取时间
+//	if (nowtime - timebase > 40) {
+//		if (count == framenum-1)
+//		{
+//			tmpbuff = buffer;
+//			count = 0;
+//		}
+//		else
+//		{
+//			tmpbuff = tmpbuff + pixel_w*pixel_h * 3;
+//			count++;
+//		}
+//		timebase = nowtime;
+//	}
+//	glPushMatrix();
+//		glRasterPos3f(-1.0f, 1.0f, 0);
+//		glPixelZoom((float)weight / (float)pixel_w, -(float)height / (float)pixel_h);
+//		glDrawPixels(pixel_w, pixel_h, GL_RGB, GL_UNSIGNED_BYTE, tmpbuff);
+//	glPopMatrix();
+//}
+AviBoard::AviBoard(string videoname)
 {
-	centroid = p;
+	//centroid = p;
 	FILE *fp = fopen(videoname.c_str(), "rb");
 	if (fp == NULL){		//打开失败
 		printf("Cannot open this file.\n");
@@ -245,8 +293,7 @@ AviBoard::AviBoard(Point p, double height, double weight, string videoname)
 	nowtime = 0;
 	timebase = 0;
 	count = 0;
-	this->height = height;
-	this->weight = weight;
+	isfull=0;
 }
 
 AviBoard::~AviBoard()
@@ -255,12 +302,26 @@ AviBoard::~AviBoard()
 }
 
 void AviBoard::drawNaive() {
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_LIGHTING);
+	glDisable(GL_BLEND);
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_TEXTURE_GEN_S);
+	glDisable(GL_TEXTURE_GEN_T);
+	glDisable(GL_TEXTURE_GEN_R);
+	glDisable(GL_TEXTURE_GEN_Q);
+
 	nowtime = glutGet(GLUT_ELAPSED_TIME);//获取时间
 	if (nowtime - timebase > 40) {
 		if (count == framenum-1)
 		{
 			tmpbuff = buffer;
 			count = 0;
+			isfull=1;
 		}
 		else
 		{
@@ -269,11 +330,20 @@ void AviBoard::drawNaive() {
 		}
 		timebase = nowtime;
 	}
-	glPushMatrix();
 		glRasterPos3f(-1.0f, 1.0f, 0);
-		glPixelZoom((float)weight / (float)pixel_w, -(float)height / (float)pixel_h);
+		glPixelZoom((float)World::windowWidth / (float)pixel_w, -(float)World::windowHeight / (float)pixel_h);
+		//glPixelZoom(1, -1);
 		glDrawPixels(pixel_w, pixel_h, GL_RGB, GL_UNSIGNED_BYTE, tmpbuff);
-	glPopMatrix();
+		glutSwapBuffers();
+
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_BLEND);
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_TEXTURE_GEN_S);
+	glEnable(GL_TEXTURE_GEN_T);
+	glEnable(GL_TEXTURE_GEN_R);
+	glEnable(GL_TEXTURE_GEN_Q);
 }
 
 

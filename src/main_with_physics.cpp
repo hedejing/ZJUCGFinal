@@ -16,6 +16,8 @@ using namespace std;
 
 	注：在函数中如果不用new定义，就不能显示物体是因为函数结束时会调用那个对象的析构函数，然后那个对象就没了...
 */
+
+AviBoard *avi;
 void CreateBasicBox(GLuint tt, const Point& p)
 {
 	Cube *c1 = new Cube(p, tt);
@@ -110,27 +112,27 @@ void define() {
 	//Explosion *exp = new Explosion(Point(-10, 10, 4));
 	//exp->rotateTo(90, 0, 1, 0);
 	//getTreesObj();
-	/*objectmodel *tempobj2 = new objectmodel(Point(-30, -4, -10), "./obj/f2.obj");
+	Monster *tempobj2 = new Monster(Point(-30, -4, -10), "./obj/f2.obj");
 	tempobj2->rotate(90, 0, 0, 1);
 	tempobj2->rotate(-90, 1, 0, 0);
 	tempobj2->addToPhysicsWorld(30, 10);
 	
-	objectmodel *tempobj3 = new objectmodel(Point(-30, 2, 10), "./obj/f3.obj");
+	Monster *tempobj3 = new Monster(Point(-30, 2, 10), "./obj/f3.obj");
 	tempobj3->rotate(90, 0, 0, 1);
 	tempobj3->rotate(180, 1, 0, 0);
 	tempobj3->addToPhysicsWorld(30, 10);
 	
-	objectmodel *tempobj4 = new objectmodel(Point(30, 0, 10), "./obj/f4.obj");
+	Monster *tempobj4 = new Monster(Point(30, 0, 10), "./obj/f4.obj");
 	tempobj4->rotate(90, 0, 0, 1);
 	tempobj4->rotate(90, 1, 0, 0);
 	tempobj4->addToPhysicsWorld(30, 10);
 	
-	objectmodel *tempobj5 = new objectmodel(Point(-30, 0, 30), "./obj/f5.obj");
+	Monster *tempobj5 = new Monster(Point(-30, 0, 30), "./obj/f5.obj");
 	tempobj5->rotate(90, 0, 0, 1);
 	tempobj5->rotate(-90, 1, 0, 0);
 	tempobj5->addToPhysicsWorld(30, 10);
 		
-	objectmodel *tempobj6 = new objectmodel(Point(-30, 0, -30), "./obj/f1.obj");
+	Monster *tempobj6 = new Monster(Point(-30, 0, -30), "./obj/f1.obj");
 	tempobj6->rotate(90, 0, 0, 1);
 	tempobj6->rotate(-90, 1, 0, 0);
 	tempobj6->addToPhysicsWorld(30, 10);
@@ -138,7 +140,7 @@ void define() {
 	
 	objectmodel *tempobj7 = new objectmodel(Point(25, 0, -20), "./obj/house1.obj");
 	tempobj7->rotate(-90, 1, 0, 0);
-	*/
+	
 	DrawScene_Of_CS("");
 	//InitSkyBox(1999);
 	
@@ -215,6 +217,8 @@ int main(int argc, char *argv[]) {
 	World::init(&argc, argv);
 	World::_display = draw_world;
 	World::_free = free;
+
+	avi=new AviBoard("cs.rgb");
 	Physics::init();
 
 	{  //设置相机的碰撞检测

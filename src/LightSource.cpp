@@ -95,7 +95,6 @@ void LightManager::shadow_init()
 #endif
 	// frame buffer object
 	glGenFramebuffers(1, &shadowStuff.frame_buffer_s);
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, shadowStuff.frame_buffer_s);
 	//glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowStuff.tex_shadow, 0);
 }
 
@@ -403,4 +402,5 @@ void LightManager::displayWithShadow(void (*_draw_world)())
 	//glDisable(GL_BLEND);
 //	glActiveTexture(GL_TEXTURE2); glDisable(GL_TEXTURE_2D);
 //	glActiveTexture(GL_TEXTURE0); glDisable(GL_TEXTURE_2D);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 }
