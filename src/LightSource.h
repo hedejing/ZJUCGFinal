@@ -44,7 +44,6 @@ struct LightManager {
 	static void addLight(const LightSource & light);
 	static void EnableLight(unsigned id);
 	static void DisableLight(unsigned id);
-	static void xoy_foor(float len, float tex_repeat, int subdivision);
 	static void (*draw_world)();
 
 	static void displayWithShadow(void (*_draw_world)());
